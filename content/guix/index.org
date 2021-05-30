@@ -1,3 +1,37 @@
-#+title: GNU Guix
+#+TITLE: GNU Guix
 
-* TODO Add content!
+/A liberating, dependable, and hackable functional OS and package manager./
+
+* Welcome to the System Crafters' Community GNU Guix Wiki!
+
+GNU Guix is a functional, reproducible GNU/Linux package manager and
+OS. A free (as in freedom), Guile Scheme based alternative to Nix,
+Guix provides the power of a functional OS and more. While powerful,
+many of Guix's configurations and options seem arcane and
+inaccessible. This wiki is here to show that the complete opposite is
+true!
+
+** Why if so many other places (and the manual) exist?
+
+Truthfully, there aren’t that many other places. The System Crafters'
+wiki is attempting to enable more people to use GNU Guix with free and
+non-free software. The community should understand and be open to the
+fact that not all can realistically use only free software; this is
+not to say that the FSF is wrong or bad, but that we should ease
+people into using free as in freedom software and utilities. The
+System Crafters community believes there is a lot we can do to improve
+the experience for all.
+
+** Where to start?
+
+If you've never used or heard of GNU Guix, you should start at "FAQs"
+<placeholder>. If you've used Nix before, or are feeling courageous,
+start right away at "Installation Guide" <placeholder> if you want a
+fully free experience, or if you are not sure what that means or want
+nonfree (recommended choice), start at the "Nonguix Installation
+Guide."
+
+** Featured News and Articles
+
+*TODO:* Possibly randomly select articles here, or show commonly
+ sought after things (Firefox, Nix.)
