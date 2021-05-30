@@ -9,6 +9,11 @@ environment:
   site: wiki.systemcrafters.cc
 tasks:
   - build: |
+      # Don't build branches other than `master`
+      if [ "$GITHUB_REF" == "refs/heads/master" ]; then
+        complete-build
+      fi
+
       # Generate site files
       cd wiki-site
       cp -R ../daviwil.com/public .
