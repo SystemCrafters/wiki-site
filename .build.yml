@@ -1,0 +1,26 @@
+image: archlinux
+packages:
+  - emacs-nox
+oauth: pages.sr.ht/PAGES:RW
+sources:
+  - https://github.com/SystemCrafters/wiki-site
+  - https://git.sr.ht/~daviwil/daviwil.com
+environment:
+  site: wiki.systemcrafters.cc
+tasks:
+  - build: |
+      # Generate site files
+      cd site
+      cp -R ../daviwil.com/public .
+      emacs --batch -l ./publish.el --funcall dw/publish
+
+      # Bundle the HTML site
+      cd public
+      tar -czf /home/build/html.tar.gz .
+
+      # Bundle the Gemini site
+      cd ../gemini
+      tar -czf /home/build/gemini.tar.gz .
+  - upload: |
+      acurl --fail-with-body https://pages.sr.ht/publish/$site -Fcontent=@html.tar.gz
+      acurl --fail-with-body https://pages.sr.ht/publish/$site -Fcontent=@gemini.tar.gz -Fprotocol=GEMINI
