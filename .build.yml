@@ -9,15 +9,15 @@ environment:
   site: wiki.systemcrafters.cc
 tasks:
   - build: |
-      # Don't build branches other than `master`
-      if [ "$GITHUB_REF" == "refs/heads/master" ]; then
-        complete-build
-      fi
-
       # Generate site files
       cd wiki-site
       cp -R ../daviwil.com/public .
       emacs --batch -l ./publish.el --funcall dw/publish
+
+      # Don't publish branches other than `master`
+      if [ "$GITHUB_REF" != "refs/heads/master" ]; then
+        complete-build
+      fi
 
       # Bundle the HTML site
       cd public
