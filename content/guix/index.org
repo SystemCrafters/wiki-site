@@ -29,9 +29,9 @@ If you've never used or heard of GNU Guix, you should start at "FAQs"
 start right away at "Installation Guide" <placeholder> if you want a
 fully free experience, or if you are not sure what that means or want
 nonfree (recommended choice), start at the "Nonguix Installation
-Guide."
+Guide." <placeholder>
 
 ** Featured News and Articles
 
-*TODO:* Possibly randomly select articles here, or show commonly
+*** TODO Possibly randomly select articles here, or show commonly
  sought after things (Firefox, Nix.)
