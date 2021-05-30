@@ -10,7 +10,7 @@ environment:
 tasks:
   - build: |
       # Generate site files
-      cd site
+      cd wiki-site
       cp -R ../daviwil.com/public .
       emacs --batch -l ./publish.el --funcall dw/publish
 
