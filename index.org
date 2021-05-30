@@ -1,0 +1,3 @@
+#+title: Welcome to the System Crafters Wiki!
+
+See [[content/index.org][this file]] for more information!
