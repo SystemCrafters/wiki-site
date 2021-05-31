@@ -110,17 +110,22 @@
                                      (a (@ (class "nav-link") (href "/")) "Main Page") " "
                                      (a (@ (class "nav-link") (href "/emacs")) "GNU Emacs") " "
                                      (a (@ (class "nav-link") (href "/guix")) "GNU Guix")
-                                     (a (@ (class "nav-link") (href "https://systemcrafters.cc")) "System Crafters Home") " "))))))))))
+                                     (a (@ (class "nav-link") (href "https://systemcrafters.cc")) "System Crafters Home")
+                                     (form (@ (class "navbar-form navbar-right") (role "search") (action "https://duckduckgo.com/"))
+                                           (div (@ (class "form-group"))
+                                                (input (@ (type "text") (name "q") (class "form-control") (placeholder "Search Wiki") (style "overflow: hidden;margin-top: 3%;margin-bottom: 2%;")))
+                                                (input (@ (type "hidden") (name "sites") (value "wiki.systemcrafters.cc")))))
+                                     " "))))))))))
 
 (defun dw/site-footer (info)
   (concat
    ;; "</div></div>"
    (sxml-to-xml
     `(footer (@ (class "blog-footer"))
-      (div (@ (class "container"))
-           (div (@ (class "row"))
-                (div (@ (class "col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right"))
-                     (p "Made with " ,(plist-get info :creator)))))))
+             (div (@ (class "container"))
+                  (div (@ (class "row"))
+                       (div (@ (class "col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right"))
+                            (p "Made with " ,(plist-get info :creator)))))))
    (sxml-to-xml
     `(script (@ (src "/js/bootstrap.bundle.min.js"))))))
 
@@ -133,10 +138,10 @@
 
     (if (string-match "\\/index.org$" org-file)
         pub-dir
-        (progn
-          (unless (file-directory-p article-dir)
-            (make-directory article-dir t))
-          article-dir))))
+      (progn
+        (unless (file-directory-p article-dir)
+          (make-directory article-dir t))
+        article-dir))))
 
 (defun dw/org-html-template (contents info)
   (concat
@@ -161,28 +166,28 @@
                      (href "/css/site.css")))
             (title ,(concat (org-export-data (plist-get info :title) info) " - System Crafters")))
            (body
-             ,(dw/site-header info)
-             (div (@ (class "container"))
-                  (div (@ (class "row"))
-                       (div (@ (class "col-sm-12 blog-main"))
-                            (div (@ (class "blog-post"))
-                                 (h1 (@ (class "blog-post-title"))
-                                     ,(org-export-data (plist-get info :title) info))
-                                 (p (@ (class "blog-post-meta"))
-                                    ,(org-export-data (org-export-get-date info "%B %e, %Y") info))
-                                 ,contents
-                                 ,(let ((tags (plist-get info :filetags)))
-                                    (when (and tags (> (list-length tags) 0))
-                                      `(p (@ (class "blog-post-tags"))
-                                          "Tags: "
-                                          ,(mapconcat (lambda (tag) tag)
-                                                        ;; TODO: We don't have tag pages yet
-                                                        ;; (format "<a href=\"/tags/%s/\">%s</a>" tag tag))
-                                                      (plist-get info :filetags)
-                                                      ", "))))
-                                 ,(when (equal "article" (plist-get info :page-type))
-                                    ;; TODO: Link to mailing list
-                                    "<script src=\"https://utteranc.es/client.js\"
+            ,(dw/site-header info)
+            (div (@ (class "container"))
+                 (div (@ (class "row"))
+                      (div (@ (class "col-sm-12 blog-main"))
+                           (div (@ (class "blog-post"))
+                                (h1 (@ (class "blog-post-title"))
+                                    ,(org-export-data (plist-get info :title) info))
+                                (p (@ (class "blog-post-meta"))
+                                   ,(org-export-data (org-export-get-date info "%B %e, %Y") info))
+                                ,contents
+                                ,(let ((tags (plist-get info :filetags)))
+                                   (when (and tags (> (list-length tags) 0))
+                                     `(p (@ (class "blog-post-tags"))
+                                         "Tags: "
+                                         ,(mapconcat (lambda (tag) tag)
+                                                    ;; TODO: We don't have tag pages yet
+                                                    ;; (format "<a href=\"/tags/%s/\">%s</a>" tag tag))
+                                                     (plist-get info :filetags)
+                                                     ", "))))
+                                ,(when (equal "article" (plist-get info :page-type))
+                                   ;; TODO: Link to mailing list
+                                   "<script src=\"https://utteranc.es/client.js\"
                                               repo=\"daviwil/harmonicschemes.com\"
                                               issue-term=\"title\"
                                               label=\"comments\"
@@ -191,7 +196,7 @@
                                               async>
                                      </script>")))))
 
-             ,(dw/site-footer info))))))
+            ,(dw/site-footer info))))))
 
 ;; Thanks Ashraz!
 (defun dw/org-html-link (link contents info)
@@ -290,13 +295,13 @@
 
 (defun dw/generate-sitemap (title list)
   (concat
-    "#+TITLE: " title "\n\n"
-    "#+BEGIN_EXPORT html\n"
-    (mapconcat (lambda (item)
-                 (car item))
-               (cdr list)
-               "\n")
-    "\n#+END_EXPORT\n"))
+   "#+TITLE: " title "\n\n"
+   "#+BEGIN_EXPORT html\n"
+   (mapconcat (lambda (item)
+                (car item))
+              (cdr list)
+              "\n")
+   "\n#+END_EXPORT\n"))
 
 (setq org-html-preamble  #'dw/site-header
       org-html-postamble #'dw/site-footer

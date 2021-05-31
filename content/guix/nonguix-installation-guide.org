@@ -1,0 +1,407 @@
+#+TITLE: Nonguix Installation Guide
+#+AUTHOR: Daniel Rose
+
+This document is a guide for installing GNU Guix using the live system
+booted from a ~nonguix~ installation medium. The installation medium
+is provided by a GitHub Action from System Crafters, and uses the full
+Linux kernel, as opposed to the libre one. This allows for more driver
+support, such as WiFi on many modern laptops, and makes the
+installation process much easier.
+
+Before installing, it would be advised to view the [[/guix/faqs][FAQs]].
+
+For installations of software and specific issues, please search for
+your topic or look in the categories.
+
+GNU Guix should run on most x86-64 compatible PCs. As the installation
+process needs to retrieve packages from a remote repository, this
+guide assumes a working internet connection is available. The Nonguix
+installation medium should cover WiFi issues normally present in the
+Guix installer.
+
+* Table of Contents :toc:
+- [[#pre-installation][Pre-installation]]
+  - [[#download-the-installation-image][Download the installation image]]
+  - [[#booting][Booting]]
+  - [[#connecting-to-the-internet][Connecting to the internet]]
+  - [[#partition-the-disks][Partition the disks]]
+- [[#installation][Installation]]
+  - [[#herd-store][Herd store]]
+  - [[#system-configuration][System configuration]]
+  - [[#channels][Channels]]
+  - [[#update-system-configuration][Update system configuration]]
+  - [[#initialize-system][Initialize system]]
+- [[#post-installation][Post-installation]]
+  - [[#user-accounts][User accounts]]
+  - [[#dotfiles][Dotfiles]]
+  - [[#channels-1][Channels]]
+  - [[#general-recommendations][General recommendations]]
+- [[#further-reading][Further Reading]]
+
+* Pre-installation
+
+** Download the installation image
+
+The installation image is kept at a repo in the System Crafters
+organization. Click [[https://github.com/SystemCrafters/guix-installer/releases/latest][here]] to download the latest ISO. Burn this ISO to
+an installation medium (flash drive or DVD), and boot from it. For
+example, to burn it to a USB flash drive at ~/dev/sdX~, run the
+following command:
+
+#+BEGIN_SRC sh
+dd if=guix-installer.iso of=/dev/sdX status=progress bs=4M
+#+END_SRC
+
+** Booting
+
+Boot from the installation medium, select your language and country,
+and select "Install using the shell based process" when
+prompted. Although this makes the installation slightly more
+difficult, it allows for setting up your new installation with the
+full Linux kernel (necessary for the nonfree installation.)
+
+** Connecting to the internet
+
+If you have ethernet, simply plug in your cable and continue to the
+next step. If you have WiFi, use an editor (or ~echo~) to create a new
+file called ~wifi.conf~ to store the WiFi configuration. Make sure to
+set ~ssid~ to the name of your WiFi network name, and ~psk~ to the
+passphrase for your WiFi. You may also need to change the ~key_mgmt~
+parameter depending on the type of authentication your wifi router
+supports.
+
+#+BEGIN_SRC sh
+network={
+  ssid="ssid-name"
+  key_mgmt=WPA-PSK
+  psk="unencrypted passphrase"
+}
+#+END_SRC
+
+Next, run the following commands to unblock the WiFi card, determine
+its device name, and connect using the device name received. In the
+example, the name is ~wlp4s0~, so ~wpa_supplicant~ is passed the flag
+~-i wlp4s0~. Change this accordingly:
+
+#+BEGIN_SRC sh
+rfkill unblock all
+ifconfig -a
+wpa_supplicant -c wifi.conf -i wlp4s0 -B
+#+END_SRC
+
+#+BEGIN_QUOTE
+*NOTE:* If for any reason running =wpa_supplicant= fails, make sure to
+kill any background instances of it before trying to run it again
+because the old instances will block new runs from working.  This
+wasted a couple hours the first time I tried installing Guix!
+#+END_QUOTE
+
+Finally, run ~dhclient~ to turn on DNS, remembering to replace
+~wlp4s0~ with your device name returned from ~ifconfig -a~:
+
+#+BEGIN_SRC sh
+dhclient -v wlp4s0
+#+END_SRC
+
+** Partition the disks
+
+When disks are detected by the system, they are assigned a block
+device. To list these block devices, run ~lsblk~ or ~fdisk -l~.
+
+For example, running ~lsblk~ on my laptop returns these results:
+
+#+BEGIN_SRC sh
+$ lsblk
+
+NAME          MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINT
+sda             8:0    0 465.8G  0 disk
+├─sda1          8:1    0   549M  0 part  /boot/efi
+├─sda2          8:2    0 153.5G  0 part
+│ └─cryptroot 253:0    0 153.5G  0 crypt /
+└─sda3          8:3    0 311.7G  0 part
+  └─crypthome 253:1    0 311.7G  0 crypt /home
+sr0            11:0    1  1024M  0 rom
+#+END_SRC
+
+I have an encrypted root and home (if you don't know what that is,
+don't worry, it just means I have to put in two passwords before I can
+use my computer), so my devices might appear differently than yours,
+but the rough idea is the same. You might have no partitions (the
+numbered versions, such as ~/dev/sda1~) if you just wiped your drive,
+or many if you are coming from a different GNU/Linux OS or Windows.
+
+*** Encrypted
+
+If you would like to have encrypted block devices (entire partitions),
+use LUKS. If you do not want encryption, continue reading at
+"Regular."
+
+Your encrypted blocks can be all or none, however in this example only
+the root will be encrypted and UEFI will be used. If unsure, look at
+"Regular" and see the potential layouts (or read the linked article
+for the Arch Wiki there).
+
+| Mount point     | Partition                   | Partition type            | Suggested size              |
+|-----------------+-----------------------------+---------------------------+-----------------------------|
+| ~/mnt/boot/efi~ | ~/dev/efi_system_partition~ | EFI system partition      | At least 260 MiB            |
+| ~[SWAP]~        | ~/dev/swap_partition~       | Linux swap                | More than 512 MiB           |
+| ~/mnt~          | ~/dev/root_partition~       | Linux x86-64 root (/)     | Remainder of the device     |
+
+#+BEGIN_SRC sh
+cfdisk /dev/root_partition
+#+END_SRC
+
+Once your partitions are created, you can enable LUKS on the root
+partition by running the following commands. You can change
+~system-root~ to whatever you desire:
+
+#+BEGIN_SRC sh
+cryptsetup luksFormat /dev/root_partition
+cryptsetup open --type luks /dev/root_partition system-root
+mkfs.ext4 -L system-root /dev/mapper/system-root
+mount LABEL=system-root /mnt
+#+END_SRC
+
+Finally, ensure your EFI system partition and swap are both
+activated/mounted:
+
+#+BEGIN_SRC sh
+mkdir -p /mnt/boot/efi
+mount /dev/efi_system_partition /mnt/boot/efi
+
+swapon /dev/swap_partition
+#+END_SRC
+
+Proceed to "Installation."
+
+*** Regular
+
+If you would not like to have encrypted block devices (entire
+partitions), you can partition your drives just as you would for any
+other GNU/Linux OS. For example, you could have the following layout
+(as suggested by the Arch Wiki) if using UEFI (most modern computers):
+
+| Mount point     | Partition                   | Partition type            | Suggested size              |
+|-----------------+-----------------------------+---------------------------+----------------------------- |
+| ~/mnt/boot/efi~ | ~/dev/efi_system_partition~ | EFI system partition      | At least 260 MiB            |
+| ~[SWAP]~        | ~/dev/swap_partition~       | Linux swap                | More than 512 MiB           |
+| ~/mnt~          | ~/dev/root_partition~       | Linux x86-64 root (/)     | At least 1/3 of your device |
+| ~/mnt/home~     | ~/dev/home_partition~       | Linux x86-64 home (/home) | Remainder of the device     |
+
+For BIOS with MBR, the Arch Wiki suggests the following:
+
+| Mount point | Partition             | Partition type | Suggested size              |
+|-------------+-----------------------+----------------+-----------------------------|
+| ~[SWAP]~    | ~/dev/swap_partition~ | Linux swap     | More than 512 MiB           |
+| ~/mnt~      | ~/dev/root_partition~ | Linux          | At least 1/3 of your device |
+| ~/mnt/home~ | ~/dev/home_partition~ | Linux          | Remainder of the device     |
+
+Many other partitioning schemes exist: if you'd like to try other ones
+or learn about your options, check out the Arch Wiki's page for
+[[https://wiki.archlinux.org/title/Partitioning#Example_layouts][partitioning]].
+
+Partition your disks using either ~cfdisk~ or ~fdisk~:
+
+#+BEGIN_SRC sh
+cfdisk /dev/sdX
+
+fdisk /dev/sdX
+#+END_SRC
+
+Next, you should format your partitions with the correct file
+system. To create an Ext4 file system on ~/dev/root_partition~, run:
+
+#+BEGIN_SRC sh
+mkfs.ext4 /dev/root_partition
+#+END_SRC
+
+To initialize swap, run the following command:
+
+#+BEGIN_SRC sh
+mkswap /dev/swap_partition
+#+END_SRC
+
+Now it is time to mount your partitions. This will change depending on
+your chosen layout, but all drives are mounted as such:
+
+#+BEGIN_SRC sh
+mount /dev/partition_name /mnt
+#+END_SRC
+
+Replace ~partition_name~ with the partition's name, and ~/mnt~ with
+the necessary location. The following locations are used:
+
+- Root partition: ~/mnt~
+- Home partition: ~/mnt/home~
+- EFI system partition: ~/mnt/boot/efi~
+
+In order to mount a partition, that directory (folder) needs to
+exist. For ~/mnt/home~ and ~/mnt/boot/efi~ (if created) create the
+directories as follows /after/ mounting ~/mnt~:
+
+#+BEGIN_SRC sh
+mkdir -p /mnt/boot/efi
+
+mkdir -p /mnt/home
+#+END_SRC
+
+Swap is activated with the ~swapon~ command:
+
+#+BEGIN_SRC sh
+swapon /dev/swap_partition
+#+END_SRC
+
+* Installation
+
+** Herd store
+
+Once all partitions are mounted, you can begin the
+installation. First, set up the installation environment using ~herd~:
+
+#+BEGIN_SRC sh
+herd start cow-store /mnt
+#+END_SRC
+
+** System configuration
+
+The following steps will change depending on your approach. If you've
+used Guix in the past and would like to use your dotfiles and system
+configuration (your custom configurations), clone your repository now.
+
+If you would like to make your own, you need to at least have the
+nonguix channels setup for the installation medium. If you aren't sure
+what that means, or how to do that yourself, follow the instructions
+below for now, only copying the ~channels.scm~.
+
+If you do not have personal dotfiles yet, and would like to try David
+Wilson's, clone the following repository using ~git~ into your current
+directory (i.e. not ~/mnt~):
+
+#+BEGIN_SRC sh
+git clone https://github.com/daviwil/dotfiles
+#+END_SRC
+
+** Channels
+
+Regardless of your path, you should now add the nonguix and necessary
+custom channels to the installation medium. Run the following commands
+to set up the necessary channels and run ~guix pull~ (equivalent to
+~apt update~, updates the files available without updating the ones on
+the system):
+
+#+BEGIN_SRC sh
+mkdir -p ~/.config/guix
+# If you cloned David Wilson's dotfiles:
+cp dotfiles/guix/channels.scm ~/.config/guix
+# Otherwise, add the channels.scm file yourself and edit it with nonguix and your necessary channels
+guix pull
+# This is necessary to ensure the updated profile path is active!
+hash guix
+#+END_SRC
+
+The pull operation can take quite a while, depending upon your machine
+and the last time the nonguix installation ISO was updated. I'd
+recommend getting a cup of coffee (or tea, or whatever your preferred
+beverage is!)
+
+** Update system configuration
+
+Once the operation is finished, you will need to update your
+configuration to point to your partition UUIDs and labels for the
+system that you are installing. In order to get your UUIDs, run the
+following command:
+
+#+BEGIN_SRC sh
+blkid
+#+END_SRC
+
+This will return a long list of IDs that you can write down, take a
+picture of, ~cat~ or ~echo~ into your configuration, depending on
+which is more comfortable to you (if you're not too familiar with
+GNU/Linux, I'd recommend writing the IDs down. They are long, but it
+is faster and safer in the long run.) You can also switch to another
+TTY using ~Ctrl-Alt-F#~ and press ~Enter~ or ~Return~ to get to
+another root prompt. You can then switch back and forth between the
+previous TTY on ~F3~ instead of writing down your IDs.
+
+If you have encrypted partitions, yyou can use the following command
+to find the UUID:
+
+#+BEGIN_SRC sh
+cryptsetup luksUUID /dev/root_partition
+#+END_SRC
+
+** Initialize system
+
+Finally, we can initialize the system by running the following command:
+
+#+BEGIN_SRC sh
+# Change the .dotfiles directory to your dotfiles if necessary
+guix system -L ~/.dotfiles/.config/guix/systems init path/to/config.scm /mnt
+#+END_SRC
+
+This can take a /very/ long time depending on your internet connection
+and computer. If using a laptop, please ensure it is plugged in. If
+any errors occur during the installation, simply resume the
+installation as the Guix store has the previous packages saved. If the
+error continues, consider contacting someone at the System Crafters'
+Discord, IRC, or Matrix "Links?" <placeholder>.
+
+* Post-installation
+
+** User accounts
+
+Congratulations! Your GNU Guix System installation is (almost)
+complete. Reboot your system, take out your installation medium, and
+login as root when you are faced with a login prompt. Your last
+crucial step is to add a password for your accounts. Once logged in,
+run the following commands:
+
+#+BEGIN_SRC sh
+# Set the password for your root account
+passwd
+# Set the password for your user
+passwd <your username>
+#+END_SRC
+
+Log out, and log into your user account.
+
+** Dotfiles
+
+Clone your dotfiles repository (or David Wilson's again) and ensure
+that the channels include nonguix. If using David Wilson's dotfiles,
+~cd~ into the directory and run:
+
+#+BEGIN_SRC sh
+stow .
+#+END_SRC
+
+If using your own dotfiles, you know how to deploy them. If you don't
+have a good way to deploy your dotfiles yet, consider using ~stow~
+"Link?" <placeholder>.
+
+** Channels
+
+Verify that your ~channels.scm~ file is in the target path
+(~\~/.config/guix~) and then run the following to update your
+channels:
+
+#+BEGIN_SRC sh
+guix pull
+#+END_SRC
+
+** General recommendations
+
+You can now install whatever packages or manifests you need and
+have. If you are new to GNU Guix, continue reading at the "Basics of
+GNU GUIX" page <placeholder>. If interested in basic system setups and
+advice, continue reading at [[/guix/general-recommendations][general recommendations]]. Otherwise, once
+again, congratulations!  You have officially installed a
+nonfree/nonguix Guix System!
+
+* Further Reading
+
+For more information, and to read the official installation guide,
+look at the following links:
+- [[https://guix.gnu.org/manual/devel/en/html_node/System-Installation.html#System-Installation][Installation in the Guix manual]]
+- [[https://gitlab.com/nonguix/nonguix/][Nonguix GitLab repository]]
