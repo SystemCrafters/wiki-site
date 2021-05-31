@@ -36,6 +36,7 @@ Guix installer.
   - [[#dotfiles][Dotfiles]]
   - [[#channels-1][Channels]]
   - [[#general-recommendations][General recommendations]]
+- [[#further-reading][Further Reading]]
 
 * Pre-installation
 
@@ -397,3 +398,10 @@ GNU GUIX" page <placeholder>. If interested in basic system setups and
 advice, continue reading at [[/guix/general-recommendations][general recommendations]]. Otherwise, once
 again, congratulations!  You have officially installed a
 nonfree/nonguix Guix System!
+
+* Further Reading
+
+For more information, and to read the official installation guide,
+look at the following links:
+- [[https://guix.gnu.org/manual/devel/en/html_node/Installation.html#Installation][Installation in the Guix manual]]
+- [[https://gitlab.com/nonguix/nonguix/][Nonguix GitLab repository]]
