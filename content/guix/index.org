@@ -24,12 +24,20 @@ the experience for all.
 
 ** Where to start?
 
-If you've never used or heard of GNU Guix, you should start at "FAQs"
-<placeholder>. If you've used Nix before, or are feeling courageous,
-start right away at "Installation Guide" <placeholder> if you want a
-fully free experience, or if you are not sure what that means or want
-nonfree (recommended choice), start at the "Nonguix Installation
-Guide." <placeholder>
+*** If you've never used or heard of GNU Guix
+
+you should start at [[/guix/faqs][FAQs]].
+
+*** If you've used Nix before, or are feeling courageous
+
+start right away at [[https://guix.gnu.org/manual/en/html_node/System-Installation.html][Official Installation Guide]] if you want a fully
+free experience, or if you are not sure what that means or want
+nonfree (recommended choice), start at the [[/guix/nonguix-installation-guide][Nonguix Installation Guide]].
+
+Note that the official installation guide is from the GNU Guix manual,
+and links to that site. It is still recommended to read [[/guix/general-recommendations][general
+recommendations]] afterwards, although you might not want to follow the
+nonfree advice on there.
 
 ** Featured News and Articles
 

@@ -8,8 +8,7 @@ Linux kernel, as opposed to the libre one. This allows for more driver
 support, such as WiFi on many modern laptops, and makes the
 installation process much easier.
 
-Before installing, it would be advised to view the FAQ, and read up on
-the "What is GNU Guix?" <placeholder> page.
+Before installing, it would be advised to view the [[/guix/faqs][FAQs]].
 
 For installations of software and specific issues, please search for
 your topic or look in the categories.
@@ -20,14 +19,33 @@ guide assumes a working internet connection is available. The Nonguix
 installation medium should cover WiFi issues normally present in the
 Guix installer.
 
+* Table of Contents :toc:
+- [[#pre-installation][Pre-installation]]
+  - [[#download-the-installation-image][Download the installation image]]
+  - [[#booting][Booting]]
+  - [[#connecting-to-the-internet][Connecting to the internet]]
+  - [[#partition-the-disks][Partition the disks]]
+- [[#installation][Installation]]
+  - [[#herd-store][Herd store]]
+  - [[#system-configuration][System configuration]]
+  - [[#channels][Channels]]
+  - [[#update-system-configuration][Update system configuration]]
+  - [[#initialize-system][Initialize system]]
+- [[#post-installation][Post-installation]]
+  - [[#user-accounts][User accounts]]
+  - [[#dotfiles][Dotfiles]]
+  - [[#channels-1][Channels]]
+  - [[#general-recommendations][General recommendations]]
+
 * Pre-installation
 
 ** Download the installation image
 
-The installation image is kept at "link to GitHub Workflow"
-<placeholder>. Burn this ISO to an installation medium (flash drive or
-DVD), and boot from it. For example, to burn it to a USB flash drive
-at `/dev/sdX`, run the following command:
+The installation image is kept at a repo in the System Crafters
+organization. Click [[https://github.com/SystemCrafters/guix-installer/releases/latest][here]] to download the latest ISO. Burn this ISO to
+an installation medium (flash drive or DVD), and boot from it. For
+example, to burn it to a USB flash drive at ~/dev/sdX~, run the
+following command:
 
 #+BEGIN_SRC sh
 dd if=guix-installer.iso of=/dev/sdX status=progress bs=4M
@@ -192,7 +210,7 @@ fdisk /dev/sdX
 Next, you should format your partitions with the correct file
 system. To create an Ext4 file system on ~/dev/root_partition~, run:
 
-,#+BEGIN_SRC sh
+#+BEGIN_SRC sh
 mkfs.ext4 /dev/root_partition
 #+END_SRC
 
@@ -376,6 +394,6 @@ guix pull
 You can now install whatever packages or manifests you need and
 have. If you are new to GNU Guix, continue reading at the "Basics of
 GNU GUIX" page <placeholder>. If interested in basic system setups and
-advice, continue reading at the "General recommendations" page
-<placeholder>. Otherwise, once again, congratulations!  You have
-officially installed a nonfree/nonguix Guix System!
+advice, continue reading at [[/guix/general-recommendations][general recommendations]]. Otherwise, once
+again, congratulations!  You have officially installed a
+nonfree/nonguix Guix System!

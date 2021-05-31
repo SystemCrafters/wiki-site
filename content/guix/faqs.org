@@ -1,0 +1,85 @@
+#+TITLE: FAQs
+#+AUTHOR: Daniel Rose
+
+Questions regarding Guix as an OS, Guix as a package manager, and the wiki itself.
+
+* Table of Contents :toc:
+- [[#what-is-gnu-guix][What is GNU Guix?]]
+- [[#should-i-use-the-package-manager-or-the-os][Should I use the package manager or the OS?]]
+- [[#how-do-i-install-guix][How do I install Guix?]]
+- [[#but-how-do-i-work-with-only-free-software][But how do I work with only free software?]]
+- [[#what-is-a-declarative-configuration][What is a declarative configuration?]]
+- [[#what-are-the-differences-between-guix-and-nix][What are the differences between Guix and Nix?]]
+- [[#im-stuck-where-do-i-ask-for-help][I'm stuck! Where do I ask for help?]]
+
+* What is GNU Guix?
+
+GNU Guix (or simply Guix) is a liberating, dependable, and hackable
+GNU/Linux distro configured using Guile Scheme. It is liberating
+because by default it uses only free software, and the Linux libre
+kernel. It is dependable because it is reproducable, supports
+rollbacks through "generations," and has transactional upgrades (as
+well as much more), and is hackable because it has Guile Scheme APIs
+for the entire system and packages.
+
+More practically, this means that Guix is configurable in your
+dotfiles (your GNU/Linux preferences, nicknamed dotfiles because they
+often start with a period) and are reproducable on all your
+machines. Your configuration can be copied across them all, and kept
+in version control (such as git).
+
+* Should I use the package manager or the OS?
+
+You can install Guix either as an OS or as a package manager in a
+foreign distribution of GNU/Linux. There are benefits to both, however
+if you truly want to reap all the benefits of Guix, you should use it
+as an OS. The choice is up to you.
+
+* How do I install Guix?
+
+If installing as a package manager, Guix can be downloaded as a binary
+from the official website at [[https://guix.gnu.org/download][guix.gnu.org]], from your distro's package
+repositories, or using the [[https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh][shell installer script]].
+
+If installing as an OS, you can go back to the System Crafters main
+wiki page for GNU Guix to see the options between nonguix and normal
+installation.
+
+* But how do I work with only free software?
+
+Well, you find alternatives! The FSF has a great article about this
+(written specifically for the COVID-19 pandemic, but always
+applicable): [[https://www.fsf.org/blogs/community/better-than-zoom-try-these-free-software-tools-for-staying-in-touch][free software alternatives]]. For other general things,
+consider LibreOffice for Microsoft Office, Gimp for Photoshop,
+Inkscape for Illustrator, and there are many other good alternatives
+to look for that respect your freedom.
+
+That said, we all have programs that we need for work that aren't free
+(and if you don't, consider yourself lucky.) Guix System, the name for
+the OS version, has options for nonfree software, such as nonguix,
+Nix, and Flatpak.
+
+* What is a declarative configuration?
+
+A declarative configuration is, put simply, when you write out your
+settings and packages instead of running a command. This allows for
+reproducability, and easier management of installed packages. Think of
+it as declaring what you are going to do before doing it, as opposed
+to doing it without writing it down or alerting people.
+
+* What are the differences between Guix and Nix?
+
+First and foremost, Guix is configured in Guile Scheme, a Scheme
+(which in itself is a Lisp), while Nix is configured in... Nix. A bit
+confusing :smile:. Guile Scheme is a full fledged Scheme programming
+language, which means you can do some powerful things in it. Packages
+as well as system configurations are written in Guile in Guix. Guile
+also has more unified commands, while Nix has many for different
+purposes.
+
+* I'm stuck! Where do I ask for help?
+
+Check out one of the System Crafters channels on Discord, IRC, and
+Matrix. You can also watch some of the System Crafters videos, read
+this wiki, or ask in ~#guix~ for free and ~#nonguix~ for nonfree on
+IRC.
