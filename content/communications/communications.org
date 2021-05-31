@@ -1,0 +1,26 @@
+#+TITLE: Communicating with the community
+
+The System Crafters community hangs out in a few places, YouTube comments (and live chat on streams), Discord, and irc (also accessible with a Matrix bridge).
+
+* YouTube
+[[https://www.youtube.com/channel/UCAiiOTio8Yu69c3XnR7nQBQ][System Crafters channel]]
+
+* Discord
+This is currently where the bulk of the community is hanging out. There are several emacs and guix focused topic channels as well as general topic channels like gaming, music, and showcases of what the community is up to. Here is the invite [[https://discord.gg/EfBzP8bV][link to Discord]].
+
+* IRC / Matrix bridge
+** Internet Relay Chat (IRC)
+[[ircs://irc.libera.chat/systemcrafters][#systemscrafters]] channel is on the [[https://libera.chat][libera.chat]] irc server along with a lot of other FOSS software channels like [[ircs://irc.libera.chat/ubuntu][#ubuntu]],[[ircs://irc.libera.chat/guix][#guix]], etc.
+** Matrix bridge
+Some may prefer to access the IRC channel using the [[https://en.wikipedia.org/wiki/Matrix_(protocol)][[matrix] protocol]] clients like [[https://element.io/][Element]]. Matrix bridges allow other protocols to be bridged with matrix. There are a few different ways to achieve this:
+*** Join as a Matrix user
+You can join a room directly by adding ~#systemcrafters:irc.libera.chat~ to join with your matrix identity. You don't have to register with irc at all if you just want to keep using your matrix identity since both Matrix and IRC users are treated as first class citizens.
+*** Join as an IRC user
+In order to use Matrix you have to have a Matrix account but if once logged into the client (Element) you can invite @NickServ:libera.chat to a PM to register/identify your irc nick. Then invite @appservice:libera.chat to a PM and ~!join #systemscrafters~. In order to save your username by issuing the ~!username~ command followed by the ~!storepass YourP@assw0rd~.
+
+Follow libera.chat guidance on grouping your nicks under a single NickServ account if you plan on signing into IRC from Matrix and an IRC client simultaneously (https://libera.chat/guides/registration#registering).
+=NOTE= If you join as more than one sure please append an underscore to your secondary nick which should be the same as your primary nick. This will help everyone understand it's the same person in two different clients. Example: =daviwil= and =daviwil_=.
+
+=NOTE=: libera.chat IRC server does not support ~COMMAND setname~ which is what allows you to set your "real name" after connecting. And the Element client does not pass a ~realname~ as part of the connection string. So unfortunately your real name will show as your Matrix username. However, Matrix does have some benefits: it serves as a built-in bounce server (so you can see messages when you weren't online), it _supports_ /inline/ *markup* +or+ and ~code~ snippets, and the mobile app support is better.
+*** Join as all the things
+You could join from an IRC client and through Matrix and authenticate as an IRC user and you can join from Matrix as a Matrix user, just join.

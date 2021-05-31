@@ -6,6 +6,7 @@ This site is a collaborative effort by the System Crafters community to provide 
 
 - GNU Emacs
 - GNU Guix
+- Communicating with the community
 - ... and anything else you contribute!
 
 * Contributing
