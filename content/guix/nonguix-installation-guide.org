@@ -403,5 +403,5 @@ nonfree/nonguix Guix System!
 
 For more information, and to read the official installation guide,
 look at the following links:
-- [[https://guix.gnu.org/manual/devel/en/html_node/Installation.html#Installation][Installation in the Guix manual]]
+- [[https://guix.gnu.org/manual/devel/en/html_node/System-Installation.html#System-Installation][Installation in the Guix manual]]
 - [[https://gitlab.com/nonguix/nonguix/][Nonguix GitLab repository]]
