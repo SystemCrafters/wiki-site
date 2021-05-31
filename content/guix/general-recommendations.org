@@ -1,0 +1,25 @@
+#+TITLE: General Recommendations
+#+AUTHOR: Daniel Rose
+
+The following are recommendations for your new Guix system. Some are
+nonfree, these are indicated with a bold *NF* next to the heading.
+
+* Table of Contents :toc:
+- [[#desktop-environments-and-window-managers][Desktop Environments and Window Managers]]
+
+* Desktop Environments and Window Managers
+
+More likely than not, you want to install a window manager or desktop
+environment. KDE is /not/ installable on Guix due to numerous issues,
+XFCE would be a good alternative to look at.
+
+Quite a few window managers have built in support:
+- i3
+- EXWM
+- dwm
+- Xmonad
+- StumpWM
+
+There are also desktop environments for those who prefer them:
+- XFCE
+- GNOME
