@@ -14,8 +14,8 @@ tasks:
       cp -R ../daviwil.com/public .
       emacs --batch -l ./publish.el --funcall dw/publish
 
-      # Don't publish branches other than `master`
-      if [ "$GITHUB_REF" != "refs/heads/master" ]; then
+      # Don't publish branches other than `main`
+      if [ "$GITHUB_REF" != "refs/heads/main" ]; then
         complete-build
       fi
 
