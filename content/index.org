@@ -4,8 +4,8 @@ This site is a collaborative effort by the System Crafters community to provide 
 
 * Topics
 
-- GNU Emacs
-- GNU Guix
+- [[emacs/][GNU Emacs]]
+- [[guix/][GNU Guix]]
 - [[community/chat-with-us/][Chatting with the Community]]
 - ... and anything else you contribute!
 
