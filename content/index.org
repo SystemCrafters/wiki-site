@@ -13,6 +13,8 @@ This site is a collaborative effort by the System Crafters community to provide 
 
 If you'd like to contribute to this site, just send a pull request to the GitHub repository!  The wiki editors will review and merge any changes that you send.
 
+Here is the wiki repository: https://github.com/SystemCrafters/wiki-site
+
 * Why not use [some other wiki]?
 
 We decided to make this a site instead of use GitHub wiki, Sourcehut man, or other sites so that we can more easily control the presentation and also provide this content in other offline forms.  We're open to suggestions too!

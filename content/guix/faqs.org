@@ -81,5 +81,5 @@ purposes.
 
 Check out one of the System Crafters channels on Discord, IRC, and
 Matrix. You can also watch some of the System Crafters videos, read
-this wiki, or ask in ~#guix~ for free and ~#nonguix~ for nonfree on
+this wiki, or ask in ~#guix~ for free and ~#nonguix~ for nonfree on [[https://libera.chat][Libera.Chat]]
 IRC.
