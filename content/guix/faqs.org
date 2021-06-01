@@ -63,7 +63,7 @@ Nix, and Flatpak.
 
 A declarative configuration is, put simply, when you write out your
 settings and packages instead of running a command. This allows for
-reproducability, and easier management of installed packages. Think of
+reproducibility, and easier management of installed packages. Think of
 it as declaring what you are going to do before doing it, as opposed
 to doing it without writing it down or alerting people.
 
