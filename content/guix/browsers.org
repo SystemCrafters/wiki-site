@@ -1,0 +1,213 @@
+#+TITLE: Browsers
+#+AUTHOR: Daniel Rose
+
+By default, Guix does not have many options for browsers. However,
+with nonguix, Nix, Flatpak, or Docker, you have many more
+options. Nonfree options are indicated with a bold *NF* next to the
+heading, and this includes things not in the official Guix
+repositories.
+
+If you have yet to set up Nix, and would like to, please visit the
+"Nix" page <placeholder>. Nix is the recommended way to install most
+nonfree software over Flatpak and Docker (allows for maintaining a declarative
+configuration.)
+
+* Table of Contents :toc:
+- [[#icecat][Icecat]]
+  - [[#installation][Installation]]
+  - [[#troubleshooting][Troubleshooting]]
+- [[#firefox---nf][Firefox - *NF*]]
+  - [[#installation-1][Installation]]
+  - [[#troubleshooting-1][Troubleshooting]]
+- [[#ungoogled-chromium][Ungoogled Chromium]]
+  - [[#installation-2][Installation]]
+  - [[#troubleshooting-2][Troubleshooting]]
+- [[#nyxt][Nyxt]]
+  - [[#installation-3][Installation]]
+  - [[#troubleshooting-3][Troubleshooting]]
+- [[#qutebrowser][Qutebrowser]]
+  - [[#installation-4][Installation]]
+  - [[#troubleshooting-4][Troubleshooting]]
+- [[#chromium---nf][Chromium - *NF*]]
+  - [[#installation-5][Installation]]
+  - [[#troubleshooting-5][Troubleshooting]]
+- [[#brave---nf][Brave - *NF*]]
+  - [[#installation-6][Installation]]
+  - [[#troubleshooting-6][Troubleshooting]]
+- [[#reporting-issues][Reporting Issues]]
+
+* Icecat
+
+Icecat is the fully free (as in freedom) fork of Firefox. It usually
+lags behind by quite a few versions (using the Icecat ESR version,)
+but otherwise is a safer Firefox. It comes by default with quite a few
+add-ons, including LibreJS (explicitly asking you if you want to run
+nonfree JS), Searxes' (which allows you to choose which CDNs to
+enable), and a few others. Icecat has settings to disable unsafe
+options, such as WebGL and WebRTC. LibreJS can also be a major issue
+for websites, but can be disabled. If you do not need Chromium or
+Firefox, consider using Icecat.
+
+*Homepage:* [[https://www.gnu.org/software/gnuzilla/][www.gnu.org/software/gnuzilla]]
+
+** Installation
+
+Icecat is in the official repository, and has substitutes (no need to
+compile.)
+
+** Troubleshooting
+
+No issues currently reported!
+
+* Firefox - *NF*
+
+Firefox is an open source browser from Mozilla. One of the most
+popular browsers for GNU/Linux, many forks of Firefox exist to improve
+it and make it more private (such as Icecat or Librewolf.) Permission
+is needed to use the Firefox name from Mozilla, as well as other
+restrictions, which make it a restrictive package, even if it is open
+source software. This bars it from being in the official repositories.
+
+*Homepage:* [[https://www.mozilla.org/firefox][www.mozilla.org/firefox]]
+
+** Installation
+
+You can install Firefox through Nonguix, Nix, Flatpak, and even
+Docker. To install through Nix, please view the "Nix" page
+<placeholder> and install as you would any other program (either
+declarative or imperative.)
+
+The preferred way to install Firefox is through nonguix if you would
+like to keep your configurations in Scheme/Guix and are alright with
+compiling it, or Nix if you want a pre-compiled binary.
+
+** Troubleshooting
+
+*** Firefox crashes when saving a file or uploading a file
+
+If you do not have a GTK theme installed, Firefox will crash when
+performing actions with a file explorer (and potentially more
+processes.) Install a GTK theme in the same profile as your Firefox
+install to prevent this issue.
+
+*** No audio in browser
+
+Sometimes Firefox does not connect to Pulseaudio; solution currently
+unknown. Restarting the browser has fixed this every time for me. This
+issue does not occur commonly at all.
+
+-Daniel
+
+*** No WebGL
+
+Firefox may not have any WebGL capabilities under certain combinations
+of installed packages or settings (such as WebRender.) No exact
+combination is documented that can replicate this, and I have yet to
+experience it again.
+
+-Daniel
+
+* Ungoogled Chromium
+
+If you prefer Chromium to the Firefox family of browsers but want to
+maintain your safety and privacy, look no further. Ungoogled Chromium
+is "Google Chromium, sans integration with Google." Ungoogled Chromium
+has numerous patches to Chromium and enhancing features.
+
+*Homepage:* [[https://github.com/Eloston/ungoogled-chromium][github.com/Eloston/ungoogled-chromium]]
+
+** Installation
+
+Ungoogled Chromium is in the official repository, and has substitutes
+(no need to compile.)
+
+** Troubleshooting
+
+No issues currently reported!
+
+* Nyxt
+
+Nyxt is a "keyboard-oriented, infinitely extensible web browser
+designed for power users." It is written in Common Lisp, and has
+keybindings for Emacs, vi, and CUA. Put simply, it is a "Common Lisp
+based Qutebrowser." Everything is configurable in Lisp, and the
+browser itself is based on buffers instead of tabs, and uses WebKit
+and WebEngine. It does not currently have support for WebExtensions,
+but is underway.
+
+*Homepage:* [[https://nyxt.atlas.engineer/][nyxt.atlas.engineer]]
+
+** Installation
+
+Nyxt is in the official repository, and has substitutes (no need to
+compile.)
+
+** Troubleshooting
+
+*** No HTML video
+
+Ensure that you have the following packages installed:
+
+#+BEGIN_SRC scheme
+"gst-libav"
+"gst-plugins-bad"
+"gst-plugins-base"
+"gst-plugins-good"
+"gst-plugins-ugly"
+#+END_SRC
+
+* Qutebrowser
+
+Qutebrowser is a keyboard and vi focused browser. It is written and
+configured in Python. It is similar to dwb and Nyxt. Tab and
+adblocking support is built in.
+
+*Homepage:* [[https://qutebrowser.org/][qutebrowser.org]]
+
+** Installation
+
+Qutebrowser is in the official repository, and has substitutes (no need to
+compile.)
+
+** Troubleshooting
+
+No issues currently reported!
+
+* Chromium - *NF*
+
+Chromium is an open-source browser from Google. Unless you need it,
+Ungoogled Chromium is recommended over regular Chromium to better
+protect your privacy and add enhancements.
+
+*Homepage:* [[https://www.chromium.org/][www.chromium.org]]
+
+** Installation
+
+Chromium is not in the Guix repositories, but can be installed from
+Nix or Flatpak (might be possible through other methods.)
+
+** Troubleshooting
+
+No issues currently reported!
+* Brave - *NF*
+
+Brave is a privacy-oriented Chromium-based browser. It features its
+own cryptocurrency, BAT, and has features such as IPFS built in.
+
+*Homepage:* [[https://brave.com/][brave.com]]
+
+** Installation
+
+Brave is not in the Guix repositories, but can be installed through
+Nix or Snap.
+
+** Troubleshooting
+
+No issues currently reported!
+
+* Reporting Issues
+
+If you have any issues with these browsers, please open an issues at
+the wiki repository at GitHub:
+[[https://github.com/systemcrafters/wiki-site][github.com/systemcrafters/wiki-site]]. Your issues help us solve and
+document them for everyone!
