@@ -1,3 +1,41 @@
 #+title: GNU Emacs
 
-* TODO Add content!
+Refer to the video series and show notes on Emacs for more thorough "tutorial" style content that David has put together. Here are some quick jumping off points:
+
+* Emacs Essentials
+This is a [[https://systemcrafters.cc/emacs-essentials/][series]] for true beginners and explains the fundamentals of Emacs.
+
+* Emacs from scratch
+This is a [[https://systemcrafters.cc/emacs-from-scratch/][series]] geared towards crafting your custom Emacs configuration. Out of the box configurations like [[https://github.com/hlissner/doom-emacs][doom]], [[https://www.spacemacs.org/][spacemacs]], and [[https://github.com/bbatsov/prelude][prelude]] are also good options to see how these "opinionated" setup the emacs environment so you can hack on your own setup more.
+
+* More Emacs Content
+There's a lot more content on the [[https://systemcrafters.cc/videos][Videos]] page.
+
+* Transitioning to Emacs
+There is a good possibility that there is an overlap between the Emacs-curious and keyboard shortcut users. However, the Emacs keybidings are quite different than the Common User Access (CUA) that a lot of users are familiar with. Here's a quick snippet of configuration that provides a more familiar way to start exploring emacs:
+#+begin_src elisp
+;; CUA type customizations and conveniences=====================================
+;; Simpleclip to access system clipboard
+(require 'simpleclip)
+(setq simpleclip-mode 1)
+
+(map! :gin "C-S-x" #'simpleclip-cut ;Was: C-x chord
+      :gin "C-S-c" #'simpleclip-copy ;Was: C-x chord
+      :gin "C-S-v" #'clipboard-yank ;freezing on Ubuntu: 'simpleclip-paste ;Was: C-x chord
+      :gin "C-z" #'undo ; Was: enable Emacs state
+      :gin "C-S-z" #'redo ;Was: C-x chor
+      :gin "C-<tab>" #'switch-to-next-buffer ;Was: aya-create snippet
+      :gin "C-S-<tab>" #'switch-to-prev-buffer ;Was: C-x chord
+      :gin "C-w" #'kill-buffer ;Was: evil-window-map
+      :gin "C-a" #'mark-whole-buffer ;Was: doom/backward-to-bol-or-indent
+      )
+
+;; Save. Was: isearch-forward
+(map! "C-s" #'save-buffer)
+;; Save as. Was: nil
+(map! "C-S-s" #'write-file)
+
+;; Ctrl shift P like Sublime Text Editor for command launching
+(map! "C-S-p" #'execute-extended-command)
+#+end_src
+=Note=: Emacs has a default option called CUA mode (available through the menu) or ~(setq cua-mode 1)~ but the configuration above provides a little more expected functionality by using a simple clipboard and redo/undo model.
