@@ -1,0 +1,9 @@
+#+TITLE: Getting Involved
+#+AUTHOR: Daniel Rose
+
+If you'd like to contribute to this site, just send a pull request to
+the GitHub repository!  The wiki editors will review and merge any
+changes that you send.
+
+Here is the wiki repository:
+https://github.com/SystemCrafters/wiki-site

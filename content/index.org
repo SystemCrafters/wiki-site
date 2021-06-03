@@ -1,19 +1,37 @@
-#+title: Welcome to the System Crafters Wiki!
+#+TITLE: Welcome to the System Crafters Wiki!
 
 This site is a collaborative effort by the System Crafters community to provide useful resources for system crafting with GNU Emacs, GNU Guix, and all other related tools.  There are also resources for how you can connect with other members of the community over Discord, Matrix, and IRC!
 
 * Topics
 
-- [[emacs/][GNU Emacs]]
-- [[guix/][GNU Guix]]
-- [[community/chat-with-us/][Chatting with the Community]]
-- ... and anything else you contribute!
+** [[emacs/][GNU Emacs]]
 
-* Contributing
+Information regarding Emacs configuration and various packages.
 
-If you'd like to contribute to this site, just send a pull request to the GitHub repository!  The wiki editors will review and merge any changes that you send.
+** [[guix/][GNU Guix]]
 
-Here is the wiki repository: https://github.com/SystemCrafters/wiki-site
+Overview of the GNU Guix operating system and information regarding
+installation and packages.
+
+** [[articles/][All Articles]]
+
+A master list of all articles if you prefer searching/exploring in
+there yourself.
+
+* Our community
+
+** [[community/getting-involved/][Getting involved]]
+
+Ways that you can contribute to the System Crafters wiki.
+
+** [[community/chat-with-us/][Chatting with the community]]
+
+How to get in touch with other members of the System Crafters
+community on various platforms.
+
+** [[community/code-of-conduct/][Code of Conduct]]
+
+Guidelines for the System Crafters wiki.
 
 * Why not use [some other wiki]?
 
