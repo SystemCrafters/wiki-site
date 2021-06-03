@@ -288,7 +288,7 @@
        'gemini filename ".gmi" plist pub-dir))))
 
 (defun dw/sitemap-entry (entry style project)
-  (format "<h4><em>%s</em> - <a href=\"%s\">%s</a></h4>"
+  (format "<h4><em>Last Updated: %s</em> - <a href=\"%s\">%s</a></h4>"
           (format-time-string "%Y-%m-%d" (org-publish-find-date entry project))
           (concat (file-name-sans-extension entry) "/")
           (org-publish-find-title entry project)))
@@ -317,8 +317,14 @@
       (list
        (list "systemcrafters:main"
              :recursive t
-             :base-extension "org"
              :base-directory "./content"
+             :base-extension "org"
+             :auto-sitemap t
+             :sitemap-filename "articles.org"
+             :sitemap-style 'list
+             :sitemap-title "All Articles"
+             :sitemap-function 'dw/generate-sitemap
+             :sitemap-format-entry 'dw/sitemap-entry
              :publishing-function '(org-html-publish-to-html)
              :publishing-directory "./public"
              :with-timestamps t
