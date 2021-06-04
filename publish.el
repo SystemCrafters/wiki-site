@@ -254,13 +254,32 @@
      (when (and container (not (string= "" container)))
        (format "</%s>" (cl-subseq container 0 (cl-search " " container)))))))
 
+;;; Missing table handling for slimhtml
+(defun bk/org-minimal--table (_table contents _info)
+  "Wraps the table CONTENST in <table> tags"
+  (format "<table>%s</table>" contents))
+
+(defun bk/org-minimal--table-row (table-row contents _info)
+  "Wraps the table row's CONTENTS in <tr> tags.
+
+Note that any hline TABLE-ROW will be removed."
+  (when (eq (org-element-property :type table-row) 'standard)
+  (format "<tr>%s</tr>" contents)))
+
+(defun bk/org-minimal--table-cell (_table-cell contents _info)
+  "Wraps the table-cell's CONTENTS in <td> tags."
+  (format "<td>%s</td>" contents))
+
 (org-export-define-derived-backend 'site-html
     'slimhtml
   :translate-alist
   '((template . dw/org-html-template)
     (link . dw/org-html-link)
     (code . ox-slimhtml-verbatim)
-    (headline . dw/org-html-headline))
+    (headline . dw/org-html-headline)
+    (table . bk/org-minimal--table)
+    (table-row . bk/org-minimal--table-row)
+    (table-cell . bk/org-minimal--table-cell))
   :options-alist
   '((:page-type "PAGE-TYPE" nil nil t)
     (:html-use-infojs nil nil nil)))
