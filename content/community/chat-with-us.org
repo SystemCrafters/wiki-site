@@ -11,6 +11,17 @@ This is currently where the bulk of the community is hanging out. There are seve
 * IRC / Matrix bridge
 ** Internet Relay Chat (IRC)
 [[ircs://irc.libera.chat/systemcrafters][#systemcrafters]] channel is on the [[https://libera.chat][libera.chat]] irc server along with a lot of other FOSS software channels like [[ircs://irc.libera.chat/emacs][#emacs]], [[ircs://irc.libera.chat/guix][#guix]], etc.
+*** Join via ERC
+You can join the [[ircs://irc.libera.chat/systemcrafters][#systemcrafters]] channel from within Emacs. For a quick introduction, have a look at [[https://www.youtube.com/watch?v=qWHTZIYTA4s][Chat Like the 90's in Emacs with ERC]], but for the impatient, you can use the following sexp:
+
+#+begin_src emacs-lisp
+  (erc-tls :server "irc.libera.chat"
+                    :port 6697
+                    :nick   "YOUR-NICK"
+                    :full-name "YOUR-FULL-NAME")
+#+end_src
+
+After your initial connection, use =/join #systemcrafters= to join the systemcrafters channel. For more information, see the [[info:erc][ERC manual]] or the [[https://www.emacswiki.org/emacs/ERC][ERC page in the Emacs Wiki]].
 
 ** Matrix bridge
 Some may prefer to access the IRC channel using the [[https://en.wikipedia.org/wiki/Matrix_(protocol)][[matrix] protocol]] clients like [[https://element.io/][Element]]. Matrix bridges allow other protocols to be bridged with matrix. Matrix clients have an UX more similar to Discord and have some benefits like: it serves as a built-in bounce server (so you can see messages when you weren't online), it _supports_ /inline/ *markup* +or+ and ~code~ snippets, and the mobile app support is better. 
