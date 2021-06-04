@@ -8,7 +8,12 @@ This is a [[https://systemcrafters.cc/emacs-essentials/][series]] for true begin
 * Emacs from scratch
 This is a [[https://systemcrafters.cc/emacs-from-scratch/][series]] geared towards crafting your custom Emacs configuration. Out of the box configurations like [[https://github.com/hlissner/doom-emacs][doom]], [[https://www.spacemacs.org/][spacemacs]], and [[https://github.com/bbatsov/prelude][prelude]] are also good options to see how these "opinionated" setup the emacs environment so you can hack on your own setup more.
 
+* Emacs's help system
+
+Emacs is a self documented editor, meaning with couple of key presses, you can find user guides, description of commands, functions, variables and more. Head over the [[help-cheatsheet/][help cheatsheet]] to learn more about this awesome documentation system.
+
 * More Emacs Content
+
 There's a lot more content on the [[https://systemcrafters.cc/videos][Videos]] page.
 
 * Transitioning to Emacs

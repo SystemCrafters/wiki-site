@@ -1,0 +1,23 @@
+#+title: Help Cheatsheet
+
+* Hints to find what you are looking for
+
+Emacs is self documented, the code's documentation is searchable, accessible within emacs.
+
+- functions, commands, variables are usually prefixed by the mode name. For example, org-roam is the prefix for *org-roam*-db-build-cache command.
+- All these shortcuts present you with a minibuffer, or a selection prompt (ex: ivy, helm). The user experience really depends on your configuration.
+
+* Cheatsheet
+
+Here are the most helpful shortcuts to reach the Emacs help system:
+
+**  C-h i -- User guide for emacs and important modes (command: info)
+Also displays Linux tools [[https://en.wikipedia.org/wiki/Info_(Unix)][info pages]]
+** C-h r -- Emacs User Manual (command: info-emacs-manual)
+** C-h f -- show detailed information about functions and commands (command: describe-function)
+** C-h v -- variables detailed information (command: describe-variable)
+** C-h b -- describes the enabled key bindings with the functions/commands they call (command: describe-bindings)
+** C-h m -- describes the current major mode enabled with all enabled minor modes (command: describe-mode)
+ Also lists key bindings
+** C-h a -- Search documentation related to a command (command: apropos-command)
+** C-h d -- Search documentation for a specific keyword (command: apropos-documentation)
