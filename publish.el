@@ -254,6 +254,7 @@
      (when (and container (not (string= "" container)))
        (format "</%s>" (cl-subseq container 0 (cl-search " " container)))))))
 
+
 ;;; Missing table handling for slimhtml
 (defvar bk/org-minimal--table-classes '("table" "table-dark")
   "CSS classes that shall be used on exported tables in `bk/org-minimal--table'.
@@ -307,7 +308,7 @@ Note that any hline TABLE-ROW will be removed."
 (defun bk/org-minimal--table-cell (_table-cell contents _info)
   "Wraps the table-cell's CONTENTS in <td> tags."
   (format "<td>%s</td>" contents))
-
+
 (org-export-define-derived-backend 'site-html
     'slimhtml
   :translate-alist
