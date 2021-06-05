@@ -1,0 +1,27 @@
+name: Check
+on: [push]
+jobs:
+  Elisp-checks:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        check:
+          - load-file
+          - checkdoc
+    steps:
+      - uses: actions/checkout@v2
+      - uses: purcell/setup-emacs@master
+        with:
+          version: 27.2
+      - uses: leotaku/elisp-check@master
+        with:
+          check: ${{ matrix.check }}
+          file: publish.el
+  Check-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: purcell/setup-emacs@master
+        with:
+          version: 27.2
+      - run: ./local-build.sh
