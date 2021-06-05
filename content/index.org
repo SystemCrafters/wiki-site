@@ -1,6 +1,10 @@
 #+TITLE: Welcome to the System Crafters Wiki!
 
-This site is a collaborative effort by the System Crafters community to provide useful resources for system crafting with GNU Emacs, GNU Guix, and all other related tools.  There are also resources for how you can connect with other members of the community over Discord, Matrix, and IRC!
+This site is a collaborative effort by the System Crafters community
+to provide useful resources for system crafting with GNU Emacs, GNU
+Guix, and all other related tools.  There are also resources for how
+you can connect with other members of the community over Discord,
+Matrix, and IRC!
 
 * Topics
 
@@ -35,4 +39,7 @@ Guidelines for the System Crafters wiki.
 
 * Why not use [some other wiki]?
 
-We decided to make this a site instead of use GitHub wiki, Sourcehut man, or other sites so that we can more easily control the presentation and also provide this content in other offline forms.  We're open to suggestions too!
+We decided to make this a site instead of use GitHub wiki, Sourcehut
+man, or other sites so that we can more easily control the
+presentation and also provide this content in other offline forms.
+We're open to suggestions too!
