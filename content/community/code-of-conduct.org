@@ -1,1 +1,17 @@
 #+TITLE: Code of Conduct
+
+The System Crafters wiki's purpose is to provide extra resources for
+tools such as GNU Emacs and GNU Guix that might otherwise be difficult
+to understand. This is a community driven effort to organise the
+project and write articles.
+
+It is expected that those who contribute do so to improve the
+experience for all, and not to harm others. This may include
+disrespect, advertising, spamming, and other actions that do not
+benefit the wiki.
+
+Please ensure that you think through what you are doing before
+following through with it.
+
+Use the [[community/chat-with-us][community communication]] to improve your contribution and to
+collaborate with others, as well as the Git repositories.
