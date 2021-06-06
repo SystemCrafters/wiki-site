@@ -23,6 +23,8 @@ You can join the [[ircs://irc.libera.chat/systemcrafters][#systemcrafters]] chan
 
 After your initial connection, use =/join #systemcrafters= to join the systemcrafters channel. For more information, see the [[info:erc][ERC manual]] or the [[https://www.emacswiki.org/emacs/ERC][ERC page in the Emacs Wiki]].
 
+It's also a good idea to cloak your user (so your IP address is hidden from a ~whois~ query). You can do that by ~/join #libera-cloak~ and then sending the message ~!cloakme~. You only need to do it once for your NickServ account and it will cloak all your nicks anytime you connect.
+
 ** Matrix bridge
 Some may prefer to access the IRC channel using the [[https://en.wikipedia.org/wiki/Matrix_(protocol)][[matrix] protocol]] clients like [[https://element.io/][Element]]. Matrix bridges allow other protocols to be bridged with matrix. Matrix clients have an UX more similar to Discord and have some benefits like: it serves as a built-in bounce server (so you can see messages when you weren't online), it _supports_ /inline/ *markup* +or+ and ~code~ snippets, and the mobile app support is better. 
 There are a few different ways to achieve this:
@@ -32,6 +34,9 @@ You can join a room directly by adding ~#systemcrafters:irc.libera.chat~ to join
 
 *** Join as an IRC user
 In order to use Matrix you have to have a Matrix account but if once logged into the client (Element) you can invite @NickServ:libera.chat to a PM to register/identify your IRC nick. Then invite @appservice:libera.chat to a PM and ~!join #systemscrafters~. In order to save your username by issuing the ~!username~ command followed by the ~!storepass YourP@assw0rd~.
+
+It's also a good idea to cloak your user (so your IP address is hidden from a ~whois~ query). You can do that by sending ~!join #libera-cloak~ to @appservice:libera.chat and then sending the message ~!cloakme~. You only need to do it once for your NickServ account and it will cloak all your nicks anytime you connect.
+
 
 Follow libera.chat guidance on grouping your nicks under a single NickServ account if you plan on signing into IRC from Matrix and an IRC client simultaneously (https://libera.chat/guides/registration#registering).
 =NOTE= If you join as more than one sure please append an underscore to your secondary nick which should be the same as your primary nick. This will help everyone understand it's the same person in two different clients. Example: =daviwil= and =daviwil_=.
