@@ -254,22 +254,61 @@
      (when (and container (not (string= "" container)))
        (format "</%s>" (cl-subseq container 0 (cl-search " " container)))))))
 
+
 ;;; Missing table handling for slimhtml
-(defun bk/org-minimal--table (_table contents _info)
-  "Wraps the table CONTENST in <table> tags"
-  (format "<table>%s</table>" contents))
+(defvar bk/org-minimal--table-classes '("table" "table-dark")
+  "CSS classes that shall be used on exported tables in `bk/org-minimal--table'.
 
-(defun bk/org-minimal--table-row (table-row contents _info)
+As the default template uses a dark bootstrap, dark variants of
+any bootstrap class should be used. Valid values are:
+
+- table (MUST be used if any other bootstrap values are used)
+- table-light for light tables, cannot be active on a .table-dark table
+- table-dark  for dark tables, cannot be active on a .table-light table
+- table-striped for striped tables (can be combined with others)
+
+See also `bk/org-minimal--table-thead-classes'.")
+
+(defvar bk/org-minimal--table-thead-classes '("thead-dark")
+  "CSS classes that shall be used on exported table theads in `bk/org-minimal--table-row'.
+
+See also `bk/org-minimal--table-classes'.")
+
+(defun bk/org-minimal--table (_table contents _info)
+  "Wraps the table CONTENTS in <table> tags.
+
+Any classes set in `bk/org-minimal--table-classes' will be applied to the
+generated <table> tag."
+  (format "<table class=\"%s\">%s</table>"
+          (mapconcat #'identity bk/org-minimal--table-classes " ")
+          contents))
+
+(defun bk/org-minimal--table-row (table-row contents info)
   "Wraps the table row's CONTENTS in <tr> tags.
 
 Note that any hline TABLE-ROW will be removed."
   (when (eq (org-element-property :type table-row) 'standard)
-  (format "<tr>%s</tr>" contents)))
+    ;; This function is heavily inspired by `org-html-table-row', although it is somewhat simplified.
+    (let* ((group (org-export-table-row-group table-row info))
+	   ;; In order to have proper <thead> and <tbody> groups, we have to check whether
+	   ;; we're in the first group (see group above) and whether Org recognizes the first
+	   ;; row as a header (see `org-export-table-has-header-p' below).
+           (group-tags
+            (cond
+	     ((not (= 1 group)) '("<tbody>" . "</tbody>"))
+	     ((org-export-table-has-header-p (org-export-get-parent-table table-row) info)
+	      (cons (format "<thead class=\"%s\">" (mapconcat #'identity bk/org-minimal--table-thead-classes " "))
+		    "</thead>"))
+	     (t ('("<tbody>" . "</tbody>"))))))
+      ;; We only use the group-tags if we either start or stop a group.
+      (concat (and (org-export-table-row-starts-rowgroup-p table-row info) (car group-tags))
+              "<tr>" contents "</tr>"
+              (and (org-export-table-row-ends-rowgroup-p table-row info) (cdr group-tags))))))
 
 (defun bk/org-minimal--table-cell (_table-cell contents _info)
   "Wraps the table-cell's CONTENTS in <td> tags."
   (format "<td>%s</td>" contents))
-
+
 (org-export-define-derived-backend 'site-html
     'slimhtml
   :translate-alist
