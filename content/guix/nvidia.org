@@ -1,0 +1,190 @@
+#+TITLE: Proprietary NVIDIA drivers
+#+AUTHOR: Demis Balbach
+GNU Guix makes installing and using the proprietary nvidia drivers more difficult than one may be used to coming from other distributions. However, it is possible and this page tries to provide guidance in how to do so.
+
+* Installation
+** Using the channel
+  If using the ~nonguix~ channel, the ~nvidia-driver~ package, contains the proprietary drivers for GNU Guix. If you followed the [[/guix/nonguix-installation-guide][nonguix installation guide]] this should already be set up by default.
+  Otherwise you can create the file ~$HOME/.config/guix/channels.scm~ and add the following:
+
+  #+BEGIN_SRC scheme
+    (cons* (channel
+	    (name 'nonguix)
+	    (url "https://gitlab.com/nonguix/nonguix")
+	    ;; Enable signature verification:
+	    (introduction
+	     (make-channel-introduction
+	      "897c1a470da759236cc11798f4e0a5f7d4d59fbc"
+	      (openpgp-fingerprint
+	       "2A39 3FFF 68F4 EF7A 3D29  12AF 6F51 20A0 22FB B2D5"))))
+	   %default-channels)
+  #+END_SRC
+** The system configuration
+   Your system configuration is usually located at ~/etc/config.scm~. We need to add several lines of code to make your system load the drivers properly. Open the file to edit it and make sure you have write permissions.
+   *** Package definition
+   You need to the the nvidia package definition to your ~define-module~ function so Guix knows where to load it from
+   #+begin_src scheme
+     (define-module (your-module)
+       ;; ...
+       ;; some stuff here
+       ;; ...
+       #:use-module (nongnu packages nvidia))
+   #+end_src
+   *** Renaming for grafting
+   In order to have ~libglx~ working. The ~nvidia-driver~ package needs to be grafted instead of ~mesa~. It needs to be renamed to have the same number of characters as ~mesa~. More information can be found [[https://gitlab.com/nonguix/nonguix/-/issues/31#note_481501721][here]]. Add the following function:
+   #+begin_src scheme
+     (define transform
+       (options->transformation
+	'((with-graft . "mesa=nvda"))))
+   #+end_src
+   *** Operating System configuration
+   From here on everything metioned should be placed in your ~operating-system~ block:
+   #+begin_src scheme
+     (define-public base-operating-system
+       ;; ...
+       (operating-system
+	;; here!
+	...))
+   #+end_src
+   **** Kernel modules
+   You should blacklist the ~nouveau~ kernel module to avoid conflicts.
+   #+begin_src scheme
+     (kernel-arguments (append 
+			   '("modprobe.blacklist=nouveau")
+			   %default-kernel-arguments))
+   #+end_src
+   In addition, you should also load make sure the nvidia kernel module gets loaded.
+   #+begin_src scheme
+     (kernel-loadable-modules (list nvidia-driver))
+   #+end_src
+   **** Services
+   Now add two services. One for a custom udev rule and one to make sure the modules get loaded.
+   #+begin_src scheme
+     (services (cons* (simple-service 
+			  'custom-udev-rules udev-service-type 
+			  (list nvidia-driver))
+			 (service kernel-module-loader-service-type
+				  '("ipmi_devintf"
+				    "nvidia"
+				    "nvidia_modeset"
+				    "nvidia_uvm"))
+			 ...))
+   #+end_src
+** Login manager
+   The system configuration is now complete. However, you probably want to setup a login manager, right? No matter hat login manager you use, you need to list the nvidia-driver in the ~xorg-configuration~ block. Here is a minimal example using ~slim~:
+   #+begin_src scheme
+     (service slim-service-type
+	      (slim-configuration
+	       (xorg-configuration (xorg-configuration
+				    (modules (cons* nvidia-driver %default-xorg-modules))
+				    (server (transform xorg-server))
+				    (drivers '("nvidia"))))))
+   #+end_src
+   Please consult the manual for all possible ~xorg-configuration~ options.
+** Additional Xorg configuration
+   If you used to use special xorg configuration files (like ~/etc/X11/xorg.conf.d/10-nvidia.conf~) you can also add them in Guix. Add the following to your ~xorg-configuration~ function: ~(extra-config (list %xorg-config))~. You can rename ~%xorg-config~
+   to whatever you want. Just define the variable and add your configuration:
+   #+begin_src scheme
+     (define %xorg-config
+       "Section \"Device\"
+	   Identifier     \"Device0\"
+	   Driver         \"nvidia\"
+	   VendorName     \"NVIDIA Corporation\"
+	   BoardName      \"GeForce GTX 1050 Ti\"
+       EndSection")        
+   #+end_src
+   You can find examples for addition configuration in [[https://github.com/daviwil/dotfiles/blob/master/Systems.org][David's]] and [[https://github.com/minikN/guix/blob/main/base-system.scm#L37-L103][my]] config.
+* Reconfiguring the system
+  That's about it. The last thing you need to do is to reconfigure the system so your changes get applied. You need ~sudo~ in order to do that. You can use the following command making sure you replace ~<user>~ with your own user name:
+  #+begin_src sh
+    sudo -E guix time-machine --channels='/home/<user>/.config/guix/channels.scm' -- system --load-path="./" --cores=$(nproc) reconfigure /etc/config.scm
+  #+end_src
+
+* Screen tearing
+  After doing this, I noticed screen tearing when watching YouTube videos. I tried to remedy this issue in two ways.
+** Force full composition pipeline
+   Forcing a full composition pipeline can help to avoid screen tearing. You can consult the [[https://wiki.archlinux.org/title/NVIDIA/Troubleshooting#Avoid_screen_tearing][Arch Wiki]] if you want to know about it. To put it simple, you need to add the ~MetaModes~ option to your ~Section "Screen"~ block of your xorg configuration.
+   Like this:
+   #+begin_src conf
+     Section "Device"
+	     Identifier "Nvidia Card"
+	     Driver     "nvidia"
+	     VendorName "NVIDIA Corporation"
+	     BoardName  "GeForce GTX 1050 Ti"
+     EndSection
+
+     Section "Screen"
+	 Identifier     "Screen0"
+	 Device         "Device0"
+	 Monitor        "Monitor0"
+	 Option         "MetaModes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
+	 Option         "AllowIndirectGLXProtocol" "off"
+	 Option         "TripleBuffer" "on"
+     EndSection
+   #+end_src
+
+   However, the actual value of the option is dependent on your monitor setup. I explained this on the [[https://github.com/ch11ng/exwm/wiki#issues-with-screen-tearing][EXWM Wiki]] in greater detail.
+
+** Using a compositor
+   For me, enable a full composition pipeline has always worked. However on GNU Guix it didn't for some reason. Maybe it'll work for you? In any case, another way is to use a compositor like [[https://github.com/yshui/picom][picom]] (formely known as compton).
+   Now, there are multiple ways to set up a compositor. Personally, I want to use Emacs, more specifially EXWM as my window manager. Again, probably about a dozen ways of getting it to work. However, there is an [[https://guix.gnu.org/en/packages/emacs-exwm-0.24/][emacs-exwm]]
+   package. I wanted to use it. Unfortunately, I was not able to enable picom using this package. In addition, it still runs on Emacs 27.2, I'd rather use version 28 with native compilation. So I wrote my own package
+   definition inheriting from emacs-exwm which automatically starts picom and uses the native-compilation branch.
+
+   Feel free to use it. It requires you to have set up [[https://github.com/flatwhatson/guix-channel][flatwhatson]]'s guix channel
+   #+begin_src scheme
+     ;; Override emacs-exwm package definition
+     ;; To include emacs-native-comp and picom.
+     (define-public emacs-native-comp-exwm
+       (package
+	(inherit emacs-exwm)
+	(name "emacs-native-comp-exwm")
+	(synopsis "Emacs 28 with native compilation and picom as a compositor.")
+	(inputs
+	 `(("picom" ,picom)
+	   ,@(package-inputs emacs-exwm)))
+	(arguments
+	 `(,@(package-arguments emacs-exwm)
+	   #:emacs ,emacs-native-comp
+	   #:phases (modify-phases %standard-phases
+				   (add-after 'build 'install-xsession
+					      (lambda* (#:key inputs outputs #:allow-other-keys)
+						       (let* ((out (assoc-ref outputs "out"))
+							      (xsessions (string-append out "/share/xsessions"))
+							      (bin (string-append out "/bin"))
+							      (exwm-executable (string-append bin "/exwm")))
+
+							 ;; Add a .desktop file to xsessions
+							 (mkdir-p xsessions)
+							 (mkdir-p bin)
+							 (make-desktop-entry-file
+							  (string-append xsessions "/exwm.desktop")
+							  #:name ,name
+							  #:comment ,synopsis
+							  #:exec exwm-executable
+							  #:try-exec exwm-executable)
+
+							 ;; Add a shell wrapper to bin
+							 (with-output-to-file exwm-executable
+							   (lambda _
+							     (format #t "#!~a ~@
+											    ~a +SI:localuser:$USER ~@
+											    ~a &
+											    exec ~a --exit-with-session ~a \"$@\" --eval '~s' ~%"
+								     (string-append (assoc-ref inputs "bash") "/bin/sh")
+								     (string-append (assoc-ref inputs "xhost") "/bin/xhost")
+								     (string-append (assoc-ref inputs "picom") "/bin/picom")
+								     (string-append (assoc-ref inputs "dbus") "/bin/dbus-launch")
+								     (string-append (assoc-ref inputs "emacs") "/bin/emacs")
+								     '(cond
+								       ((file-exists-p "~/.exwm")
+									(load-file "~/.exwm"))
+								       ((not (featurep 'exwm))
+									(require 'exwm)
+									(require 'exwm-config)
+									(exwm-config-default)
+									(message (concat "exwm configuration not found. "
+											 "Falling back to default configuration...")))))))
+							 (chmod exwm-executable #o555)
+							 #t))))))))
+   #+end_src
