@@ -97,7 +97,7 @@ GNU Guix makes installing and using the proprietary nvidia drivers more difficul
 * Reconfiguring the system
   That's about it. The last thing you need to do is to reconfigure the system so your changes get applied. You need ~sudo~ in order to do that. You can use the following command making sure you replace ~<user>~ with your own user name:
   #+begin_src sh
-    sudo -E guix time-machine --channels='/home/<user>/.config/guix/channels.scm' -- system --load-path="./" --cores=$(nproc) reconfigure /etc/config.scm
+    sudo -E guix system --cores=$(nproc) -L /path/to/your/config.scm reconfigure
   #+end_src
 
 * Screen tearing
