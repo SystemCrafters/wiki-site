@@ -21,7 +21,7 @@ GNU Guix makes installing and using the proprietary nvidia drivers more difficul
   #+END_SRC
 ** The system configuration
    Your system configuration is usually located at ~/etc/config.scm~. We need to add several lines of code to make your system load the drivers properly. Open the file to edit it and make sure you have write permissions.
-   *** Package definition
+*** Package definition
    You need to the the nvidia package definition to your ~define-module~ function so Guix knows where to load it from
    #+begin_src scheme
      (define-module (your-module)
@@ -30,14 +30,14 @@ GNU Guix makes installing and using the proprietary nvidia drivers more difficul
        ;; ...
        #:use-module (nongnu packages nvidia))
    #+end_src
-   *** Renaming for grafting
+*** Renaming for grafting
    In order to have ~libglx~ working. The ~nvidia-driver~ package needs to be grafted instead of ~mesa~. It needs to be renamed to have the same number of characters as ~mesa~. More information can be found [[https://gitlab.com/nonguix/nonguix/-/issues/31#note_481501721][here]]. Add the following function:
    #+begin_src scheme
      (define transform
        (options->transformation
 	'((with-graft . "mesa=nvda"))))
    #+end_src
-   *** Operating System configuration
+*** Operating System configuration
    From here on everything metioned should be placed in your ~operating-system~ block:
    #+begin_src scheme
      (define-public base-operating-system
@@ -46,7 +46,7 @@ GNU Guix makes installing and using the proprietary nvidia drivers more difficul
 	;; here!
 	...))
    #+end_src
-   **** Kernel modules
+**** Kernel modules
    You should blacklist the ~nouveau~ kernel module to avoid conflicts.
    #+begin_src scheme
      (kernel-arguments (append 
@@ -57,7 +57,7 @@ GNU Guix makes installing and using the proprietary nvidia drivers more difficul
    #+begin_src scheme
      (kernel-loadable-modules (list nvidia-driver))
    #+end_src
-   **** Services
+**** Services
    Now add two services. One for a custom udev rule and one to make sure the modules get loaded.
    #+begin_src scheme
      (services (cons* (simple-service 
