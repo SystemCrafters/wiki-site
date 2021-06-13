@@ -1,0 +1,118 @@
+#+TITLE: ZNC Bouncer Server Setup
+
+An IRC bouncer server stays connected to IRC at all times on your behalf so that when you connect to it you can read all the messages that were sent to your channels while you were offline. This allows you to disconnect your client from the IRC server without losing context for the conversation or missing potentially relevant messages. When you reconnect, the ZNC bouncer server provides a replay of the conversation you missed while you were gone.
+
+Several members of the System Crafters community are running their own ZNC servers. Below is a tutorial for setting up a TLS/SSL enabled bouncer server using ZNC, Let's Encrypt, and CentOS. There has been some discussion about providing a multi-user server that members of the System Crafters community can use. Please contact =#systemcrafters= IRC users daviwil or nackjicholson if you would be interested in using a community bouncer server. The features of ZNC enable clearer and more fluid communication. We enjoy using IRC and want to know if a community ZNC bouncer server would be well utilized and beneficial for our communication.
+
+* External Resources
+
+- [[https://wiki.znc.in/ZNC][ZNC Wiki]]
+- [[https://wiki.znc.in/Signed_SSL_certificate#LetsEncrypt][ZNC Wiki - Signed SSL Certificate with Let's Encrypt]]
+- [[https://sgfault.com/2018/07/28/irc-bouncer-setup.html][Blog: Setting Up an IRC Bouncer]]
+- [[https://www.vultr.com/docs/installing-and-configuring-znc-on-centos-7][Blog: Vultr - Installing and Configuring ZNC on CentOS 7]]
+
+* Tutorial: ZNC with SSL/TLS on CentOS
+
+The following commands and configuration instructions will set up a secure ZNC server for personal use. You will need a CentOS 7 server or virtual machine, as well as a registered domain name. In the tutorial znc.example.org will be used as the target domain name, and the ZNC server will be configured to runn on port 6697.
+
+** Install
+
+#+begin_src
+$ sudo yum update
+$ sudo yum install certbot znc
+#+end_src
+
+** Firewall
+
+Opening necessary ports for certbot and ZNC.
+
+#+begin_src
+# firewall-cmd --zone=public --permanent --add-service=http
+# firewall-cmd --zone=public --permanent --add-service=https
+# firewall-cmd --add-port=6697/tcp
+# firewall-cmd --runtime-to-permanent
+#+end_src
+
+** Use a Let's Encrypt Certificate with ZNC
+
+Let's Encrypt is a service that enables people to use SSL encryption more easily on the internet. Signed and verified certificates can be acquired using a simple CLI tool called =certbot=. The certificates expire rather quickly, and this is why auto-renewal steps are also shown below.
+
+#+begin_src
+$ sudo certbot certonly --standalone --preferred-challenges http --http-01-port 80 -d znc.example.org
+#+end_src
+
+In order to work over SSL, ZNC expects a combined cert file =znc.pem= to be accessible to it in the znc home path =/var/lib/znc/.znc=.
+
+#+begin_src
+# cat /etc/letsencrypt/live/znc.example.org/{privkey,fullchain}.pem > znc.pem
+# mv znc.pem /var/lib/znc/.znc/
+chown znc:znc /var/lib/znc/.znc/znc.pem
+#+end_src
+
+Make a crontab and renewal script to automatically check Let's Encrypt for certificate updates, and trigger a change to =znc.pem= when certificates are renewed.
+
+#+begin_src
+# touch /etc/letsencrypt/renewal-hooks/deploy/update-znc.pem
+# chmod +x /etc/letsencrypt/renewal-hooks/deploy/update-znc.pem
+#+end_src
+
+Copy the following into the =update-znc.pem= file using a text editor i.e. =sudo vi /etc/letsencrypt/renewal-hooks/deploy/update-znc.pem=.
+
+#+begin_src bash :eval never
+#!/bin/bash
+YOURDOMAIN="znc.example.org"
+
+[[ $RENEWED_LINEAGE != "/etc/letsencrypt/live/$YOURDOMAIN" ]] && exit 0
+echo "Updating certs"
+cat /etc/letsencrypt/live/$YOURDOMAIN/{privkey,fullchain}.pem > /var/lib/znc/.znc/znc.pem
+#+end_src
+
+Add this to cron by running =crontab -e=. This will attempt renewal everyday at 3:15 AM, you can change this time to any time you like.
+
+#+begin_src
+15 3 * * * /usr/bin/certbot renew --quiet
+#+end_src
+
+Running ZNC.
+
+#+begin_src
+$ sudo -u znc znc --makeconf
+#+end_src
+
+Fill in the subsequent prompts with details that make sense for yourself.
+
+#+begin_src
+[ ?? ] Username (alphanumeric): willvaughn
+[ ?? ] Enter password:
+[ ?? ] Confirm password:
+[ ?? ] Nick [willvaughn]: nackjicholson
+[ ?? ] Alternate nick [nackjicholson_]:
+[ ?? ] Ident [willvaughn]: nackjicholson
+[ ?? ] Real name (optional): William Vaughn
+[ ?? ] Bind host (optional):
+[ ** ] Enabled user modules [chansaver, controlpanel]
+[ ** ]
+[ ?? ] Set up a network? (yes/no) [yes]:
+[ ** ]
+[ ** ] -- Network settings --
+[ ** ]
+[ ?? ] Name [freenode]: libera
+[ ?? ] Server host (host only): irc.libera.chat
+[ ?? ] Server uses SSL? (yes/no) [no]: yes
+[ ?? ] Server port (1 to 65535) [6697]: 6697
+[ ?? ] Server password (probably empty):
+[ ?? ] Initial channels:
+#+end_src
+
+Run the ZNC systemd service.
+
+#+begin_src
+$ sudo systemctl start znc
+$ sudo systemctl enable znc
+#+end_src
+
+You should now be to visit znc.example.com:6697 to use the ZNC web frontend. You can also connect to ZNC using =erc-tls=. If your browser blocks the 6697 port, read up on configuring settings to work around that on the znc wiki [[https://wiki.znc.in/FAQ#How_can_I_access_webadmin_with_my_browser.3F][here]].
+
+#+begin_src emacs-lisp :eval never
+(erc-tls :server "znc.example.org" :port 6697 :nick "nackjicholson" :password "willvaughn/libera:<my-znc-user-password>")
+#+end_src
