@@ -307,7 +307,6 @@ Note that any hline TABLE-ROW will be removed."
 
 (defun bk/org-minimal--table-cell (_table-cell contents _info)
   "Wraps the table-cell's CONTENTS in <td> tags."
-  ;;(format "<td>%s</td>" contents))
   (format "<td>%s</td>" (if contents contents "")))
 
 (org-export-define-derived-backend 'site-html
