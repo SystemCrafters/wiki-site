@@ -13,7 +13,7 @@ Several members of the System Crafters community are running their own ZNC serve
 
 * Tutorial: ZNC with SSL/TLS on CentOS
 
-The following commands and configuration instructions will set up a secure ZNC server for personal use. You will need a CentOS 7 server or virtual machine, as well as a registered domain name. In the tutorial znc.example.org will be used as the target domain name, and the ZNC server will be configured to runn on port 6697.
+The following commands and configuration instructions will set up a secure ZNC server for personal use. You will need a CentOS 7 server or virtual machine, as well as a registered domain name. In the tutorial znc.example.org will be used as the target domain name, and the ZNC server will be configured to run on port 6697.
 
 ** Install
 
@@ -111,7 +111,7 @@ $ sudo systemctl start znc
 $ sudo systemctl enable znc
 #+end_src
 
-You should now be to visit znc.example.com:6697 to use the ZNC web frontend. You can also connect to ZNC using =erc-tls=. If your browser blocks the 6697 port, read up on configuring settings to work around that on the znc wiki [[https://wiki.znc.in/FAQ#How_can_I_access_webadmin_with_my_browser.3F][here]].
+You should now be able to visit znc.example.com:6697 to use the ZNC web frontend. You can also connect to ZNC using =erc-tls=. If your browser blocks the 6697 port, read up on configuring settings to work around that on the znc wiki [[https://wiki.znc.in/FAQ#How_can_I_access_webadmin_with_my_browser.3F][here]].
 
 #+begin_src emacs-lisp :eval never
 (erc-tls :server "znc.example.org" :port 6697 :nick "nackjicholson" :password "willvaughn/libera:<my-znc-user-password>")
