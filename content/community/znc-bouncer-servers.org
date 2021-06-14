@@ -17,7 +17,7 @@ The following commands and configuration instructions will set up a secure ZNC s
 
 ** Install
 
-#+begin_src
+#+begin_src sh :eval never
 $ sudo yum update
 $ sudo yum install certbot znc
 #+end_src
@@ -26,34 +26,34 @@ $ sudo yum install certbot znc
 
 Opening necessary ports for certbot and ZNC.
 
-#+begin_src
-# firewall-cmd --zone=public --permanent --add-service=http
-# firewall-cmd --zone=public --permanent --add-service=https
-# firewall-cmd --add-port=6697/tcp
-# firewall-cmd --runtime-to-permanent
+#+begin_src sh :eval never
+$ sudo firewall-cmd --zone=public --permanent --add-service=http
+$ sudo firewall-cmd --zone=public --permanent --add-service=https
+$ sudo firewall-cmd --add-port=6697/tcp
+$ sudo firewall-cmd --runtime-to-permanent
 #+end_src
 
 ** Use a Let's Encrypt Certificate with ZNC
 
 Let's Encrypt is a service that enables people to use SSL encryption more easily on the internet. Signed and verified certificates can be acquired using a simple CLI tool called =certbot=. The certificates expire rather quickly, and this is why auto-renewal steps are also shown below.
 
-#+begin_src
+#+begin_src sh :eval never
 $ sudo certbot certonly --standalone --preferred-challenges http --http-01-port 80 -d znc.example.org
 #+end_src
 
 In order to work over SSL, ZNC expects a combined cert file =znc.pem= to be accessible to it in the znc home path =/var/lib/znc/.znc=.
 
-#+begin_src
-# cat /etc/letsencrypt/live/znc.example.org/{privkey,fullchain}.pem > znc.pem
-# mv znc.pem /var/lib/znc/.znc/
-chown znc:znc /var/lib/znc/.znc/znc.pem
+#+begin_src sh :eval never
+$ sudo cat /etc/letsencrypt/live/znc.example.org/{privkey,fullchain}.pem > znc.pem
+$ sudo mv znc.pem /var/lib/znc/.znc/
+$ sudo chown znc:znc /var/lib/znc/.znc/znc.pem
 #+end_src
 
 Make a crontab and renewal script to automatically check Let's Encrypt for certificate updates, and trigger a change to =znc.pem= when certificates are renewed.
 
-#+begin_src
-# touch /etc/letsencrypt/renewal-hooks/deploy/update-znc.pem
-# chmod +x /etc/letsencrypt/renewal-hooks/deploy/update-znc.pem
+#+begin_src sh :eval never
+$ sudo touch /etc/letsencrypt/renewal-hooks/deploy/update-znc.pem
+$ sudo chmod +x /etc/letsencrypt/renewal-hooks/deploy/update-znc.pem
 #+end_src
 
 Copy the following into the =update-znc.pem= file using a text editor i.e. =sudo vi /etc/letsencrypt/renewal-hooks/deploy/update-znc.pem=.
@@ -75,7 +75,7 @@ Add this to cron by running =crontab -e=. This will attempt renewal everyday at 
 
 Running ZNC.
 
-#+begin_src
+#+begin_src sh :eval never
 $ sudo -u znc znc --makeconf
 #+end_src
 
@@ -106,7 +106,7 @@ Fill in the subsequent prompts with details that make sense for yourself.
 
 Run the ZNC systemd service.
 
-#+begin_src
+#+begin_src sh :eval never
 $ sudo systemctl start znc
 $ sudo systemctl enable znc
 #+end_src
