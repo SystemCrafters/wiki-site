@@ -11,7 +11,7 @@ GNU Guix makes installing and using the proprietary NVIDIA drivers more difficul
    Your system configuration is usually located at ~/etc/config.scm~. We need to add several lines of code to make your system load the drivers properly. Open the file to edit it, and make sure you have write permissions.
    
 *** Package definition
-   You need to the the nvidia package definition to your ~define-module~ function so Guix knows where to load it from:
+   You need to add the nvidia package definition to your ~define-module~ function so Guix knows where to load it from:
    
    #+begin_src scheme
      (define-module (your-module)
@@ -50,14 +50,14 @@ GNU Guix makes installing and using the proprietary NVIDIA drivers more difficul
 			   %default-kernel-arguments))
    #+end_src
    
-   In addition, you should also load make sure the nvidia kernel module gets loaded.
+   In addition, you should also add ~nvidia-driver~ to the loadable kernel modules:
    
    #+begin_src scheme
      (kernel-loadable-modules (list nvidia-driver))
    #+end_src
    
 **** Services
-   Now add two services. One for a custom udev rule and one to make sure the modules get loaded.
+   Now add two services. One for a custom udev rule and one to make sure the modules get loaded:
    
    #+begin_src scheme
      (services (cons* (simple-service 
@@ -72,7 +72,7 @@ GNU Guix makes installing and using the proprietary NVIDIA drivers more difficul
    #+end_src
    
 ** Login manager
-   The system configuration is now complete. However, you probably want to setup a login manager, right? No matter what login manager you use, you need to list the ~nvidia-driver~ in the ~xorg-configuration~ block. Here is a minimal example using ~slim~:
+   The system configuration is now complete. However, you probably want to setup a login manager. No matter what login manager you use, you need to list the ~nvidia-driver~ in the ~xorg-configuration~ block. Here is a minimal example using ~slim~:
    
    #+begin_src scheme
      (service slim-service-type
@@ -102,7 +102,7 @@ GNU Guix makes installing and using the proprietary NVIDIA drivers more difficul
    You can find examples for additional configurations in [[https://github.com/daviwil/dotfiles/blob/master/Systems.org][David's]] and [[https://github.com/minikN/guix/blob/main/base-system.scm#L37-L103][minikN's]] config.
    
 * Reconfiguring the system
-  That's about it. The last thing you need to do is to reconfigure the system so your changes get applied. You need ~sudo~ in order to do that. You can use the following command making sure you replace ~<user>~ with your own user name:
+  That's about it. The last thing you need to do is to reconfigure the system so your changes get applied. You need ~sudo~ in order to do that. You can use the following command:
   
   #+begin_src sh
     sudo -E guix system --cores=$(nproc) -L /path/to/your/config.scm reconfigure
@@ -112,7 +112,7 @@ GNU Guix makes installing and using the proprietary NVIDIA drivers more difficul
   After doing this, One may notice screen tearing when watching YouTube videos. To remedy this issue one has two options.
   
 ** Force full composition pipeline
-   Forcing a full composition pipeline can help to avoid screen tearing. You can consult the [[https://wiki.archlinux.org/title/NVIDIA/Troubleshooting#Avoid_screen_tearing][Arch Wiki]] if you want to know about it. To put it simple, you need to add the ~MetaModes~ option to your ~Section "Screen"~ block of your xorg configuration.
+   Forcing a full composition pipeline can help to avoid screen tearing. You can consult the [[https://wiki.archlinux.org/title/NVIDIA/Troubleshooting#Avoid_screen_tearing][Arch Wiki]] if you want to know about it. To put it simple, you need to add the ~MetaModes~ option to your screen ~Section~ block of your xorg configuration.
    Like this:
    
    #+begin_src conf
@@ -136,12 +136,11 @@ GNU Guix makes installing and using the proprietary NVIDIA drivers more difficul
    However, the actual value of the option is dependent on your monitor setup. This was explained on the [[https://github.com/ch11ng/exwm/wiki#issues-with-screen-tearing][EXWM Wiki]] in greater detail.
 
 ** Using a compositor
-   Generally, enabling the full composition pipeline works to get rid of screen tearing. However on GNU Guix it didn't for some reason. Maybe it'll work for you? In any case, another way is to use a compositor like [[https://github.com/yshui/picom][picom]] (formely known as compton).
-   Now, there are multiple ways to set up a compositor. Personally, I want to use Emacs, more specifially EXWM as my window manager. Again, probably about a dozen ways of getting it to work. However, there is an [[https://guix.gnu.org/en/packages/emacs-exwm-0.24/][emacs-exwm]]
-   package. I wanted to use it. Unfortunately, I was not able to enable picom using this package. In addition, it still runs on Emacs 27.2, I'd rather use version 28 with native compilation. So I wrote my own package
-   definition inheriting from emacs-exwm which automatically starts picom and uses the native-compilation branch.
-
-   Feel free to use it. It requires you to have set up [[https://github.com/flatwhatson/guix-channel][flatwhatson]]'s guix channel
+   Generally, enabling the full composition pipeline works to get rid of screen tearing. However on GNU Guix it didn't for some reason. Maybe it'll work for you? In any case, another way is to use a compositor like [[https://github.com/yshui/picom][picom]] (formely known as compton). There are multiple ways to set up a compositor.
+   
+*** Using EXWM
+This example shows how to use ~picom~ with EXWM as a window manager. There is an [[https://guix.gnu.org/en/packages/emacs-exwm-0.24/][emacs-exwm]]
+   package. Unfortunately, one can not easily configure it to load ~picom~ as well. In addition, it still runs on Emacs 27.2, it could be benefitial to change to version 28 featuring native compilation. This package definition inheriting from emacs-exwm automatically starts picom and uses the native-compilation branch. Feel free to use it. It requires you to have set up [[https://github.com/flatwhatson/guix-channel][flatwhatson]]'s guix channel: 
    
    #+begin_src scheme
      ;; Override emacs-exwm package definition
