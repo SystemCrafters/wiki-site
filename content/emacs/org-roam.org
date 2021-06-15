@@ -45,6 +45,19 @@ Renaming titles within your note has an impact to the search. Make sure the inde
 
 Without the note properly indexed, the changes will not be visible in the org-roam-find-file command.
 
+
+** Want different colors for org-roam links vs other links?
+
+To get some visual queue about regular links vs org-roam links, you can set a different color for org-roam links like here:
+
+#+begin_src emacs-lisp :noeval
+(custom-set-faces
+  '((org-roam-link org-roam-link-current)
+    :foreground "#e24888" :underline t))
+#+end_src
+
+/contributed by nackjicholson on IRC/
+
 ** Please contribute your own hints and tricks
 
 What else do you know about org-roam that can be useful to all?
