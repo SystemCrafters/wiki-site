@@ -1,0 +1,50 @@
+#+TITLE: Org Roam
+
+* What is it?
+
+[[https://www.orgroam.com/manual.html#Introduction][Org-roam]] is a solution, built on org-mode, to capture notes in a non-hierarchical way.
+
+Notes can relate to each other, creating a web of relations. It helps you implement a digital [[https://en.wikipedia.org/wiki/Zettelkasten][Zettelkasten]] slip box of notes.
+
+* What can you use it for
+
+With org-roam, you can create your own wiki, powered by Emacs, org-mode features.
+
+Org-roam helps you search, link to other notes, and also has a graphical view (using graphviz) of the relations between your notes.
+
+* Getting started
+
+Have a look at the Org-roam [[https://www.orgroam.com/manual.html#Getting-Started][Getting Started]] page.
+
+The main actions you will perform:
+ 1. create new notes (uses org-roam's own [[https://www.orgroam.com/manual.html#The-Templating-System][org-capture templates]]). Command org-roam-find-file on a new title.
+ 2. search notes by name / tags. Command org-roam-find-file
+ 3. create links to existing notes (manually, or using auto [[https://www.orgroam.com/manual.html#Completions][completion]] frameworks)
+ 4. use any features of org mode you like (tables, source code block, bibliography, etc..)
+
+* Hints
+
+** You can't find your notes, or they are not named properly
+
+Org-roam indexes your notes, and it's possible that the index was not created yet, or is out of sync.
+
+You can solve this problem in couple of ways:
+ 1. make sure you followed the getting started steps to setup indexing, the after-init-hook and the update method
+ 2. If your configuration is correct, but you still have an issue
+    1. you have a wrongly named entry in your search, clear and rebuild your cache with the following commands (M-x):
+       #+begin_src
+       org-roam-db-clear-cache
+       org-roam-db-build-cache
+       #+end_src
+    2. you are missing some entry, build the cache manually with the following command (M-x):
+       `org-roam-db-build-cache`
+
+** Renaming notes
+
+Renaming titles within your note has an impact to the search. Make sure the index has the original name before changing a title. This is usually done by saving your note (C-c C-c, and possibly C-x C-s).
+
+Without the note properly indexed, the changes will not be visible in the org-roam-find-file command.
+
+** Please contribute your own hints and tricks
+
+What else do you know about org-roam that can be useful to all?
