@@ -119,6 +119,6 @@ You should now be able to visit znc.example.com:6697 to use the ZNC web frontend
 * Tips, Tricks, and Troubleshooting
 Please add your own timps and tricks by editing the wiki.
 
-** Stuck on Alt. Name, switch back to main Nick
+** Fixing your nick
 
-Occassionally, the ZNC server may log you in as your alt. name. Usually that will mean that your name will have a trailing =_= on it. If you get stuck like that and it's not because your main nick is also logged in on another client, there is a trick to switching back to the main nick. By typing ~/nick <your-desired-name>~ in your client you can trigger the ZNC server to configure a different nickname for this session. Then quitting and reconnecting should use the changed nickname that is configured.
+Occasionally, the ZNC server may log you in as your alternate name. Usually that will mean that your name will have a trailing =_= on it. If you get stuck like that and it's not because your main nick is also logged in on another client, there is a trick to switching back to the main nick. By typing ~/nick <your-desired-name>~ in your client you can trigger the ZNC server to configure a different nickname for this session. Then quitting and reconnecting should use the changed nickname that is configured.
