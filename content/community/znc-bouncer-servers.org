@@ -67,7 +67,7 @@ echo "Updating certs"
 cat /etc/letsencrypt/live/$YOURDOMAIN/{privkey,fullchain}.pem > /var/lib/znc/.znc/znc.pem
 #+end_src
 
-Add this to cron by running ~crontab -e~. This will attempt renewal everyday at 3:15 AM, you can change this time to any time you like.
+Add this to cron by running ~crontab -e~. This will attempt renewal everyday at 3:15 a.m. you can change this time to any time you like.
 
 #+begin_src
 15 3 * * * /usr/bin/certbot renew --quiet
