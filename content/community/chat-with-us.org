@@ -25,6 +25,8 @@ After your initial connection, use =/join #systemcrafters= to join the systemcra
 
 It's also a good idea to cloak your user (so your IP address is hidden from a ~whois~ query). You can do that by ~/join #libera-cloak~ and then sending the message ~!cloakme~. You only need to do it once for your NickServ account and it will cloak all your nicks anytime you connect.
 
+IRC chatting is simple, stable, hackable, and craftable, but because it's an old protocol with roots all the way back to the beginnings of the world wide web it comes with some limitations. One such limitation is that you have to be online to read messages. To learn more about configuring and using a ZNC bouncer server to stay connected and up to date with messages, see [[../znc-bouncer-servers/][ZNC Bouncer Server Setup]].
+
 ** Matrix bridge
 Some may prefer to access the IRC channel using the [[https://en.wikipedia.org/wiki/Matrix_(protocol)][[matrix] protocol]] clients like [[https://element.io/][Element]]. Matrix bridges allow other protocols to be bridged with matrix. Matrix clients have an UX more similar to Discord and have some benefits like: it serves as a built-in bounce server (so you can see messages when you weren't online), it _supports_ /inline/ *markup* +or+ and ~code~ snippets, and the mobile app support is better. 
 There are a few different ways to achieve this:
