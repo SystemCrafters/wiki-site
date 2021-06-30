@@ -16,8 +16,16 @@ Emacs is a self documented editor, meaning with couple of key presses, you can f
 
 There's a lot more content on the [[https://systemcrafters.cc/videos][Videos]] page.
 
+* Emacs and org-mode
+org-mode is an outline markup format that helps you take notes, manage and schedule your TODOs, and a lot more.
+
+Here are some useful related packages:
+- [[org-roam/][org-roam]]: A plain-text personal knowledge management system
+- deft: Deft is an Emacs mode for quickly browsing, filtering, and editing directories of plain text notes, inspired by Notational Velocity
+- org-super-agenda: This package lets you “supercharge” your Org daily/weekly agenda. The idea is to group items into sections, rather than having them all in one big list
+
 * Transitioning to Emacs
-There is a good possibility that there is an overlap between the Emacs-curious and keyboard shortcut users. However, the Emacs keybidings are quite different than the Common User Access (CUA) that a lot of users are familiar with. Here's a quick snippet of configuration that provides a more familiar way to start exploring emacs:
+There is a good possibility that there is an overlap between the Emacs-curious and keyboard shortcut users. However, the Emacs keybidings are quite different than the Common User Access (CUA) that a lot of users are familiar with. Here's a quick snippet of configuration that provides a more familiar way to start exploring Emacs:
 #+begin_src elisp
 ;; CUA type customizations and conveniences=====================================
 ;; Simpleclip to access system clipboard
