@@ -59,8 +59,10 @@
 (use-package esxml
   :ensure t)
 
+;;; temp fix to ox-slimhtml no longer being available on melpa
+(add-to-list 'load-path ".packages/ox-slimhtml")
 (use-package ox-slimhtml
-  :ensure t)
+  :ensure nil)
 
 (use-package ox-gemini
   :ensure t)
