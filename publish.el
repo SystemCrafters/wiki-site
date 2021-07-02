@@ -59,8 +59,8 @@
 (use-package esxml
   :ensure t)
 
-(use-package ox-slimhtml
-  :ensure t)
+;; Unfortunately this is necessary for now...
+(load-file "./ox-slimhtml.el")
 
 (use-package ox-gemini
   :ensure t)
