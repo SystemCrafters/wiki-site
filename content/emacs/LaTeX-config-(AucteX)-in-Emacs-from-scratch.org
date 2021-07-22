@@ -1,0 +1,357 @@
+#+startup: overview
+** Packages and config
+*** straight
+#+begin_src emacs-lisp
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(straight-use-package 'use-package)
+(setq straight-use-package-by-default t)
+#+end_src
+
+*** evil
+
+#+begin_src emacs-lisp
+    (use-package evil
+      :init
+      (setq evil-toggle-key "C-<f1>")
+      (setq evil-shift-width 2)
+      (setq evil-want-integration t)
+      (setq evil-want-keybinding nil)
+      :config
+      (evil-mode 1)
+
+      ;; Use visual line motions even outside of visual-line-mode buffers
+      (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+      (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+
+      (evil-set-initial-state 'dired-mode 'emacs)
+      (evil-set-initial-state 'pdf-view-mode 'emacs)
+      (evil-set-initial-state 'messages-buffer-mode 'emacs)
+    )
+
+  (use-package evil-nerd-commenter
+    :bind ("M-/" . evilnc-comment-or-uncomment-lines))
+
+#+end_src
+*** counsel, ivy setting
+#+begin_src emacs-lisp
+    (use-package counsel
+      :diminish ivy-mode
+      :diminish counsel-mode
+      :bind (("C-s" . swiper)
+           :map ivy-minibuffer-map
+           ("TAB" . ivy-alt-done))
+      :init
+      (ivy-mode 1)
+      (counsel-mode 1)
+      :config
+      (setq ivy-use-virtual-buffers t)
+      (setq enable-recursive-minibuffers t))
+
+    (use-package prescient
+      :diminish
+      :config
+      ;; (prescient-persist-mode)
+  )
+
+
+    (use-package ivy-prescient
+      :after counsel
+      :init
+      (ivy-prescient-mode)
+      (prescient-persist-mode)
+      )
+#+end_src
+*** company
+
+#+begin_src emacs-lisp
+(use-package company
+  :straight (company :files (:defaults "icons"))
+  :diminish company-mode
+  :bind (:map company-active-map
+          ("<tab>" . nil)
+          ("TAB" . nil))
+  :custom
+  (company-minimum-prefix-length 2)
+  (company-idle-delay 0.01)
+  :config
+ )
+
+(use-package company-prescient
+    :after company
+    :config
+    (company-prescient-mode 1)
+    (prescient-persist-mode)
+  )
+#+end_src
+
+*** magit, which key
+#+begin_src emacs-lisp
+    (use-package which-key
+      ;; :ensure t
+      :diminish which-key-mode
+      :config
+         (which-key-mode))
+
+    ; magit
+    (use-package magit
+      ;; :ensure t
+      :defer t
+      :bind ("C-x g" . magit-status))
+#+end_src
+*** pdf-tools
+#+begin_src emacs-lisp
+    (use-package pdf-tools
+      :magic ("%PDF" . pdf-view-mode)
+      :config
+      (pdf-tools-install)
+      (setq-default pdf-view-display-size 'fit-page)
+      )
+
+#+end_src
+
+*** Custom functions
+#+begin_src emacs-lisp
+
+(defun try/TeX-command-save-buffer-and-run-all ()
+    "Save the buffer and run TeX-command-run-all"
+    (interactive)
+    (let (TeX-save-query) (TeX-save-document (TeX-master-file)))
+    (TeX-command-run-all nil))
+
+;; copied ivy-bibtex and modified it to cite action
+(defun try/ivy-bibtex-cite (&optional arg local-bib)
+  "Search BibTeX entries using ivy.
+
+With a prefix ARG the cache is invalidated and the bibliography
+reread.
+
+If LOCAL-BIB is non-nil, display that the BibTeX entries are read
+from the local bibliography.  This is set internally by
+`ivy-bibtex-with-local-bibliography'."
+  (interactive "P")
+  (when arg
+    (bibtex-completion-clear-cache))
+  (bibtex-completion-init)
+  (let* ((candidates (bibtex-completion-candidates))
+          (key (bibtex-completion-key-at-point))
+          (preselect (and key
+                          (cl-position-if (lambda (cand)
+                                            (member (cons "=key=" key)
+                                                    (cdr cand)))
+                                          candidates))))
+    (ivy-read (format "Insert citation %s: " (if local-bib " (local)" ""))
+              candidates
+              :preselect preselect
+              :caller 'ivy-bibtex
+              :history 'ivy-bibtex-history
+              :action 'ivy-bibtex-insert-citation)))
+
+(defun try/latex-mode-setup ()
+  (require 'company-reftex)
+        (turn-on-reftex)
+        (require 'company-auctex)
+        (require 'company-math)
+(setq-local company-backends
+      
+    (append '(
+                              (company-reftex-labels
+                                company-reftex-citations)
+              (company-math-symbols-unicode company-math-symbols-latex company-latex-commands)
+              (company-auctex-macros company-auctex-symbols company-auctex-environments)
+              company-ispell
+              )
+            company-backends)))
+
+
+(defun try/counsel-insert-file-path ()
+  "Insert relative file path using counsel minibuffer"
+  (interactive)
+  (unless (featurep 'counsel) (require 'counsel))
+  (ivy-read "Insert filename: " 'read-file-name-internal
+            :matcher #'counsel--find-file-matcher
+            :action
+            (lambda (x)
+              (insert (file-relative-name x)))))
+
+#+end_src
+
+*** Olivetti
+#+begin_src emacs-lisp
+(use-package olivetti
+:diminish
+:hook (text-mode . olivetti-mode)
+:config
+(setq olivetti-body-width 100)
+)
+#+end_src
+
+*** latex 
+**** folding/unfolding like org-mode
+Enable folding and unfolding sections just like org-mode (using ~TAB~) using [[https://github.com/alphapapa/outshine/issues/85][outshine]]
+
+Check ~outshine-cycle~ for more options.
+#+begin_src emacs-lisp
+(use-package outshine
+  :config
+(setq LaTeX-section-list '(
+                           ("part" 0)
+                           ("chapter" 1)
+                           ("section" 2)
+                           ("subsection" 3)
+                           ("subsubsection" 4)
+                           ("paragraph" 5)
+                           ("subparagraph" 6)
+                           ("begin" 7)
+                           )
+      )
+(add-hook 'LaTeX-mode-hook #'(lambda ()
+                               (outshine-mode 1)
+                               (setq outline-level #'LaTeX-outline-level)
+                               (setq outline-regexp (LaTeX-outline-regexp t))
+                               (setq outline-heading-alist
+                                     (mapcar (lambda (x)
+                                               (cons (concat "\\" (nth 0 x)) (nth 1 x)))
+                                             LaTeX-section-list))))
+
+  )
+
+    (general-define-key
+      :states '(normal visual)
+      :keymaps 'LaTeX-mode-map
+      "TAB"  '(outshine-cycle :which-key "outshine-cycle")
+  )
+#+end_src
+**** auctex
+[[https://people.umass.edu/weikaichen/post/emacs-academic-tools/][source: blog]]
+#+begin_src emacs-lisp
+
+      ;; latexmk
+      (use-package auctex-latexmk)
+      ;; company
+      (use-package company-math)
+      (use-package company-auctex)
+(use-package company-reftex)
+
+
+      ;;  use cdlatex
+      (use-package cdlatex)
+
+      ;; https://gist.github.com/saevarb/367d3266b3f302ecc896
+      ;; https://piotr.is/2010/emacs-as-the-ultimate-latex-editor/
+
+      (use-package latex
+        :straight auctex
+        :defer t
+        :custom
+        (olivetti-body-width 100)
+        (cdlatex-simplify-sub-super-scripts nil)
+        (reftex-default-bibliography
+              '("~/ref.bib"))
+        (bibtex-dialect 'biblatex)
+        :mode
+          ("\\.tex\\'" . latex-mode)
+        :bind (:map LaTeX-mode-map
+                  ("C-c C-e" . cdlatex-environment)
+              )
+        :hook
+          (LaTeX-mode . olivetti-mode)
+          (LaTeX-mode . TeX-PDF-mode)
+          (LaTeX-mode . company-mode)
+          (LaTeX-mode . flyspell-mode)
+          (LaTeX-mode . flycheck-mode)
+          (LaTeX-mode . LaTeX-math-mode)
+          (LaTeX-mode . turn-on-reftex)
+          (LaTeX-mode . TeX-source-correlate-mode)
+          (LaTeX-mode . try/latex-mode-setup)
+          (LaTeX-mode . turn-on-cdlatex)
+
+        :config
+          (setq TeX-auto-save t)
+          (setq TeX-parse-self t)
+          (setq-default TeX-master nil)
+          (setq TeX-save-query nil)
+
+          (setq reftex-plug-into-AUCTeX t)
+
+          ;; pdftools
+          ;; https://emacs.stackexchange.com/questions/21755/use-pdfview-as-default-auctex-pdf-viewer#21764
+          (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+              TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
+              TeX-source-correlate-start-server t) ;; not sure if last line is neccessary
+          ;; to have the buffer refresh after compilation,
+          ;; very important so that PDFView refesh itself after comilation
+          (add-hook 'TeX-after-compilation-finished-functions
+                      #'TeX-revert-document-buffer)
+
+          ;; latexmk
+          (require 'auctex-latexmk)
+          (auctex-latexmk-setup)
+          (setq auctex-latexmk-inherit-TeX-PDF-mode t)
+      )
+      #+end_src
+
+**** ivy-bibtex
+
+#+begin_src emacs-lisp
+
+    (use-package ivy-bibtex
+      :custom
+      (bibtex-completion-bibliography
+            '("~/ref.bib"))
+      (bibtex-completion-library-path '("~/papers"))
+      (bibtex-completion-cite-prompt-for-optional-arguments nil)
+      (bibtex-completion-cite-default-as-initial-input t)
+    )
+
+#+end_src
+**** org-ref
+
+#+begin_src emacs-lisp
+      (use-package org-ref
+      :custom
+      (org-ref-default-bibliography "~/ref.bib")
+      (org-ref-pdf-directory "~/papers")
+      (org-ref-completion-library 'org-ref-ivy-cite)
+      :config
+      (require 'org-ref-wos)
+      (require 'doi-utils)
+      )
+#+end_src
+
+** Keybinding
+Use ~SPC~ has leader key (in evil normal mode) for local latex mode keybindings
+#+begin_src emacs-lisp
+
+(use-package general
+  :config
+  (general-evil-setup t))
+
+  (general-define-key
+    :states '(normal visual)
+    :keymaps 'LaTeX-mode-map
+    :prefix "SPC"
+      "f"  '(LaTeX-fill-region :which-key "latex-fill-region")
+      "SPC"  '(try/TeX-command-save-buffer-and-run-all :which-key "latex-save-run")
+      "c"  '(try/ivy-bibtex-cite :which-key "ivy-cite")
+      "i"   '(try/counsel-insert-file-path :which-key "insert-relative-filepath")
+      "b" '(ivy-bibtex :which-key "ivy-bibtex")
+      "t" '(tab-bar-switch-to-tab :which-key "tab-switch-name")
+   "o"  '(outshine-imenu :which-key "menu")
+   "t"  '(outshine-cycle-buffer :which-key "fold-buffer")
+  )
+#+end_src
+
+** Workflow
+TODO

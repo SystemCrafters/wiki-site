@@ -1,0 +1,50 @@
+* Insert relative file path in current buffer using counsel
+** 
+Useful while inserting figures path/name in ~latex~. Similar to ~C-x C-f~  in  ~vim~.
+
+source: [[https://emacs.stackexchange.com/questions/39105/insert-file-path-via-counsel][stack answer]]
+
+#+begin_src emacs-lisp
+(defun try-counsel-insert-file-path ()
+  "Insert relative file path in current buffer using counsel in minibuffer"
+  (interactive)
+  (unless (featurep 'counsel) (require 'counsel))
+  (ivy-read "Insert filename: " 'read-file-name-internal
+            :matcher #'counsel--find-file-matcher
+            :action
+            (lambda (x)
+                 (insert (file-relative-name x)))))
+#+end_src
+
+
+
+** 
+Recommended keybinding and counsel setting
+
+#+begin_src emacs-lisp
+(use-package general
+  :config
+  (general-evil-setup t)
+
+  (general-create-definer try/ctrl-c-keys
+    :prefix "C-c"))
+
+  (try/ctrl-c-keys
+    "i"   '(try-counsel-insert-file-path :which-key "insert relative filepath")
+  )
+#+end_src
+
+#+begin_src emacs-lisp
+    (use-package counsel
+      :diminish ivy-mode
+      :diminish counsel-mode
+      :bind (("C-s" . swiper)
+           :map ivy-minibuffer-map
+           ("TAB" . ivy-alt-done))
+      :init
+      (ivy-mode 1)
+      (counsel-mode 1)
+      :config
+      (setq ivy-use-virtual-buffers t)
+      (setq enable-recursive-minibuffers t))
+#+end_src
