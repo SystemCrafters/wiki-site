@@ -195,7 +195,7 @@ After the installation is finished, it will most likely output a warning along t
 guix system: warning: while talking to shepherd: No such file or directory
 #+end_comment
 
-This is to be expected. Because WSL distros don't boot in the same way a normal distribution would, Guix could not populate =/run=. More information about this can be found [[https://gist.github.com/giuliano108/49ec5bd0a9339db98535bc793ceb5ab4#booting-the-guix-wsl-distro-as-if-it-were-a-guixsd-system][here]]. This has to be done manually or rather automated via a shell script:
+This is to be expected. Because WSL distributions don't boot the same way a normal distribution would, Guix could not populate =/run=. More information about this can be found [[https://gist.github.com/giuliano108/49ec5bd0a9339db98535bc793ceb5ab4#booting-the-guix-wsl-distro-as-if-it-were-a-guixsd-system][here]]. This has to be done manually or rather automated via a shell script:
 
 #+begin_src sh :tangle no
 #!/bin/sh
@@ -222,7 +222,7 @@ Copy the script to the same folder like the other scripts and execute it with
 wsl -d guix /bin/busybox sh -c "/mnt/c/path/to/guix-init.sh"
 #+end_src
 
-The command should not produce any output. After it's done, run =wsl -d guix= to log into the distribution.
+The command should not produce any output. This script /can/ be safely run every time one logs into the distribution (See [[#tidying-up][Tidying up]]), however, it /needs/ to be run after rebooting the host system or executing =wsl -t guix=. After it's done, run =wsl -d guix= to log into the distribution.
 
 A bash prompt should be waiting for input. Congratulations.
 
@@ -233,11 +233,11 @@ passwd
 passwd <user>
 #+end_src
 
-You can either switch to your user with =su -l <user>= or logging into your user by executing =wsl -u <user> -d guix=.
+One can either switch to the user with =su -l <user>= or log the user in directly by executing =wsl -u <user> -d guix=.
 
 * Updating the system
 
-The system can be updated like you would expect:
+The system can be updated like one would expect:
 
 #+begin_src sh :tangle no
 guix pull
@@ -248,9 +248,9 @@ This creates a new system generation and switches to it.
 
 * Tidying up
 
-At this point the installation process is done. However there are a couple of things that can be done to make interacting with the distribution easier. At the moment, there are three files on the host. The installation script (=guix-install.sh=) can be deleted as it is not needed anymore.
+At this point the installation is complete. However there are a couple of things that can be done to make interacting with the distribution easier. At the moment, there are three files on the host file system. The installation script (=guix-install.sh=) can be deleted as it is not needed anymore.
 
-=wsl.scm= is only really needed inside the distribution. You can save it in your user space, for example
+=wsl.scm= is only really needed inside the distribution. One can save it in the user space, for example
 
 #+begin_src sh :tangle no
 mkdir -p $HOME/.config/guix/manifests && mv /mnt/c/Users/<user>/Desktop/guix/wsl.scm $HOME/.config/guix/manifests
@@ -260,11 +260,11 @@ moves the file to =~/.config/guix/manifests=.
 
 =guix-init.sh= can be copied to =/root/boot.sh= and the distribution started by executed =wsl -d guix /bin/busybox sh -c "/root/boot.sh"=. =su -l <user>= may be appended to the script to automatically switch to the main user.
 
-This is really up to the individual setup, both files may be very well incorporated into an already existing configuration. [[https://github.com/minikN/guix/blob/main/Systems.org#wsl][minikN]]'s dotfiles showcase a possible approach to this.
+This is really up to the individual setup, both files may very well be incorporated into an already existing configuration. [[https://github.com/minikN/guix/blob/main/Systems.org#wsl][minikN]]'s dotfiles showcase a possible approach to this.
 
 * GUI applications
 
-Launching GUI applications from within WSL assumes a working X server running on Windows. There a couple of alternatives to consider:
+Launching GUI applications from within WSL assumes a working X server running on the host. There a couple of alternatives to consider:
 
 - [[https://sourceforge.net/projects/xming/][Xming]]
 - [[https://sourceforge.net/projects/vcxsrv/][VcXsrv]]
@@ -288,7 +288,7 @@ if uname -r | grep -q 'microsoft'; then
 fi
 #+end_src
 
-This script should be placed somewhere in the =PATH=. It should also be named appropriately and made executable: =chmod +x run-wsl=.
+This script has to be available somewhere in the =PATH=. It should also be named appropriately and made executable: =chmod +x run-wsl=.
 
 GUI applications can now be started with
 
