@@ -15,6 +15,7 @@ The Windows Subsystem for Linux enables Windows to run software, including whole
 - [[#tidying-up][Tidying up]]
 - [[#gui-applications][GUI applications]]
 - [[#desktop-shortcuts][Desktop shortcuts]]
+- [[#sources][Sources]]
 
 * Prerequisites
 
@@ -309,3 +310,7 @@ WScript.CreateObject("WScript.Shell").Run "wsl ~ -u <user> -d guix /path/to/run-
 This launcher will run the =run-wsl= script with its first argument. Now shortcuts for applications can be created by creating a shortcut to the launcher itself (=Right click -> Send to -> Desktop (create shortcut)=). After that edit the shortcut's target like so: =C:\Users\<user>\Desktop\guix-launcher.vbs emacs= where =emacs= is the application to launch.
 
 The launcher can obviously reside anywhere on the file system, doesn't have to be the desktop. One may also change the shortcuts icon to something more appropriate like the emacs icon.
+
+* Sources
+- [[https://gist.github.com/giuliano108/49ec5bd0a9339db98535bc793ceb5ab4][giuliano108/Guix-on-WSL2.md]]
+- [[https://gist.github.com/vldn-dev/de379bf81a80ff0a53cd851bcc3bbff2][vldn-dev/guix-infect.sh]]
