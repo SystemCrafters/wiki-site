@@ -2,7 +2,7 @@
 #+AUTHOR: Demis Balbach
 The Windows Subsystem for Linux enables Windows to run software, including whole distributions, written for Linux. This article goes through the process of installing GuixSD as a WSL distribution.
 
-**Note**: GuixSD refers to the Guix System Distribution. Not Guix the package manager. This article won't cover how to install the package manager into an existing distribution (like Ubuntu or Debian), but rather how to create a custom distribution containing the full Guix system.
+*Note*: GuixSD refers to the Guix System Distribution. Not Guix the package manager. This article won't cover how to install the package manager into an existing distribution (like Ubuntu or Debian), but rather how to create a custom distribution containing the full Guix system.
 
 * Table Of Contents :TOC:
 - [[#prerequisites][Prerequisites]]
@@ -19,19 +19,18 @@ The Windows Subsystem for Linux enables Windows to run software, including whole
 
 * Prerequisites
 
-- A Windows 10 system with a properly [[https://docs.microsoft.com/en-us/windows/wsl/install-win10][configured]] WSL2
-- A throw-away / temporary WSL distribution like Ubuntu or Debian
+- Windows 10 with a properly [[https://docs.microsoft.com/en-us/windows/wsl/install-win10][configured]] WSL2
 
 * Base Distribution
 
-The Guix distribution will use a minimal WSL distribution based on [[https://busybox.net/][busybox]] by [[https://github.com/0xbadfca11/miniwsl][0xbadfca11]]. Download the =rootfs.tgz= of the latest release. However, one could also [[https://github.com/giuliano108/guix-packages/blob/master/notes/Guix-on-WSL2.md#minimal-rootfs-archive][create]] your own rootfs.
-In any case, with an appropriate =rootfs.tgz= available, open up =PowerShell=, navigate to the folder with the file and type
+Guix will use a minimal WSL distribution based on [[https://busybox.net/][busybox]] by [[https://github.com/0xbadfca11/miniwsl][0xbadfca11]]. Download the =rootfs.tgz= of the latest release. However, one could also [[https://github.com/giuliano108/guix-packages/blob/master/notes/Guix-on-WSL2.md#minimal-rootfs-archive][create]] a rootfs from scratch.
+In any case, with an appropriate =rootfs.tgz= available, open up =PowerShell=, navigate to the folder with the file and execute
 
 #+begin_src sh :tangle no
 wsl --import guix /guix rootfs.tgz --version 2
 #+end_src
 
-**Note**: The =--version 2= flag is specific to the used rootfs and must not be changed.
+*Note*: The =--version 2= flag is specific to the used rootfs and must not be changed.
 
 * Roll back
 
@@ -186,7 +185,7 @@ wsl -d guix /bin/busybox sh -c "/mnt/c/path/to/guix-install.sh /mnt/c/path/to/ws
 
 The path is relative to the root folder of the WSL distribution. If the two files are located at =C:\Users\<user>\Desktop\guix= the path would then be =/mnt/c/Users/<user>/Desktop/guix=.
 
- **Note**: The install script and the manifest file don't have to be in the same folder. The script also sets the load path to the folder containing the manifest file, this means =wsl.scm= may inherit from other modules located in the same load path (like a =base-system.scm= for example).
+ *Note*: The install script and the manifest file don't have to be in the same folder. The script also sets the load path to the folder containing the manifest file, this means =wsl.scm= may inherit from other modules located in the same load path (like a =base-system.scm= for example).
 
 * Initialization
 
@@ -273,7 +272,7 @@ Launching GUI applications from within WSL assumes a working X server running on
 - [[https://mobaxterm.mobatek.net/][MobaXTerm]]
 - [[https://github.com/microsoft/wslg][WSLG]]
 
-However, please note that both Xming and VcXsrv may suffer from display [[https://github.com/sebastiencs/company-box/issues/76][glitches]] when using Emacs' child frames due to an error in their GLX [[https://sourceforge.net/p/vcxsrv/bugs/102/][implementation]].
+*Note*: Both Xming and VcXsrv may suffer from display [[https://github.com/sebastiencs/company-box/issues/76][glitches]] when using Emacs' child frames due to an error in their GLX [[https://sourceforge.net/p/vcxsrv/bugs/102/][implementation]].
 
 This guide will not focus on how to configure each X server, because there are already plenty of resources available on the subject.
 
@@ -297,17 +296,17 @@ GUI applications can now be started with
 run-wsl emacs
 #+end_src
 
-from within the distro itself. However, it's more convenient to launch them from Windows directly via desktop shortcuts. In order to do that a minimal generic launcher can be written in =vbs= like so:
+from within the distribution itself. However, it's more convenient to launch them from Windows directly via desktop shortcuts. In order to do that a minimal generic launcher can be written in =vbs= like so:
 
 #+begin_src vbs
 WScript.CreateObject("WScript.Shell").Run "wsl ~ -u <user> -d guix /path/to/run-wsl " & WScript.Arguments(0), 0, false
 #+end_src
 
-**Note**: Adjust the =<user>= and the path to the script accordingly.
+*Note*: Adjust the =<user>= and the path to the script accordingly.
 
 * Desktop shortcuts
 
-This launcher will run the =run-wsl= script with its first argument. Now shortcuts for applications can be created by creating a shortcut to the launcher itself (=Right click -> Send to -> Desktop (create shortcut)=). After that edit the shortcut's target like so: =C:\Users\<user>\Desktop\guix-launcher.vbs emacs= where =emacs= is the application to launch.
+This launcher will run the =run-wsl= script with its first argument. Now shortcuts for applications can be added by creating a shortcut to the launcher itself (=Right click -> Send to -> Desktop (create shortcut)=). After that edit the shortcuts target like so: =C:\Users\<user>\Desktop\guix-launcher.vbs emacs= where =emacs= is the application to launch.
 
 The launcher can obviously reside anywhere on the file system, doesn't have to be the desktop. One may also change the shortcuts icon to something more appropriate like the emacs icon.
 
