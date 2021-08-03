@@ -10,7 +10,7 @@ This is a [[https://systemcrafters.cc/emacs-from-scratch/][series]] geared towar
 
 * Emacs's help system
 
-Emacs is a self documented editor, meaning with couple of key presses, you can find user guides, description of commands, functions, variables and more. Head over the [[help-cheatsheet/][help cheatsheet]] to learn more about this awesome documentation system.
+Emacs is a self documented editor, meaning with couple of key presses, you can find user guides, description of commands, functions, variables and more. Head over the [[/emacs/help-cheatsheet/][help cheatsheet]] to learn more about this awesome documentation system.
 
 * More Emacs Content
 
@@ -20,7 +20,7 @@ There's a lot more content on the [[https://systemcrafters.cc/videos][Videos]] p
 org-mode is an outline markup format that helps you take notes, manage and schedule your TODOs, and a lot more.
 
 Here are some useful related packages:
-- [[org-roam/][org-roam]]: A plain-text personal knowledge management system
+- [[/emacs/org-roam/][org-roam]]: A plain-text personal knowledge management system
 - deft: Deft is an Emacs mode for quickly browsing, filtering, and editing directories of plain text notes, inspired by Notational Velocity
 - org-super-agenda: This package lets you “supercharge” your Org daily/weekly agenda. The idea is to group items into sections, rather than having them all in one big list
 
