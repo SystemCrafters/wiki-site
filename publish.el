@@ -348,7 +348,7 @@ Note that any hline TABLE-ROW will be removed."
 (defun dw/sitemap-entry (entry style project)
   (format "<h4><em>Last Updated: %s</em> - <a href=\"%s\">%s</a></h4>"
           (format-time-string "%Y-%m-%d" (org-publish-find-date entry project))
-          (concat (file-name-sans-extension entry) "/")
+          (concat "/" (file-name-sans-extension entry) "/")
           (org-publish-find-title entry project)))
 
 (defun dw/generate-sitemap (title list)
