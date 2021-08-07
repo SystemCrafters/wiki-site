@@ -23,7 +23,7 @@ The Windows Subsystem for Linux enables Windows to run software, including whole
 
 * Base Distribution
 
-Guix will use a minimal WSL distribution based on [[https://busybox.net/][busybox]] by [[https://github.com/0xbadfca11/miniwsl][0xbadfca11]]. Download the =rootfs.tgz= of the latest release. However, one could also [[https://github.com/giuliano108/guix-packages/blob/master/notes/Guix-on-WSL2.md#minimal-rootfs-archive][create]] a rootfs from scratch.
+Guix will use a minimal WSL distribution based on [[https://busybox.net/][busybox]] by 0xbadfca11. Download the =rootfs.tgz= of the latest release [[https://github.com/0xbadfca11/miniwsl/releases/download/release3041562/rootfs.tgz][here]]. However, one could also [[https://github.com/giuliano108/guix-packages/blob/master/notes/Guix-on-WSL2.md#minimal-rootfs-archive][create]] a rootfs from scratch.
 In any case, with an appropriate =rootfs.tgz= available, open up =PowerShell=, navigate to the folder with the file and execute
 
 #+begin_src sh :tangle no
