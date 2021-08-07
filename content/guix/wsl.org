@@ -191,9 +191,9 @@ The path is relative to the root folder of the WSL distribution. If the two file
 
 After the installation is finished, it will most likely output a warning along the lines of
 
-#+begin_source sh :tangle no
+#+begin_src sh :tangle no
 guix system: warning: while talking to shepherd: No such file or directory
-#+end_source
+#+end_src
 
 This is to be expected. Because WSL distributions don't boot the same way a normal distribution would, Guix could not populate =/run=. More information about this can be found [[https://gist.github.com/giuliano108/49ec5bd0a9339db98535bc793ceb5ab4#booting-the-guix-wsl-distro-as-if-it-were-a-guixsd-system][here]]. This has to be done manually or rather automated via a shell script:
 
