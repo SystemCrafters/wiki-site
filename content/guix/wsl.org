@@ -226,7 +226,7 @@ The command should not produce any output. This script /can/ be safely run every
 
 A bash prompt should be waiting for input. Congratulations.
 
-No is a good time to set some passwords
+Now is a good time to set some passwords
 
 #+begin_src sh :tangle no
 passwd
