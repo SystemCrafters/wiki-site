@@ -280,7 +280,7 @@ Once The X server is up and running, the =DISPLAY= variable has to be populated 
 
 #+begin_src sh
 if uname -r | grep -q 'microsoft'; then
-    . $HOME/.config/profile
+    . $HOME/.profile # Change this path accordingly
     export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}'):0.0
     export LIBGL_ALWAYS_INDIRECT=1
     export XCURSOR_SIZE=16
