@@ -1,0 +1,110 @@
+In this article we will see various steps to test/try emacs-28 with native compilation support on Ubuntu 20.04LTS. We will not touch existing emacs installed using ~apt~ on the Ubuntu, but will manually compile another version of emacs-28 with native compilation support (called gccemacs henceforth).
+
+Please help us improving this wiki by reporting any bugs/issues in the wiki github repo. 
+
+* Installing gccemacs
+check for any errors during ~./configure~ step, you may be missing some libraries, which need to be installed using ~apt~.
+
+#+begin_src shell
+mkdir -p ~/opt
+mkdir -p ~/opt/emacs-native
+cd ~/opt
+sudo add-apt-repository ppa:ubuntu-toolchain-r/ppa
+sudo apt install gcc-10 g++-10 libgccjit0 libgccjit-10-dev libjansson4 libjansson-dev
+sudo apt install libxpm-dev libgif-dev libtiff-dev libgnutls28-dev libmagick++-dev
+git clone git://git.sv.gnu.org/emacs.git gccemacs
+cd gccemacs
+git checkout master
+export CC=/usr/bin/gcc-10 CXX=/usr/bin/gcc-10
+./autogen.sh
+./configure --with-cairo --with-modules --without-compress-install --with-x-toolkit=no --with-gnutls --without-gconf --without-xwidgets --without-toolkit-scroll-bars --without-xaw3d --without-gsettings --with-mailutils --with-native-compilation --with-json --with-harfbuzz --with-imagemagick --with-jpeg --with-png --with-rsvg --with-tiff --with-wide-int --with-xft --with-xml2 --with-xpm CFLAGS="-O3 -mtune=native -march=native -fomit-frame-pointer" prefix=~/opt/emacs-native
+make -j2 NATIVE_FULL_AOT=1
+make install
+#+end_src
+
+* Using emacs-profiles
+
+- Install [[https://github.com/plexus/chemacs2][chemacs2]] using following script
+#+begin_src shell
+[ -f ~/.emacs ] && mv ~/.emacs ~/.emacs.bak
+[ -d ~/.emacs.d ] && mv ~/.emacs.d ~/.emacs.default
+git clone https://github.com/plexus/chemacs2.git ~/.emacs.d
+#+end_src
+
+- save following in =~/.emacs-profile=
+#+begin_src emacs-lisp
+(
+ ("default" . ((user-emacs-directory . "~/.emacs.default")
+  (server-name . "default-server")))
+ ("gccemacs" . ((user-emacs-directory . "~/.gccemacs.d")
+  (server-name . "gccemacs-server")))
+)
+#+end_src
+
+- copy your default config ~init.el~ to gccemacs folder
+#+begin_src shell
+cp ~/.emacs.default/init.el ~/.gccemacs.d/init.el
+#+end_src
+
+* Some changes in config file for gccemacs
+
+- You can add following lines in your new ~init.el~  (in the =~/.gccemacs.d= folder)just to check if native-compilation and native json is working
+#+begin_src emacs-lisp
+(setq comp-deferred-compilation t)
+
+(if (and (fboundp 'native-comp-available-p)
+       (native-comp-available-p))
+  (message "Native compilation is available")
+(message "Native complation is *not* available"))
+
+(if (functionp 'json-serialize)
+  (message "Native JSON is available")
+(message "Native JSON is *not* available"))
+
+#+end_src
+
+- =straight.el= uses its own native compilation which can create some problems. You can switch off this using =:build (:not native-compile)=, for e.g. in case of =doom-themes=, one can use the following
+
+#+begin_src emacs-lisp
+  (use-package doom-themes
+    :straight '(doom-themes :build (:not native-compile))
+    :init
+    (load-theme 'doom-nord t)
+  )
+#+end_src
+
+* Running parallel emacs
+** default emacs
+- run emacs without daemon (It is better to run this if you are running emacs first time after making all changes using =chemacs2=). Try it 2-3 times so that no error/installation is left.
+#+begin_src emacs-lisp
+emacs --with-profile=default
+#+end_src
+- If you are emacs daemon user then following will work
+#+begin_src shell
+emacs --with-profile=default --daemon
+#+end_src
+- run a instance of daemon using (after previous step)
+#+begin_src shell
+emacsclient -c -s /run/user/1000/emacs/default-server
+#+end_src
+
+** gccemacs
+
+- run emacs without daemon (It is better to run this if you are running emacs first time after making all changes using =chemacs2=). Try it 2-3 times so that no error/installtion is left.
+#+begin_src emacs-lisp
+~/opt/emacs-native/bin/emacs --with-profile=gccemacs
+#+end_src
+- If you are emacs daemon user then following will work
+#+begin_src shell
+~/opt/emacs-native/bin/emacs --with-profile=gccemacs --daemon
+#+end_src
+- run a instance of daemon using (after previous step)
+#+begin_src shell
+~/opt/emacs-native/bin/emacsclient -c -s /run/user/1000/emacs/gccemacs-server
+#+end_src
+
+* Issues/Bugs and the solutions
+
+- Some packages like ~vterm~, ~pdf-tools~ couldn't compile for first time, but after restarting the computer somehow, they are working fine.
+- Many packages show lot of ~warning~ messages. This happens when you are using these packages for first time. Shouldn't be a problem after that.
+- Some user reported problem using ~exwm~, didn't try it yet.
