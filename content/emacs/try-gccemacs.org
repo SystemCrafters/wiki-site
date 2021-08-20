@@ -43,6 +43,7 @@ git clone https://github.com/plexus/chemacs2.git ~/.emacs.d
 
 - copy your default config ~init.el~ to gccemacs folder
 #+begin_src shell
+mkdir -p ~/.gccemacs.d
 cp ~/.emacs.default/init.el ~/.gccemacs.d/init.el
 #+end_src
 
