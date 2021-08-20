@@ -1,4 +1,4 @@
-In this article we will see various steps to test/try emacs-28 with native compilation support on Ubuntu 20.04LTS. We will not touch existing emacs installed using ~apt~ on the Ubuntu, but will manually compile another version of emacs-28 with native compilation support (called =gccemacs= henceforth) in the =~/opt/emacs-native= folder. These two versions of emacs with use different config files and user-directories using =chemacs2=, so that they don't interfere with each other. Using this approach users can try =gccemacs= without breaking their stable emacs config.
+In this article we will see various steps to test/try =emacs-28= with native compilation support on =Ubuntu 20.04LTS=. We will not touch existing emacs installed using ~apt~ on the Ubuntu, but will manually compile another version of =emacs-28= with =native-compilation= support (called =gccemacs= henceforth) in the =~/opt/emacs-native= folder. These two versions of emacs (already installed and =gccemacs=) will use different config files (=init.el=) and user-directories (=~/.emacs.d=) using =chemacs2=, so that they don't interfere with each other. Using this approach users can try =gccemacs= without breaking their stable emacs config.
 
 Please help us improving this wiki by reporting any bugs/issues in the wiki github repo. 
 
@@ -31,7 +31,7 @@ make install
 git clone https://github.com/plexus/chemacs2.git ~/.emacs.d
 #+end_src
 
-- save following in =~/.emacs-profile=
+- save following in =~/.emacs-profile.el=
 #+begin_src emacs-lisp
 (
  ("default" . ((user-emacs-directory . "~/.emacs.default")
