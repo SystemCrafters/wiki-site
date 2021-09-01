@@ -1,0 +1,91 @@
+<!DOCTYPE html><html lang="en"><head><!--  --><meta charset="utf-8"/><meta author="David Wilson"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/fonts/iosevka-aile/iosevka-aile.css"/><link rel="stylesheet" href="/fonts/jetbrains-mono/jetbrains-mono.css"/><link rel="stylesheet" href="/css/code.css"/><link rel="stylesheet" href="/css/site.css"/><script defer="defer" data-domain="wiki.systemcrafters.net" src="https://plausible.io/js/plausible.js"></script><title>EXWM Hacking Notes - System Crafters</title></head><body><div><div class="blog-header"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-8"><div class="blog-title">System Crafters</div></div><div class="col-sm col-md"><div class="blog-description text-sm-left text-md-right text-lg-right text-xl-right"></div></div></div></div></div><div class="blog-masthead"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-12"><nav class="nav"><a class="nav-link" href="/">Main Page</a> <a class="nav-link" href="/emacs">GNU Emacs</a> <a class="nav-link" href="/guix">GNU Guix</a><a class="nav-link" href="https://systemcrafters.net">System Crafters Home</a><form class="navbar-form navbar-right" role="search" action="https://duckduckgo.com/"><div class="form-group"><input type="text" name="q" class="form-control" placeholder="Search Wiki" style="overflow: hidden;margin-top: 3%;margin-bottom: 2%;"/><input type="hidden" name="sites" value="wiki.systemcrafters.net"/></div></form> </nav></div></div></div></div></div><div class="container"><div class="row"><div class="col-sm-12 blog-main"><div class="blog-post"><h1 class="blog-post-title">EXWM Hacking Notes</h1><p class="blog-post-meta"></p><div><p>This is a set of notes that are being compiled as a part of the <a href="https://youtube.com/playlist?list=PLEoMzSkcN8oOS1y2uMspTXr1nd5JxUSzB">Hack Sessions</a> series of streams!
+</p>
+
+<h2><a id="tasks" class="anchor" href="#tasks">¶</a>Tasks</h2><h3><a id="find-a-good-exwm-bug-to-investigate-for-next-time" class="anchor" href="#find-a-good-exwm-bug-to-investigate-for-next-time">¶</a>Find a good EXWM bug to investigate for next time</h3>
+
+<h2><a id="repository-links" class="anchor" href="#repository-links">¶</a>Repository Links</h2><ul><li><a href="https://github.com/ch11ng/exwm/">https://github.com/ch11ng/exwm/</a></li>
+<li><a href="https://github.com/ch11ng/xelb">https://github.com/ch11ng/xelb</a></li>
+</ul>
+
+<h2><a id="exwm-overview" class="anchor" href="#exwm-overview">¶</a>EXWM Overview</h2><p>The files:
+</p>
+
+<h3><a id="exwmel" class="anchor" href="#exwmel">¶</a>exwm.el</h3><p><kbd>exwm-init</kbd> is the entrypoint for setting up EXWM and connecting to the X Window System server.
+</p>
+
+<p>Many update functions used internally
+</p>
+
+<p>Part of the initialization process is to initialize modules like ICCCM and EWMH via functions like <kbd>xcb:ewmh:init</kbd>, these seem to be focused around fetching the IDs for well-known Atoms.  Once they've been fetched, those subsystems are considered to be initialized.
+</p>
+
+<h3><a id="other-files" class="anchor" href="#other-files">¶</a>Other files</h3><p>BUG_HUNT.org
+README.md
+exwm-cm.el
+exwm-config.el
+exwm-core.el
+exwm-floating.el
+exwm-input.el
+exwm-layout.el
+exwm-manage.el
+exwm-randr.el
+exwm-systemtray.el
+exwm-workspace.el
+exwm-xim.el
+xinitrc
+</p>
+
+<h2><a id="xelb-overview" class="anchor" href="#xelb-overview">¶</a>XELB Overview</h2><p>Generates elisp libraries for the X11 protocol with the <kbd>el_client.el</kbd> file, driven by the <kbd>Makefile</kbd>
+</p>
+
+<p>A small portion of the files are generated but many are helper libraries for specific parts of the X11 protocol.
+</p>
+
+
+<h2><a id="definitions" class="anchor" href="#definitions">¶</a>Definitions</h2><h3><a id="xcb" class="anchor" href="#xcb">¶</a>xcb</h3><p><a href="https://xcb.freedesktop.org/">https://xcb.freedesktop.org/</a>
+<a href="https://xcb.freedesktop.org/tutorial/">xcb tutorial</a>
+<a href="https://xcb.freedesktop.org/XmlXcb/">XML-XCB format for describing the X Window System protocol</a>
+</p>
+
+<h3><a id="x-window-system" class="anchor" href="#x-window-system">¶</a>X Window System</h3><p>This is the client/server system which handles drawing to the screen, mouse/keyboard input, etc.
+</p>
+
+<p>You communicate with it via an XML-based protocol.
+</p>
+
+<h3><a id="icccm" class="anchor" href="#icccm">¶</a>ICCCM</h3><p>This seems to be a set of conventions for commuication between clients in the X Window System
+</p>
+
+<p>Describes window manager interactions at a low level
+</p>
+
+<p><a href="https://www.x.org/releases/current/doc/xorg-docs/icccm/icccm.html#Introduction">https://www.x.org/releases/current/doc/xorg-docs/icccm/icccm.html#Introduction</a>
+</p>
+
+<h3><a id="ewmh" class="anchor" href="#ewmh">¶</a>EWMH</h3><p>Extended Window Manager Hints
+</p>
+
+<p>An extended set of conventions for modern desktop environments (see Non-ICCCM features section)
+</p>
+
+<p><a href="https://specifications.freedesktop.org/wm-spec/wm-spec-1.3.html">https://specifications.freedesktop.org/wm-spec/wm-spec-1.3.html</a>
+</p>
+
+<p>Assumption: the window manager is the "root window" and anything in this document that describes messages handled by the root window are actually handled by the window manager.
+</p>
+
+
+<h2><a id="testing-with-xephyr" class="anchor" href="#testing-with-xephyr">¶</a>Testing with Xephyr</h2><p>Docs: <a href="https://cgit.freedesktop.org/xorg/xserver/tree/hw/kdrive/ephyr/README">https://cgit.freedesktop.org/xorg/xserver/tree/hw/kdrive/ephyr/README</a>
+</p>
+
+<p>Here's a simple script that can help with testing:
+</p>
+
+<pre><code class="sh">
+<span class="org-comment-delimiter">#</span><span class="org-comment">!/bin/sh</span>
+Xephyr :1 -ac -dpi 180 -screen 1920x1080 &amp;
+<span class="org-variable-name">DISPLAY</span>=:1 emacs
+pkill Xephyr
+
+</code></pre>
+</div></div></div></div></div><footer class="blog-footer"><div class="container"><div class="row"><div class="col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right"><p>Made with Emacs 27.2 (Org mode 9.4.4)</p><p><a href="https://systemcrafters.net/privacy-policy/">Privacy Policy</a></p></div></div></div></footer><script src="/js/bootstrap.bundle.min.js"/></body></html>
