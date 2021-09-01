@@ -21,7 +21,9 @@ jobs:
           version: 27.2
 
       - name: Build the site
-        run: ./local-build.sh
+        run: |
+          cp -R daviwil.com/public .
+          ./local-build.sh
 
       - name: Publish generated content to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@4.1.4
