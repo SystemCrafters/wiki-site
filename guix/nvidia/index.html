@@ -1,0 +1,193 @@
+<!DOCTYPE html><html lang="en"><head><!--  --><meta charset="utf-8"/><meta author="David Wilson"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/fonts/iosevka-aile/iosevka-aile.css"/><link rel="stylesheet" href="/fonts/jetbrains-mono/jetbrains-mono.css"/><link rel="stylesheet" href="/css/code.css"/><link rel="stylesheet" href="/css/site.css"/><title>Proprietary NVIDIA Drivers - System Crafters</title></head><body><div><div class="blog-header"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-8"><div class="blog-title">System Crafters</div></div><div class="col-sm col-md"><div class="blog-description text-sm-left text-md-right text-lg-right text-xl-right"></div></div></div></div></div><div class="blog-masthead"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-12"><nav class="nav"><a class="nav-link" href="/">Main Page</a> <a class="nav-link" href="/emacs">GNU Emacs</a> <a class="nav-link" href="/guix">GNU Guix</a><a class="nav-link" href="https://systemcrafters.cc">System Crafters Home</a><form class="navbar-form navbar-right" role="search" action="https://duckduckgo.com/"><div class="form-group"><input type="text" name="q" class="form-control" placeholder="Search Wiki" style="overflow: hidden;margin-top: 3%;margin-bottom: 2%;"/><input type="hidden" name="sites" value="wiki.systemcrafters.cc"/></div></form> </nav></div></div></div></div></div><div class="container"><div class="row"><div class="col-sm-12 blog-main"><div class="blog-post"><h1 class="blog-post-title">Proprietary NVIDIA Drivers</h1><p class="blog-post-meta"></p><div><p>GNU Guix makes installing and using the proprietary NVIDIA drivers more difficult than one may be used to coming from other distributions. However, it is possible and explained here.
+</p>
+
+<h2><a id="installation" class="anchor" href="#installation">¶</a>Installation</h2><h3><a id="using-the-channel" class="anchor" href="#using-the-channel">¶</a>Using the channel</h3><p>If using the <kbd>nonguix</kbd> channel, the <kbd>nvidia-driver</kbd> package contains the proprietary drivers for GNU Guix. If you followed the <a href="/guix/nonguix-installation-guide">nonguix installation guide</a>, this should already be set up by default. From now on it will be assumed that the nonguix channel is available on your system.
+</p>
+
+<h3><a id="the-system-configuration" class="anchor" href="#the-system-configuration">¶</a>The system configuration</h3><p>Your system configuration is usually located at <kbd>/etc/config.scm</kbd>. We need to add several lines of code to make your system load the drivers properly. Open the file to edit it, and make sure you have write permissions.
+</p>
+
+<h4><a id="package-definition" class="anchor" href="#package-definition">¶</a>Package definition</h4><p>You need to add the nvidia package definition to your <kbd>define-module</kbd> function so Guix knows where to load it from:
+</p>
+
+<pre><code class="scheme">(<span class="org-keyword">define-module</span> (<span class="org-type">your-module</span>)
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">...</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">some stuff here</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">...</span>
+  <span class="org-builtin">#:use-module</span> (nongnu packages nvidia))
+</code></pre>
+
+<h4><a id="renaming-for-grafting" class="anchor" href="#renaming-for-grafting">¶</a>Renaming for grafting</h4><p>In order to have <kbd>libglx</kbd> working, the <kbd>nvidia-driver</kbd> package needs to be grafted instead of <kbd>mesa</kbd>. It needs to be renamed to have the same number of characters as <kbd>mesa</kbd>. More information can be found <a href="https://gitlab.com/nonguix/nonguix/-/issues/31#note_481501721">here</a>. Add the following function:
+</p>
+
+<pre><code class="scheme">(<span class="org-keyword">define</span> <span class="org-function-name">transform</span>
+  (options-&gt;transformation
+   '((with-graft . <span class="org-string">"mesa=nvda"</span>))))
+</code></pre>
+
+<h4><a id="os-configuration" class="anchor" href="#os-configuration">¶</a>OS configuration</h4><p>From here on, everything mentioned should be placed in your <kbd>operating-system</kbd> block:
+</p>
+
+<pre><code class="scheme">(<span class="org-keyword">define-public</span> <span class="org-function-name">base-operating-system</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">...</span>
+  (operating-system
+   <span class="org-comment-delimiter">;; </span><span class="org-comment">here!</span>
+   ...))
+</code></pre>
+
+<ul><li>Kernel modules<p>You should blacklist the <kbd>nouveau</kbd> kernel module to avoid conflicts.
+</p>
+
+<pre><code class="scheme">(kernel-arguments (append 
+                      '(<span class="org-string">"modprobe.blacklist=nouveau"</span>)
+                      %default-kernel-arguments))
+</code></pre>
+
+<p>In addition, you should also add <kbd>nvidia-driver</kbd> to the loadable kernel modules:
+</p>
+
+<pre><code class="scheme">(kernel-loadable-modules (list nvidia-driver))
+</code></pre>
+</li>
+
+<li>Services<p>Now add two services. One for a custom udev rule and one to make sure the modules get loaded:
+</p>
+
+<pre><code class="scheme">(services (cons* (simple-service 
+                     'custom-udev-rules udev-service-type 
+                     (list nvidia-driver))
+                    (service kernel-module-loader-service-type
+                             '(<span class="org-string">"ipmi_devintf"</span>
+                               <span class="org-string">"nvidia"</span>
+                               <span class="org-string">"nvidia_modeset"</span>
+                               <span class="org-string">"nvidia_uvm"</span>))
+                    ...))
+</code></pre>
+</li></ul>
+
+<h3><a id="login-manager" class="anchor" href="#login-manager">¶</a>Login manager</h3><p>The system configuration is now complete. However, you probably want to setup a login manager. No matter what login manager you use, you need to list the <kbd>nvidia-driver</kbd> in the <kbd>xorg-configuration</kbd> block. Here is a minimal example using <kbd>slim</kbd>:
+</p>
+
+<pre><code class="scheme">(service slim-service-type
+         (slim-configuration
+          (xorg-configuration (xorg-configuration
+                               (modules (cons* nvidia-driver %default-xorg-modules))
+                               (server (transform xorg-server))
+                               (drivers '(<span class="org-string">"nvidia"</span>))))))
+</code></pre>
+
+<p>Please consult the manual for all possible <kbd>xorg-configuration</kbd> options.
+</p>
+
+<h3><a id="additional-xorg-configuration" class="anchor" href="#additional-xorg-configuration">¶</a>Additional Xorg configuration</h3><p>If you used to use special xorg configuration files (like <kbd>/etc/X11/xorg.conf.d/10-nvidia.conf</kbd>) you can also add them in Guix. Add the following to your <kbd>xorg-configuration</kbd> function: <kbd>(extra-config (list %xorg-config))</kbd>. You can rename <kbd>%xorg-config</kbd>
+to whatever you want. Just define the variable and add your configuration:
+</p>
+
+<pre><code class="scheme">(<span class="org-keyword">define</span> <span class="org-function-name">%xorg-config</span>
+  <span class="org-string">"Section \"Device\"</span>
+<span class="org-string">      Identifier     \"Device0\"</span>
+<span class="org-string">      Driver         \"nvidia\"</span>
+<span class="org-string">      VendorName     \"NVIDIA Corporation\"</span>
+<span class="org-string">      BoardName      \"GeForce GTX 1050 Ti\"</span>
+<span class="org-string">  EndSection"</span>)        
+</code></pre>
+
+<p>You can find examples for additional configurations in <a href="https://github.com/daviwil/dotfiles/blob/master/Systems.org">David's</a> and <a href="https://github.com/minikN/guix/blob/main/base-system.scm#L37-L103">minikN's</a> config.
+</p>
+
+<h2><a id="reconfiguring-the-system" class="anchor" href="#reconfiguring-the-system">¶</a>Reconfiguring the system</h2><p>That's about it. The last thing you need to do is to reconfigure the system so your changes get applied. You need <kbd>sudo</kbd> in order to do that. You can use the following command:
+</p>
+
+<pre><code class="sh">sudo -E guix system --cores=$(nproc) -L /path/to/your/config.scm reconfigure
+</code></pre>
+
+<h2><a id="screen-tearing" class="anchor" href="#screen-tearing">¶</a>Screen tearing</h2><p>After doing this, One may notice screen tearing when watching YouTube videos. To remedy this issue one has two options.
+</p>
+
+<h3><a id="force-full-composition-pipeline" class="anchor" href="#force-full-composition-pipeline">¶</a>Force full composition pipeline</h3><p>Forcing a full composition pipeline can help to avoid screen tearing. You can consult the <a href="https://wiki.archlinux.org/title/NVIDIA/Troubleshooting#Avoid_screen_tearing">Arch Wiki</a> if you want to know about it. To put it simple, you need to add the <kbd>MetaModes</kbd> option to your screen <kbd>Section</kbd> block of your xorg configuration.
+Like this:
+</p>
+
+<pre><code class="conf">Section <span class="org-string">"Device"</span>
+        Identifier <span class="org-string">"Nvidia Card"</span>
+        Driver     <span class="org-string">"nvidia"</span>
+        VendorName <span class="org-string">"NVIDIA Corporation"</span>
+        BoardName  <span class="org-string">"GeForce GTX 1050 Ti"</span>
+EndSection
+
+Section <span class="org-string">"Screen"</span>
+    Identifier     <span class="org-string">"Screen0"</span>
+    Device         <span class="org-string">"Device0"</span>
+    Monitor        <span class="org-string">"Monitor0"</span>
+    Option         <span class="org-string">"MetaModes"</span> <span class="org-string">"nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"</span>
+    Option         <span class="org-string">"AllowIndirectGLXProtocol"</span> <span class="org-string">"off"</span>
+    Option         <span class="org-string">"TripleBuffer"</span> <span class="org-string">"on"</span>
+EndSection
+</code></pre>
+
+<p>However, the actual value of the option is dependent on your monitor setup. This was explained on the <a href="https://github.com/ch11ng/exwm/wiki#issues-with-screen-tearing">EXWM Wiki</a> in greater detail.
+</p>
+
+<h3><a id="using-a-compositor" class="anchor" href="#using-a-compositor">¶</a>Using a compositor</h3><p>Generally, enabling the full composition pipeline works to get rid of screen tearing. However on GNU Guix it didn't for some reason. Maybe it'll work for you? In any case, another way is to use a compositor like <a href="https://github.com/yshui/picom">picom</a> (formely known as compton). There are multiple ways to set up a compositor.
+</p>
+
+<h4><a id="using-exwm" class="anchor" href="#using-exwm">¶</a>Using EXWM</h4><p>This example shows how to use <kbd>picom</kbd> with EXWM as a window manager. There is an <a href="https://guix.gnu.org/en/packages/emacs-exwm-0.24/">emacs-exwm</a>
+   package. Unfortunately, one can not easily configure it to load <kbd>picom</kbd> as well. In addition, it still runs on Emacs 27.2, it could be benefitial to change to version 28 featuring native compilation. This package definition inheriting from emacs-exwm automatically starts picom and uses the native-compilation branch. Feel free to use it. It requires you to have set up <a href="https://github.com/flatwhatson/guix-channel">flatwhatson</a>'s guix channel: 
+</p>
+
+<pre><code class="scheme"><span class="org-comment-delimiter">;; </span><span class="org-comment">Override emacs-exwm package definition</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">To include emacs-native-comp and picom.</span>
+(<span class="org-keyword">define-public</span> <span class="org-function-name">emacs-native-comp-exwm</span>
+  (package
+   (inherit emacs-exwm)
+   (name <span class="org-string">"emacs-native-comp-exwm"</span>)
+   (synopsis <span class="org-string">"Emacs 28 with native compilation and picom as a compositor."</span>)
+   (inputs
+    `((<span class="org-string">"picom"</span> ,picom)
+      ,@(package-inputs emacs-exwm)))
+   (arguments
+    `(,@(package-arguments emacs-exwm)
+      <span class="org-builtin">#:emacs</span> ,emacs-native-comp
+      <span class="org-builtin">#:phases</span> (modify-phases %standard-phases
+                              (add-after 'build 'install-xsession
+                                         (lambda* (<span class="org-builtin">#:key</span> inputs outputs <span class="org-builtin">#:allow-other-keys</span>)
+                                                  (<span class="org-keyword">let*</span> ((out (assoc-ref outputs <span class="org-string">"out"</span>))
+                                                         (xsessions (string-append out <span class="org-string">"/share/xsessions"</span>))
+                                                         (bin (string-append out <span class="org-string">"/bin"</span>))
+                                                         (exwm-executable (string-append bin <span class="org-string">"/exwm"</span>)))
+
+                                                    <span class="org-comment-delimiter">;; </span><span class="org-comment">Add a .desktop file to xsessions</span>
+                                                    (mkdir-p xsessions)
+                                                    (mkdir-p bin)
+                                                    (make-desktop-entry-file
+                                                     (string-append xsessions <span class="org-string">"/exwm.desktop"</span>)
+                                                     <span class="org-builtin">#:name</span> ,name
+                                                     <span class="org-builtin">#:comment</span> ,synopsis
+                                                     <span class="org-builtin">#:exec</span> exwm-executable
+                                                     <span class="org-builtin">#:try-exec</span> exwm-executable)
+
+                                                    <span class="org-comment-delimiter">;; </span><span class="org-comment">Add a shell wrapper to bin</span>
+                                                    (with-output-to-file exwm-executable
+                                                      (<span class="org-keyword">lambda</span> _
+                                                        (format #t <span class="org-string">"#!~a ~@</span>
+<span class="org-string">                                                                                       ~a +SI:localuser:$USER ~@</span>
+<span class="org-string">                                                                                       ~a &amp;</span>
+<span class="org-string">                                                                                       exec ~a --exit-with-session ~a \"$@\" --eval '~s' ~%"</span>
+                                                                (string-append (assoc-ref inputs <span class="org-string">"bash"</span>) <span class="org-string">"/bin/sh"</span>)
+                                                                (string-append (assoc-ref inputs <span class="org-string">"xhost"</span>) <span class="org-string">"/bin/xhost"</span>)
+                                                                (string-append (assoc-ref inputs <span class="org-string">"picom"</span>) <span class="org-string">"/bin/picom"</span>)
+                                                                (string-append (assoc-ref inputs <span class="org-string">"dbus"</span>) <span class="org-string">"/bin/dbus-launch"</span>)
+                                                                (string-append (assoc-ref inputs <span class="org-string">"emacs"</span>) <span class="org-string">"/bin/emacs"</span>)
+                                                                '(<span class="org-keyword">cond</span>
+                                                                  ((file-exists-p <span class="org-string">"~/.exwm"</span>)
+                                                                   (load-file <span class="org-string">"~/.exwm"</span>))
+                                                                  ((not (featurep 'exwm))
+                                                                   (require 'exwm)
+                                                                   (require 'exwm-config)
+                                                                   (exwm-config-default)
+                                                                   (message (concat <span class="org-string">"exwm configuration not found. "</span>
+                                                                                    <span class="org-string">"Falling back to default configuration..."</span>)))))))
+                                                    (chmod exwm-executable #o555)
+                                                    #t))))))))
+</code></pre>
+</div></div></div></div></div><footer class="blog-footer"><div class="container"><div class="row"><div class="col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right"><p>Made with Emacs 27.2 (Org mode 9.4.4)</p></div></div></div></footer><script src="/js/bootstrap.bundle.min.js"/></body></html>

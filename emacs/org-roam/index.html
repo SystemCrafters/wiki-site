@@ -1,0 +1,61 @@
+<!DOCTYPE html><html lang="en"><head><!--  --><meta charset="utf-8"/><meta author="David Wilson"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/fonts/iosevka-aile/iosevka-aile.css"/><link rel="stylesheet" href="/fonts/jetbrains-mono/jetbrains-mono.css"/><link rel="stylesheet" href="/css/code.css"/><link rel="stylesheet" href="/css/site.css"/><title>Org Roam - System Crafters</title></head><body><div><div class="blog-header"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-8"><div class="blog-title">System Crafters</div></div><div class="col-sm col-md"><div class="blog-description text-sm-left text-md-right text-lg-right text-xl-right"></div></div></div></div></div><div class="blog-masthead"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-12"><nav class="nav"><a class="nav-link" href="/">Main Page</a> <a class="nav-link" href="/emacs">GNU Emacs</a> <a class="nav-link" href="/guix">GNU Guix</a><a class="nav-link" href="https://systemcrafters.cc">System Crafters Home</a><form class="navbar-form navbar-right" role="search" action="https://duckduckgo.com/"><div class="form-group"><input type="text" name="q" class="form-control" placeholder="Search Wiki" style="overflow: hidden;margin-top: 3%;margin-bottom: 2%;"/><input type="hidden" name="sites" value="wiki.systemcrafters.cc"/></div></form> </nav></div></div></div></div></div><div class="container"><div class="row"><div class="col-sm-12 blog-main"><div class="blog-post"><h1 class="blog-post-title">Org Roam</h1><p class="blog-post-meta"></p><div>
+<h2><a id="what-is-it" class="anchor" href="#what-is-it">¶</a>What is it?</h2><p><a href="https://www.orgroam.com/manual.html#Introduction">Org-roam</a> is a solution, built on org-mode, to capture notes in a non-hierarchical way.
+</p>
+
+<p>Notes can relate to each other, creating a web of relations. It helps you implement a digital <a href="https://en.wikipedia.org/wiki/Zettelkasten">Zettelkasten</a> slip box of notes.
+</p>
+
+<h2><a id="what-can-you-use-it-for" class="anchor" href="#what-can-you-use-it-for">¶</a>What can you use it for</h2><p>With org-roam, you can create your own wiki, powered by Emacs, org-mode features.
+</p>
+
+<p>Org-roam helps you search, link to other notes, and also has a graphical view (using graphviz) of the relations between your notes.
+</p>
+
+<h2><a id="getting-started" class="anchor" href="#getting-started">¶</a>Getting started</h2><p>Have a look at the Org-roam <a href="https://www.orgroam.com/manual.html#Getting-Started">Getting Started</a> page.
+</p>
+
+<p>The main actions you will perform:
+</p>
+<ol><li>create new notes (uses org-roam's own <a href="https://www.orgroam.com/manual.html#The-Templating-System">org-capture templates</a>). Command org-roam-find-file on a new title.</li>
+<li>search notes by name / tags. Command org-roam-find-file</li>
+<li>create links to existing notes (manually, or using auto <a href="https://www.orgroam.com/manual.html#Completions">completion</a> frameworks)</li>
+<li>use any features of org mode you like (tables, source code block, bibliography, etc..)</li>
+</ol>
+
+<h2><a id="hints" class="anchor" href="#hints">¶</a>Hints</h2><h3><a id="you-cant-find-your-notes-or-they-are-not-named-properly" class="anchor" href="#you-cant-find-your-notes-or-they-are-not-named-properly">¶</a>You can't find your notes, or they are not named properly</h3><p>Org-roam indexes your notes, and it's possible that the index was not created yet, or is out of sync.
+</p>
+
+<p>You can solve this problem in couple of ways:
+</p>
+<ol><li>make sure you followed the getting started steps to setup indexing, the after-init-hook and the update method</li>
+<li>If your configuration is correct, but you still have an issue
+<ol><li>you have a wrongly named entry in your search, clear and rebuild your cache with the following commands (M-x):
+<pre><code class="nil">org-roam-db-clear-cache
+org-roam-db-build-cache
+</code></pre></li>
+<li>you are missing some entry, build the cache manually with the following command (M-x):
+`org-roam-db-build-cache`</li>
+</ol></li>
+</ol>
+
+<h3><a id="renaming-notes" class="anchor" href="#renaming-notes">¶</a>Renaming notes</h3><p>Renaming titles within your note has an impact to the search. Make sure the index has the original name before changing a title. This is usually done by saving your note (C-c C-c, and possibly C-x C-s).
+</p>
+
+<p>Without the note properly indexed, the changes will not be visible in the org-roam-find-file command.
+</p>
+
+
+<h3><a id="want-different-colors-for-org-roam-links-vs-other-links" class="anchor" href="#want-different-colors-for-org-roam-links-vs-other-links">¶</a>Want different colors for org-roam links vs other links?</h3><p>To get some visual queue about regular links vs org-roam links, you can set a different color for org-roam links like here:
+</p>
+
+<pre><code class="emacs-lisp">(custom-set-faces
+  '((org-roam-link org-roam-link-current)
+    <span class="org-builtin">:foreground</span> <span class="org-string">"#e24888"</span> <span class="org-builtin">:underline</span> t))
+</code></pre>
+
+<p><em>contributed by nackjicholson on IRC</em>
+</p>
+
+<h3><a id="please-contribute-your-own-hints-and-tricks" class="anchor" href="#please-contribute-your-own-hints-and-tricks">¶</a>Please contribute your own hints and tricks</h3><p>What else do you know about org-roam that can be useful to all?
+</p>
+</div></div></div></div></div><footer class="blog-footer"><div class="container"><div class="row"><div class="col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right"><p>Made with Emacs 27.2 (Org mode 9.4.4)</p></div></div></div></footer><script src="/js/bootstrap.bundle.min.js"/></body></html>

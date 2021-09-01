@@ -1,0 +1,53 @@
+<!DOCTYPE html><html lang="en"><head><!--  --><meta charset="utf-8"/><meta author="David Wilson"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/fonts/iosevka-aile/iosevka-aile.css"/><link rel="stylesheet" href="/fonts/jetbrains-mono/jetbrains-mono.css"/><link rel="stylesheet" href="/css/code.css"/><link rel="stylesheet" href="/css/site.css"/><title>Chatting with the Community - System Crafters</title></head><body><div><div class="blog-header"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-8"><div class="blog-title">System Crafters</div></div><div class="col-sm col-md"><div class="blog-description text-sm-left text-md-right text-lg-right text-xl-right"></div></div></div></div></div><div class="blog-masthead"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-12"><nav class="nav"><a class="nav-link" href="/">Main Page</a> <a class="nav-link" href="/emacs">GNU Emacs</a> <a class="nav-link" href="/guix">GNU Guix</a><a class="nav-link" href="https://systemcrafters.cc">System Crafters Home</a><form class="navbar-form navbar-right" role="search" action="https://duckduckgo.com/"><div class="form-group"><input type="text" name="q" class="form-control" placeholder="Search Wiki" style="overflow: hidden;margin-top: 3%;margin-bottom: 2%;"/><input type="hidden" name="sites" value="wiki.systemcrafters.cc"/></div></form> </nav></div></div></div></div></div><div class="container"><div class="row"><div class="col-sm-12 blog-main"><div class="blog-post"><h1 class="blog-post-title">Chatting with the Community</h1><p class="blog-post-meta"></p><div><p>The System Crafters community hangs out in a few places, YouTube comments (and live chat on streams), Discord, and IRC (also accessible with a Matrix bridge).
+</p>
+
+<h2><a id="youtube" class="anchor" href="#youtube">¶</a>YouTube</h2><p>You can chat with us during <a href="https://www.youtube.com/channel/UCAiiOTio8Yu69c3XnR7nQBQ">System Crafters live streams</a>!
+</p>
+
+<h2><a id="discord" class="anchor" href="#discord">¶</a>Discord</h2><p>This is currently where the bulk of the community is hanging out. There are several emacs and guix focused topic channels as well as general topic channels like gaming, music, and showcases of what the community is up to. Here is the invite <a href="https://discord.gg/yVD8Gx6">link to Discord</a>.
+</p>
+
+<h2><a id="irc--matrix-bridge" class="anchor" href="#irc--matrix-bridge">¶</a>IRC / Matrix bridge</h2><h3><a id="internet-relay-chat-irc" class="anchor" href="#internet-relay-chat-irc">¶</a>Internet Relay Chat (IRC)</h3><p><a href="ircs://irc.libera.chat/systemcrafters">#systemcrafters</a> channel is on the <a href="https://libera.chat">libera.chat</a> irc server along with a lot of other FOSS software channels like <a href="ircs://irc.libera.chat/emacs">#emacs</a>, <a href="ircs://irc.libera.chat/guix">#guix</a>, etc.
+</p>
+<h4><a id="join-via-erc" class="anchor" href="#join-via-erc">¶</a>Join via ERC</h4><p>You can join the <a href="ircs://irc.libera.chat/systemcrafters">#systemcrafters</a> channel from within Emacs. For a quick introduction, have a look at <a href="https://www.youtube.com/watch?v=qWHTZIYTA4s">Chat Like the 90's in Emacs with ERC</a>, but for the impatient, you can use the following sexp:
+</p>
+
+<pre><code class="emacs-lisp">(erc-tls <span class="org-builtin">:server</span> <span class="org-string">"irc.libera.chat"</span>
+                  <span class="org-builtin">:port</span> 6697
+                  <span class="org-builtin">:nick</span>   <span class="org-string">"YOUR-NICK"</span>
+                  <span class="org-builtin">:full-name</span> <span class="org-string">"YOUR-FULL-NAME"</span>)
+</code></pre>
+
+<p>After your initial connection, use <kbd>/join #systemcrafters</kbd> to join the systemcrafters channel. For more information, see the <a href="info:erc">ERC manual</a> or the <a href="https://www.emacswiki.org/emacs/ERC">ERC page in the Emacs Wiki</a>.
+</p>
+
+<p>It's also a good idea to cloak your user (so your IP address is hidden from a <kbd>whois</kbd> query). You can do that by <kbd>/join #libera-cloak</kbd> and then sending the message <kbd>!cloakme</kbd>. You only need to do it once for your NickServ account and it will cloak all your nicks anytime you connect.
+</p>
+
+<p>IRC chatting is simple, stable, hackable, and craftable, but because it's an old protocol with roots all the way back to the beginnings of the world wide web it comes with some limitations. One such limitation is that you have to be online to read messages. To learn more about configuring and using a ZNC bouncer server to stay connected and up to date with messages, see <a href="../znc-bouncer-servers/">ZNC Bouncer Server Setup</a>.
+</p>
+
+<h3><a id="matrix-bridge" class="anchor" href="#matrix-bridge">¶</a>Matrix bridge</h3><p>Some may prefer to access the IRC channel using the <a href="https://en.wikipedia.org/wiki/Matrix_(protocol)">[matrix] protocol</a> clients like <a href="https://element.io/">Element</a>. Matrix bridges allow other protocols to be bridged with matrix. Matrix clients have an UX more similar to Discord and have some benefits like: it serves as a built-in bounce server (so you can see messages when you weren't online), it <em>inline</em> <strong>markup</strong> and <kbd>code</kbd> snippets, and the mobile app support is better. 
+There are a few different ways to achieve this:
+</p>
+
+<h4><a id="join-as-a-matrix-user" class="anchor" href="#join-as-a-matrix-user">¶</a>Join as a Matrix user</h4><p>You can join a room directly by adding <kbd>#systemcrafters:irc.libera.chat</kbd> to join with your matrix identity. You don't have to register with IRC at all if you just want to keep using your matrix identity since both Matrix and IRC users are treated as first class citizens.
+</p>
+
+<h4><a id="join-as-an-irc-user" class="anchor" href="#join-as-an-irc-user">¶</a>Join as an IRC user</h4><p>In order to use Matrix you have to have a Matrix account but if once logged into the client (Element) you can invite @NickServ:libera.chat to a PM to register/identify your IRC nick. Then invite @appservice:libera.chat to a PM and <kbd>!join #systemscrafters</kbd>. In order to save your username by issuing the <kbd>!username</kbd> command followed by the <kbd>!storepass YourP@assw0rd</kbd>.
+</p>
+
+<p>It's also a good idea to cloak your user (so your IP address is hidden from a <kbd>whois</kbd> query). You can do that by sending <kbd>!join #libera-cloak</kbd> to @appservice:libera.chat and then sending the message <kbd>!cloakme</kbd>. You only need to do it once for your NickServ account and it will cloak all your nicks anytime you connect.
+</p>
+
+
+<p>Follow libera.chat guidance on grouping your nicks under a single NickServ account if you plan on signing into IRC from Matrix and an IRC client simultaneously (<a href="https://libera.chat/guides/registration#registering">https://libera.chat/guides/registration#registering</a>).
+<kbd>NOTE</kbd> If you join as more than one sure please append an underscore to your secondary nick which should be the same as your primary nick. This will help everyone understand it's the same person in two different clients. Example: <kbd>daviwil</kbd> and <kbd>daviwil_</kbd>.
+</p>
+
+<p><kbd>NOTE</kbd>: libera.chat IRC server does not support <kbd>COMMAND setname</kbd> which is what allows you to set your "real name" after connecting. And the Element client does not pass a <kbd>realname</kbd> as part of the connection string. So unfortunately your real name will show as your Matrix username.
+</p>
+
+<h4><a id="join-as-all-the-things" class="anchor" href="#join-as-all-the-things">¶</a>Join as all the things</h4><p>You could join from an IRC client and through Matrix and authenticate as an IRC user and you can join from Matrix as a Matrix user, just join.
+</p>
+</div></div></div></div></div><footer class="blog-footer"><div class="container"><div class="row"><div class="col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right"><p>Made with Emacs 27.2 (Org mode 9.4.4)</p></div></div></div></footer><script src="/js/bootstrap.bundle.min.js"/></body></html>
