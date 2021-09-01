@@ -1,0 +1,105 @@
+#+title: EXWM Hacking Notes
+
+This is a set of notes that are being compiled as a part of the [[https://youtube.com/playlist?list=PLEoMzSkcN8oOS1y2uMspTXr1nd5JxUSzB][Hack Sessions]] series of streams!
+
+* Tasks
+
+** TODO Find a good EXWM bug to investigate for next time
+
+* Repository Links
+
+- https://github.com/ch11ng/exwm/
+- https://github.com/ch11ng/xelb
+
+* EXWM Overview
+
+The files:
+
+** exwm.el
+
+=exwm-init= is the entrypoint for setting up EXWM and connecting to the X Window System server.
+
+Many update functions used internally
+
+Part of the initialization process is to initialize modules like ICCCM and EWMH via functions like =xcb:ewmh:init=, these seem to be focused around fetching the IDs for well-known Atoms.  Once they've been fetched, those subsystems are considered to be initialized.
+
+** Other files
+
+BUG_HUNT.org
+README.md
+exwm-cm.el
+exwm-config.el
+exwm-core.el
+exwm-floating.el
+exwm-input.el
+exwm-layout.el
+exwm-manage.el
+exwm-randr.el
+exwm-systemtray.el
+exwm-workspace.el
+exwm-xim.el
+xinitrc
+
+* XELB Overview
+
+Generates elisp libraries for the X11 protocol with the =el_client.el= file, driven by the =Makefile=
+
+A small portion of the files are generated but many are helper libraries for specific parts of the X11 protocol.
+
+#+begin_quote
+
+;; Interfaces are mainly defined in 'xcb.el'.  Please refer to that file on how
+;; to use them.  Most of other files are either X11 core / extension protocol
+;; libraries (e.g. xcb-randr.el) or utility libraries (e.g. xcb-keysyms.el).
+;; Please check the corresponding files for more details.
+
+#+end_quote
+
+
+* Definitions
+
+** xcb
+
+https://xcb.freedesktop.org/
+[[https://xcb.freedesktop.org/tutorial/][xcb tutorial]]
+[[https://xcb.freedesktop.org/XmlXcb/][XML-XCB format for describing the X Window System protocol]]
+
+** X Window System
+
+This is the client/server system which handles drawing to the screen, mouse/keyboard input, etc.
+
+You communicate with it via an XML-based protocol.
+
+** ICCCM
+
+This seems to be a set of conventions for commuication between clients in the X Window System
+
+Describes window manager interactions at a low level
+
+https://www.x.org/releases/current/doc/xorg-docs/icccm/icccm.html#Introduction
+
+** EWMH
+
+Extended Window Manager Hints
+
+An extended set of conventions for modern desktop environments (see Non-ICCCM features section)
+
+https://specifications.freedesktop.org/wm-spec/wm-spec-1.3.html
+
+Assumption: the window manager is the "root window" and anything in this document that describes messages handled by the root window are actually handled by the window manager.
+
+
+* Testing with Xephyr
+
+Docs: https://cgit.freedesktop.org/xorg/xserver/tree/hw/kdrive/ephyr/README
+
+Here's a simple script that can help with testing:
+
+#+begin_src sh
+
+  #!/bin/sh
+  Xephyr :1 -ac -dpi 180 -screen 1920x1080 &
+  DISPLAY=:1 emacs
+  pkill Xephyr
+
+#+end_src
