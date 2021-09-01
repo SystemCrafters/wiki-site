@@ -110,11 +110,11 @@
                                      (a (@ (class "nav-link") (href "/")) "Main Page") " "
                                      (a (@ (class "nav-link") (href "/emacs")) "GNU Emacs") " "
                                      (a (@ (class "nav-link") (href "/guix")) "GNU Guix")
-                                     (a (@ (class "nav-link") (href "https://systemcrafters.cc")) "System Crafters Home")
+                                     (a (@ (class "nav-link") (href "https://systemcrafters.net")) "System Crafters Home")
                                      (form (@ (class "navbar-form navbar-right") (role "search") (action "https://duckduckgo.com/"))
                                            (div (@ (class "form-group"))
                                                 (input (@ (type "text") (name "q") (class "form-control") (placeholder "Search Wiki") (style "overflow: hidden;margin-top: 3%;margin-bottom: 2%;")))
-                                                (input (@ (type "hidden") (name "sites") (value "wiki.systemcrafters.cc")))))
+                                                (input (@ (type "hidden") (name "sites") (value "wiki.systemcrafters.net")))))
                                      " "))))))))))
 
 (defun dw/site-footer (info)
@@ -125,7 +125,8 @@
              (div (@ (class "container"))
                   (div (@ (class "row"))
                        (div (@ (class "col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right"))
-                            (p "Made with " ,(plist-get info :creator)))))))
+                            (p "Made with " ,(plist-get info :creator))
+                            (p (a (@ (href "https://systemcrafters.net/privacy-policy/")) "Privacy Policy")))))))
    (sxml-to-xml
     `(script (@ (src "/js/bootstrap.bundle.min.js"))))))
 
@@ -164,6 +165,11 @@
                      (href "/css/code.css")))
             (link (@ (rel "stylesheet")
                      (href "/css/site.css")))
+            (script (@ (defer "defer")
+                       (data-domain "wiki.systemcrafters.net")
+                       (src "https://plausible.io/js/plausible.js"))
+                    ;; Empty string to cause a closing </script> tag
+                    "")
             (title ,(concat (org-export-data (plist-get info :title) info) " - System Crafters")))
            (body
             ,(dw/site-header info)
