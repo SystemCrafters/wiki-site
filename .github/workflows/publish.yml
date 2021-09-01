@@ -1,0 +1,30 @@
+name: Publish to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v1
+
+      - name: Check out the style repo
+        run: git clone --depth 1 https://git.sr.ht/~daviwil/daviwil.com daviwil.com
+
+      - name: Install Emacs
+        uses: purcell/setup-emacs@master
+        with:
+          version: 27.2
+
+      - name: Build the site
+        run: ./local-build.sh
+
+      - name: Publish generated content to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: public
