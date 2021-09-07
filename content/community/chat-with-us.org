@@ -32,7 +32,7 @@ Some may prefer to access the IRC channel using the [[https://en.wikipedia.org/w
 There are a few different ways to achieve this:
 
 *** Join as a Matrix user
-You can join a room directly by adding ~#systemcrafters:irc.libera.chat~ to join with your matrix identity. You don't have to register with IRC at all if you just want to keep using your matrix identity since both Matrix and IRC users are treated as first class citizens.
+You can join a room directly by adding ~#systemcrafters:libera.chat~ to join with your Matrix identity. You don't have to register with IRC at all if you just want to keep using your Matrix identity since both Matrix and IRC users are treated as first class citizens.
 
 *** Join as an IRC user
 In order to use Matrix you have to have a Matrix account but if once logged into the client (Element) you can invite @NickServ:libera.chat to a PM to register/identify your IRC nick. Then invite @appservice:libera.chat to a PM and ~!join #systemscrafters~. In order to save your username by issuing the ~!username~ command followed by the ~!storepass YourP@assw0rd~.
