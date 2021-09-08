@@ -3,9 +3,19 @@
 
 <h2><a id="tasks" class="anchor" href="#tasks">¶</a>Tasks</h2><h3><a id="find-a-good-exwm-bug-to-investigate-for-next-time" class="anchor" href="#find-a-good-exwm-bug-to-investigate-for-next-time">¶</a>Find a good EXWM bug to investigate for next time</h3>
 
-<h2><a id="repository-links" class="anchor" href="#repository-links">¶</a>Repository Links</h2><ul><li><a href="https://github.com/ch11ng/exwm/">https://github.com/ch11ng/exwm/</a></li>
+<h2><a id="repository-links" class="anchor" href="#repository-links">¶</a>Repository Links</h2><p>Here are the official EXWM repo links:
+</p>
+
+<ul><li><a href="https://github.com/ch11ng/exwm/">https://github.com/ch11ng/exwm/</a></li>
 <li><a href="https://github.com/ch11ng/xelb">https://github.com/ch11ng/xelb</a></li>
+<li>FAQ (helpful for debugging): <a href="https://github.com/ch11ng/exwm/wiki#faq">https://github.com/ch11ng/exwm/wiki#faq</a></li>
 </ul>
+
+<p>If you'd like to contribute to my fork, you can check it out here:
+</p>
+
+<p><a href="https://github.com/daviwil/exwm">https://github.com/daviwil/exwm</a>
+</p>
 
 <h2><a id="exwm-overview" class="anchor" href="#exwm-overview">¶</a>EXWM Overview</h2><p>The files:
 </p>
@@ -74,7 +84,6 @@ xinitrc
 <p>Assumption: the window manager is the "root window" and anything in this document that describes messages handled by the root window are actually handled by the window manager.
 </p>
 
-
 <h2><a id="testing-with-xephyr" class="anchor" href="#testing-with-xephyr">¶</a>Testing with Xephyr</h2><p>Docs: <a href="https://cgit.freedesktop.org/xorg/xserver/tree/hw/kdrive/ephyr/README">https://cgit.freedesktop.org/xorg/xserver/tree/hw/kdrive/ephyr/README</a>
 </p>
 
@@ -88,4 +97,60 @@ Xephyr :1 -ac -dpi 180 -screen 1920x1080 &amp;
 pkill Xephyr
 
 </code></pre>
+
+<p>I'm also using this Emacs configuration for testing purposes:
+</p>
+
+<pre><code class="emacs-lisp">
+(add-to-list 'load-path (expand-file-name <span class="org-string">"/home/daviwil/Projects/Code/xelb"</span>))
+(add-to-list 'load-path (expand-file-name <span class="org-string">"/home/daviwil/Projects/Code/exwm"</span>))
+
+(load-theme 'deeper-blue t)
+
+(<span class="org-keyword">require</span> '<span class="org-constant">exwm</span>)
+
+(exwm-init)
+
+(split-window-right)
+(other-window 1)
+(start-process-shell-command <span class="org-string">"gnome-mahjongg"</span> nil <span class="org-string">"gnome-mahjongg"</span>)
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Turn EXWM and XELB logging (check *XELB-DEBUG* buffer)</span>
+(exwm-debug)
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Enter the debugger when an error is encountered</span>
+(toggle-debug-on-error)
+
+(<span class="org-keyword">defun</span> <span class="org-function-name">dw/exwm-fake-command-wrapper</span> (orig-fn <span class="org-type">&amp;rest</span> args)
+  (debug-on-variable-change 'last-command)
+  (apply orig-fn args)
+  (cancel-debug-on-variable-change 'last-command))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">NOTE: This isn't being used now, leaving it here for reference</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">(advice-add 'exwm-input--fake-last-command :around #'dw/exwm-fake-command-wrapper)</span>
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Clear the existing EXWM log file</span>
+(<span class="org-keyword">setq</span> dw/exwm-log-path <span class="org-string">"~/Projects/Code/exwm/xelb.log"</span>)
+(<span class="org-keyword">with-current-buffer</span> (find-file-noselect dw/exwm-log-path)
+  (delete-region (point-min) (point-max))
+  (save-buffer))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Auto-save EXWM/XELB logs</span>
+(<span class="org-keyword">with-current-buffer</span> (get-buffer-create <span class="org-string">"*XELB-DEBUG*"</span>)
+  (<span class="org-keyword">setq-local</span> auto-save-timeout 1)
+  (<span class="org-keyword">setq-local</span> buffer-file-name dw/exwm-log-path)
+  (save-buffer)
+  (auto-save-mode 1)
+  (auto-save-visited-mode 1))
+
+</code></pre>
+
+<h2><a id="bug-investigations" class="anchor" href="#bug-investigations">¶</a>Bug Investigations</h2><h3><a id="fixed---842-hang-when-clicking-on-x-window-after-isearch" class="anchor" href="#fixed---842-hang-when-clicking-on-x-window-after-isearch">¶</a>FIXED - #842: Hang when clicking on X window after isearch</h3><p>Link: <a href="https://github.com/ch11ng/exwm/issues/842">https://github.com/ch11ng/exwm/issues/842</a>
+</p>
+
+<p><strong>Notes</strong>
+</p>
+
+<p>This was caused by a misbehaving function in <kbd>isearch</kbd> which was being added to the <kbd>pre-command-hook</kbd> that gets invoked by <kbd>exwm-input--fake-last-command</kbd>.  We fixed the issue by wrapping the <kbd>run-hooks</kbd> calls with a <kbd>condition-case</kbd> macro to prevent errors from breaking the EXWM session.
+</p>
 </div></div></div></div></div><footer class="blog-footer"><div class="container"><div class="row"><div class="col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right"><p>Made with Emacs 27.2 (Org mode 9.4.4)</p><p><a href="https://systemcrafters.net/privacy-policy/">Privacy Policy</a></p></div></div></div></footer><script src="/js/bootstrap.bundle.min.js"/></body></html>
