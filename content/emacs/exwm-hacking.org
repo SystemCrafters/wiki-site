@@ -8,8 +8,15 @@ This is a set of notes that are being compiled as a part of the [[https://youtub
 
 * Repository Links
 
+Here are the official EXWM repo links:
+
 - https://github.com/ch11ng/exwm/
 - https://github.com/ch11ng/xelb
+- FAQ (helpful for debugging): https://github.com/ch11ng/exwm/wiki#faq
+
+If you'd like to contribute to my fork, you can check it out here:
+
+https://github.com/daviwil/exwm
 
 * EXWM Overview
 
@@ -88,7 +95,6 @@ https://specifications.freedesktop.org/wm-spec/wm-spec-1.3.html
 
 Assumption: the window manager is the "root window" and anything in this document that describes messages handled by the root window are actually handled by the window manager.
 
-
 * Testing with Xephyr
 
 Docs: https://cgit.freedesktop.org/xorg/xserver/tree/hw/kdrive/ephyr/README
@@ -103,3 +109,60 @@ Here's a simple script that can help with testing:
   pkill Xephyr
 
 #+end_src
+
+I'm also using this Emacs configuration for testing purposes:
+
+#+begin_src emacs-lisp
+
+  (add-to-list 'load-path (expand-file-name "/home/daviwil/Projects/Code/xelb"))
+  (add-to-list 'load-path (expand-file-name "/home/daviwil/Projects/Code/exwm"))
+
+  (load-theme 'deeper-blue t)
+
+  (require 'exwm)
+
+  (exwm-init)
+
+  (split-window-right)
+  (other-window 1)
+  (start-process-shell-command "gnome-mahjongg" nil "gnome-mahjongg")
+
+  ;; Turn EXWM and XELB logging (check *XELB-DEBUG* buffer)
+  (exwm-debug)
+
+  ;; Enter the debugger when an error is encountered
+  (toggle-debug-on-error)
+
+  (defun dw/exwm-fake-command-wrapper (orig-fn &rest args)
+    (debug-on-variable-change 'last-command)
+    (apply orig-fn args)
+    (cancel-debug-on-variable-change 'last-command))
+
+  ;; NOTE: This isn't being used now, leaving it here for reference
+  ;; (advice-add 'exwm-input--fake-last-command :around #'dw/exwm-fake-command-wrapper)
+
+  ;; Clear the existing EXWM log file
+  (setq dw/exwm-log-path "~/Projects/Code/exwm/xelb.log")
+  (with-current-buffer (find-file-noselect dw/exwm-log-path)
+    (delete-region (point-min) (point-max))
+    (save-buffer))
+
+  ;; Auto-save EXWM/XELB logs
+  (with-current-buffer (get-buffer-create "*XELB-DEBUG*")
+    (setq-local auto-save-timeout 1)
+    (setq-local buffer-file-name dw/exwm-log-path)
+    (save-buffer)
+    (auto-save-mode 1)
+    (auto-save-visited-mode 1))
+
+#+end_src
+
+* Bug Investigations
+
+** FIXED - #842: Hang when clicking on X window after isearch
+
+Link: https://github.com/ch11ng/exwm/issues/842
+
+*Notes*
+
+This was caused by a misbehaving function in =isearch= which was being added to the =pre-command-hook= that gets invoked by =exwm-input--fake-last-command=.  We fixed the issue by wrapping the =run-hooks= calls with a =condition-case= macro to prevent errors from breaking the EXWM session.
