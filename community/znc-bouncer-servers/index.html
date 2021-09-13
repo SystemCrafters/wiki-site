@@ -8,6 +8,7 @@
 <li><a href="https://wiki.znc.in/Signed_SSL_certificate#LetsEncrypt">ZNC Wiki - Signed SSL Certificate with Let's Encrypt</a></li>
 <li><a href="https://sgfault.com/2018/07/28/irc-bouncer-setup.html">Blog: Setting Up an IRC Bouncer</a></li>
 <li><a href="https://www.vultr.com/docs/installing-and-configuring-znc-on-centos-7">Blog: Vultr - Installing and Configuring ZNC on CentOS 7</a></li>
+<li><a href="https://chromium.googlesource.com/chromium/src.git/+/refs/heads/master/net/base/port_util.cc">Google Chrome - List of blocked ports</a></li>
 </ul>
 
 <h2><a id="tutorial-znc-with-ssltls-on-centos" class="anchor" href="#tutorial-znc-with-ssltls-on-centos">¶</a>Tutorial: ZNC with SSL/TLS on CentOS</h2><p>The following commands and configuration instructions will set up a secure ZNC server for personal use. You will need a CentOS 7 server or virtual machine, as well as a registered domain name. In the tutorial znc.example.org will be used as the target domain name, and the ZNC server will be configured to run on port 6697.
@@ -24,6 +25,12 @@ $ sudo yum install certbot znc
 $ sudo firewall-cmd --zone=public --permanent --add-service=https
 $ sudo firewall-cmd --add-port=6697/tcp
 $ sudo firewall-cmd --runtime-to-permanent
+</code></pre>
+
+<p><strong>Note:</strong> Some browsers, like Google Chrome block port <kbd>6697</kbd> (amongst others) by default because it's commonly used for IRC networks (and thus not HTTP). One can remedy that by either switching to another port (both in the firewall settings and the ZNC configuration) or by forcing Chrome to explicitly allow it:
+</p>
+
+<pre><code class="sh">chromium --explicitly-allowed-ports=6697
 </code></pre>
 
 <h3><a id="use-a-lets-encrypt-certificate-with-znc" class="anchor" href="#use-a-lets-encrypt-certificate-with-znc">¶</a>Use a Let's Encrypt Certificate with ZNC</h3><p>Let's Encrypt is a service that enables people to use SSL encryption more easily on the internet. Signed and verified certificates can be acquired using a simple CLI tool called <kbd>certbot</kbd>. The certificates expire rather quickly, and this is why auto-renewal steps are also shown below.
