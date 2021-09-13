@@ -10,6 +10,7 @@ Several members of the System Crafters community are running their own ZNC serve
 - [[https://wiki.znc.in/Signed_SSL_certificate#LetsEncrypt][ZNC Wiki - Signed SSL Certificate with Let's Encrypt]]
 - [[https://sgfault.com/2018/07/28/irc-bouncer-setup.html][Blog: Setting Up an IRC Bouncer]]
 - [[https://www.vultr.com/docs/installing-and-configuring-znc-on-centos-7][Blog: Vultr - Installing and Configuring ZNC on CentOS 7]]
+- [[https://chromium.googlesource.com/chromium/src.git/+/refs/heads/master/net/base/port_util.cc][Google Chrome - List of blocked ports]]
 
 * Tutorial: ZNC with SSL/TLS on CentOS
 
@@ -31,6 +32,12 @@ $ sudo firewall-cmd --zone=public --permanent --add-service=http
 $ sudo firewall-cmd --zone=public --permanent --add-service=https
 $ sudo firewall-cmd --add-port=6697/tcp
 $ sudo firewall-cmd --runtime-to-permanent
+#+end_src
+
+*Note:* Some browsers, like Google Chrome block port =6697= (amongst others) by default because it's commonly used for IRC networks (and thus not HTTP). One can remedy that by either switching to another port (both in the firewall settings and the ZNC configuration) or by forcing Chrome to explicitly allow it:
+
+#+begin_src sh :eval never
+chromium --explicitly-allowed-ports=6697
 #+end_src
 
 ** Use a Let's Encrypt Certificate with ZNC
