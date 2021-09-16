@@ -1,7 +1,8 @@
 <!DOCTYPE html><html lang="en"><head><!--  --><meta charset="utf-8"/><meta author="David Wilson"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/fonts/iosevka-aile/iosevka-aile.css"/><link rel="stylesheet" href="/fonts/jetbrains-mono/jetbrains-mono.css"/><link rel="stylesheet" href="/css/code.css"/><link rel="stylesheet" href="/css/site.css"/><script defer="defer" data-domain="wiki.systemcrafters.net" src="https://plausible.io/js/plausible.js"></script><title>EXWM Hacking Notes - System Crafters</title></head><body><div><div class="blog-header"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-8"><div class="blog-title">System Crafters</div></div><div class="col-sm col-md"><div class="blog-description text-sm-left text-md-right text-lg-right text-xl-right"></div></div></div></div></div><div class="blog-masthead"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-12"><nav class="nav"><a class="nav-link" href="/">Main Page</a> <a class="nav-link" href="/emacs">GNU Emacs</a> <a class="nav-link" href="/guix">GNU Guix</a><a class="nav-link" href="https://systemcrafters.net">System Crafters Home</a><form class="navbar-form navbar-right" role="search" action="https://duckduckgo.com/"><div class="form-group"><input type="text" name="q" class="form-control" placeholder="Search Wiki" style="overflow: hidden;margin-top: 3%;margin-bottom: 2%;"/><input type="hidden" name="sites" value="wiki.systemcrafters.net"/></div></form> </nav></div></div></div></div></div><div class="container"><div class="row"><div class="col-sm-12 blog-main"><div class="blog-post"><h1 class="blog-post-title">EXWM Hacking Notes</h1><p class="blog-post-meta"></p><div><p>This is a set of notes that are being compiled as a part of the <a href="https://youtube.com/playlist?list=PLEoMzSkcN8oOS1y2uMspTXr1nd5JxUSzB">Hack Sessions</a> series of streams!
 </p>
 
-<h2><a id="tasks" class="anchor" href="#tasks">¶</a>Tasks</h2><h3><a id="find-a-good-exwm-bug-to-investigate-for-next-time" class="anchor" href="#find-a-good-exwm-bug-to-investigate-for-next-time">¶</a>Find a good EXWM bug to investigate for next time</h3>
+<h2><a id="tasks" class="anchor" href="#tasks">¶</a>Tasks</h2><h3><a id="find-a-good-exwm-bug-to-investigate-for-next-time" class="anchor" href="#find-a-good-exwm-bug-to-investigate-for-next-time">¶</a>Find a good EXWM bug to investigate for next time</h3><ul><li><a href="https://github.com/ch11ng/exwm/issues/847">https://github.com/ch11ng/exwm/issues/847</a></li>
+</ul>
 
 <h2><a id="repository-links" class="anchor" href="#repository-links">¶</a>Repository Links</h2><p>Here are the official EXWM repo links:
 </p>
@@ -109,11 +110,27 @@ pkill Xephyr
 
 (<span class="org-keyword">require</span> '<span class="org-constant">exwm</span>)
 
-(exwm-init)
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Allow C+lmb to move windows</span>
+(<span class="org-keyword">setq</span> exwm-input-move-event 'C-down-mouse-1)
 
-(split-window-right)
-(other-window 1)
-(start-process-shell-command <span class="org-string">"gnome-mahjongg"</span> nil <span class="org-string">"gnome-mahjongg"</span>)
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Set some global keys</span>
+(<span class="org-keyword">setq</span> exwm-input-global-keys
+      `(([?\C-c ?x ?r] . exwm-reset)
+        ([?\C-c ?x ?i] . exwm-input-toggle-keyboard)
+        ([?\C-c ?x ?f] . exwm-layout-toggle-fullscreen)
+        ([?\C-c ?x ?l] . (<span class="org-keyword">lambda</span> (command)
+                           (<span class="org-keyword">interactive</span> (list (read-shell-command <span class="org-string">"$ "</span>)))
+                           (start-process-shell-command command nil command)))
+        ([?\C-c ?x ?k] . (<span class="org-keyword">lambda</span> () (<span class="org-keyword">interactive</span>) (kill-buffer)))
+        ,@(mapcar (<span class="org-keyword">lambda</span> (i)
+                    `(,(kbd (format <span class="org-string">"C-c x %d"</span> i)) .
+                      (<span class="org-keyword">lambda</span> ()
+                        (<span class="org-keyword">interactive</span>)
+                        (exwm-workspace-switch-create ,i))))
+                  (number-sequence 0 9))))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Initialize EXWM</span>
+(exwm-init)
 
 <span class="org-comment-delimiter">;; </span><span class="org-comment">Turn EXWM and XELB logging (check *XELB-DEBUG* buffer)</span>
 (exwm-debug)
@@ -129,19 +146,31 @@ pkill Xephyr
 <span class="org-comment-delimiter">;; </span><span class="org-comment">NOTE: This isn't being used now, leaving it here for reference</span>
 <span class="org-comment-delimiter">;; </span><span class="org-comment">(advice-add 'exwm-input--fake-last-command :around #'dw/exwm-fake-command-wrapper)</span>
 
-<span class="org-comment-delimiter">;; </span><span class="org-comment">Clear the existing EXWM log file</span>
-(<span class="org-keyword">setq</span> dw/exwm-log-path <span class="org-string">"~/Projects/Code/exwm/xelb.log"</span>)
-(<span class="org-keyword">with-current-buffer</span> (find-file-noselect dw/exwm-log-path)
-  (delete-region (point-min) (point-max))
-  (save-buffer))
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Kudos to Timor for this suggestion:</span>
+(<span class="org-keyword">defun</span> <span class="org-function-name">xcb-debug:message</span> (format-string <span class="org-type">&amp;rest</span> objects)
+  <span class="org-doc">"Print a message to `</span><span class="org-doc"><span class="org-constant">xcb-debug:buffer</span></span><span class="org-doc">'.</span>
 
-<span class="org-comment-delimiter">;; </span><span class="org-comment">Auto-save EXWM/XELB logs</span>
-(<span class="org-keyword">with-current-buffer</span> (get-buffer-create <span class="org-string">"*XELB-DEBUG*"</span>)
-  (<span class="org-keyword">setq-local</span> auto-save-timeout 1)
-  (<span class="org-keyword">setq-local</span> buffer-file-name dw/exwm-log-path)
-  (save-buffer)
-  (auto-save-mode 1)
-  (auto-save-visited-mode 1))
+<span class="org-doc">The FORMAT-STRING argument follows the speficies how to print each of</span>
+<span class="org-doc">the passed OBJECTS.  See `</span><span class="org-doc"><span class="org-constant">format</span></span><span class="org-doc">' for details."</span>
+  (<span class="org-keyword">let</span> ((str (apply #'format format-string objects)))
+    (xcb-debug:-with-debug-buffer
+     (insert str))
+    (princ str 'external-debugging-output)))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">NOTE: To save logs to a file, use:</span>
+<span class="org-comment-delimiter">;;</span>
+<span class="org-comment-delimiter">;;    </span><span class="org-comment">emacs 2&gt;exwm.log</span>
+<span class="org-comment-delimiter">;;</span>
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Log each window that get opened</span>
+(add-hook 'exwm-manage-finish-hook
+          (<span class="org-keyword">lambda</span> ()
+            (exwm--log <span class="org-string">"WINDOW DISPLAYED: %s (%s)"</span> exwm-class-name exwm-title)))
+
+(split-window-right)
+(other-window 1)
+<span class="org-comment-delimiter">;; </span><span class="org-comment">(start-process-shell-command "gnome-mahjongg" nil "gnome-mahjongg")</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">(start-process-shell-command "calibre" nil "calibre")</span>
 
 </code></pre>
 
@@ -153,4 +182,8 @@ pkill Xephyr
 
 <p>This was caused by a misbehaving function in <kbd>isearch</kbd> which was being added to the <kbd>pre-command-hook</kbd> that gets invoked by <kbd>exwm-input--fake-last-command</kbd>.  We fixed the issue by wrapping the <kbd>run-hooks</kbd> calls with a <kbd>condition-case</kbd> macro to prevent errors from breaking the EXWM session.
 </p>
+
+<h3><a id="backlog" class="anchor" href="#backlog">¶</a>Backlog</h3><ul><li>monitor size issues: <a href="https://github.com/ch11ng/exwm/issues/847">https://github.com/ch11ng/exwm/issues/847</a></li>
+<li>closed windows process not being killed: <a href="https://github.com/ch11ng/exwm/issues/844">https://github.com/ch11ng/exwm/issues/844</a></li>
+</ul>
 </div></div></div></div></div><footer class="blog-footer"><div class="container"><div class="row"><div class="col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right"><p>Made with Emacs 27.2 (Org mode 9.4.4)</p><p><a href="https://systemcrafters.net/privacy-policy/">Privacy Policy</a></p></div></div></div></footer><script src="/js/bootstrap.bundle.min.js"/></body></html>
