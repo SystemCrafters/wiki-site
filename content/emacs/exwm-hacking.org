@@ -6,6 +6,8 @@ This is a set of notes that are being compiled as a part of the [[https://youtub
 
 ** TODO Find a good EXWM bug to investigate for next time
 
+- https://github.com/ch11ng/exwm/issues/847
+
 * Repository Links
 
 Here are the official EXWM repo links:
@@ -121,11 +123,27 @@ I'm also using this Emacs configuration for testing purposes:
 
   (require 'exwm)
 
-  (exwm-init)
+  ;; Allow C+lmb to move windows
+  (setq exwm-input-move-event 'C-down-mouse-1)
 
-  (split-window-right)
-  (other-window 1)
-  (start-process-shell-command "gnome-mahjongg" nil "gnome-mahjongg")
+  ;; Set some global keys
+  (setq exwm-input-global-keys
+        `(([?\C-c ?x ?r] . exwm-reset)
+          ([?\C-c ?x ?i] . exwm-input-toggle-keyboard)
+          ([?\C-c ?x ?f] . exwm-layout-toggle-fullscreen)
+          ([?\C-c ?x ?l] . (lambda (command)
+                             (interactive (list (read-shell-command "$ ")))
+                             (start-process-shell-command command nil command)))
+          ([?\C-c ?x ?k] . (lambda () (interactive) (kill-buffer)))
+          ,@(mapcar (lambda (i)
+                      `(,(kbd (format "C-c x %d" i)) .
+                        (lambda ()
+                          (interactive)
+                          (exwm-workspace-switch-create ,i))))
+                    (number-sequence 0 9))))
+
+  ;; Initialize EXWM
+  (exwm-init)
 
   ;; Turn EXWM and XELB logging (check *XELB-DEBUG* buffer)
   (exwm-debug)
@@ -141,19 +159,31 @@ I'm also using this Emacs configuration for testing purposes:
   ;; NOTE: This isn't being used now, leaving it here for reference
   ;; (advice-add 'exwm-input--fake-last-command :around #'dw/exwm-fake-command-wrapper)
 
-  ;; Clear the existing EXWM log file
-  (setq dw/exwm-log-path "~/Projects/Code/exwm/xelb.log")
-  (with-current-buffer (find-file-noselect dw/exwm-log-path)
-    (delete-region (point-min) (point-max))
-    (save-buffer))
+  ;; Kudos to Timor for this suggestion:
+  (defun xcb-debug:message (format-string &rest objects)
+    "Print a message to `xcb-debug:buffer'.
 
-  ;; Auto-save EXWM/XELB logs
-  (with-current-buffer (get-buffer-create "*XELB-DEBUG*")
-    (setq-local auto-save-timeout 1)
-    (setq-local buffer-file-name dw/exwm-log-path)
-    (save-buffer)
-    (auto-save-mode 1)
-    (auto-save-visited-mode 1))
+  The FORMAT-STRING argument follows the speficies how to print each of
+  the passed OBJECTS.  See `format' for details."
+    (let ((str (apply #'format format-string objects)))
+      (xcb-debug:-with-debug-buffer
+       (insert str))
+      (princ str 'external-debugging-output)))
+
+  ;; NOTE: To save logs to a file, use:
+  ;;
+  ;;    emacs 2>exwm.log
+  ;;
+
+  ;; Log each window that get opened
+  (add-hook 'exwm-manage-finish-hook
+            (lambda ()
+              (exwm--log "WINDOW DISPLAYED: %s (%s)" exwm-class-name exwm-title)))
+
+  (split-window-right)
+  (other-window 1)
+  ;; (start-process-shell-command "gnome-mahjongg" nil "gnome-mahjongg")
+  ;; (start-process-shell-command "calibre" nil "calibre")
 
 #+end_src
 
@@ -166,3 +196,8 @@ Link: https://github.com/ch11ng/exwm/issues/842
 *Notes*
 
 This was caused by a misbehaving function in =isearch= which was being added to the =pre-command-hook= that gets invoked by =exwm-input--fake-last-command=.  We fixed the issue by wrapping the =run-hooks= calls with a =condition-case= macro to prevent errors from breaking the EXWM session.
+
+** Backlog
+
+- monitor size issues: https://github.com/ch11ng/exwm/issues/847
+- closed windows process not being killed: https://github.com/ch11ng/exwm/issues/844
