@@ -11,6 +11,8 @@ many of Guix's configurations and options seem arcane and
 inaccessible. This wiki is here to show that the complete opposite is
 true!
 
+If you enjoy video content, you might want to watch the System Crafters playlist [[https://www.youtube.com/watch?v=iBaqOK75cho&list=PLEoMzSkcN8oNxnj7jm5V2ZcGc52002pQU][Craft Your System with GNU Guix]].
+
 ** Why if so many other places (and the manual) exist?
 
 Truthfully, there aren’t that many other places. The System Crafters'
