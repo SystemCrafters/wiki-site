@@ -1,0 +1,294 @@
+* straight.el installation
+We will use [[https://github.com/raxod502/straight.el][straight.el]] package manager instead of default emacs package manager
+#+begin_src emacs-lisp
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(straight-use-package 'use-package)
+(setq straight-use-package-by-default t)
+#+end_src
+* evil package
+** main [[https://github.com/emacs-evil/evil][evil]] package
+#+begin_src emacs-lisp
+(use-package evil
+    :init
+    (setq evil-toggle-key "C-<f1>")
+    (setq evil-shift-width 2)
+    (setq evil-want-integration t)
+    (setq evil-want-keybinding nil)
+    :config
+    (evil-mode 1)
+
+    ;; Use visual line motions even outside of visual-line-mode buffers
+    (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+    (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+
+    (evil-set-initial-state 'dired-mode 'emacs)
+    (evil-set-initial-state 'pdf-view-mode 'emacs)
+    (evil-set-initial-state 'messages-buffer-mode 'emacs)
+    (evil-set-initial-state 'special-mode 'emacs)
+    (evil-set-initial-state 'view-mode 'emacs)
+    (evil-set-initial-state 'deft-mode 'emacs)
+  )
+
+
+#+end_src
+** evil commentor
+[[https://github.com/redguardtoo/evil-nerd-commenter][This]] package is used for commenting lines in emacs
+#+begin_src emacs-lisp
+(use-package evil-nerd-commenter
+  :bind ("M-/" . evilnc-comment-or-uncomment-lines))
+#+end_src
+** undo tree
+for proper working of evil keybindings
+#+begin_src emacs-lisp
+  (use-package undo-tree
+    :diminish undo-tree-mode
+    :config
+    (global-undo-tree-mode)
+    )
+#+end_src
+* counsel ivy setting
+** main package
+[[https://github.com/abo-abo/swiper][ivy/counsel/swiper]] is used for minibuffer completitions and searching
+#+begin_src emacs-lisp
+  (use-package counsel
+    :diminish ivy-mode
+    :diminish counsel-mode
+    :bind (("C-s" . swiper)
+           :map ivy-minibuffer-map
+           ("TAB" . ivy-alt-done))
+    :init
+    (ivy-mode 1)
+    (counsel-mode 1)
+    :config
+    (setq ivy-use-virtual-buffers t)
+    (setq enable-recursive-minibuffers t))
+
+#+end_src
+
+** prescient.el
+[[https://github.com/raxod502/prescient.el][this]] package give better completions in ivy minibuffer based on recent usage
+#+begin_src emacs-lisp
+
+  (use-package prescient
+    :diminish
+    :config
+    )
+
+  (use-package ivy-prescient
+    :after counsel
+    :init
+    (ivy-prescient-mode)
+    (prescient-persist-mode)
+    )
+#+end_src
+
+* other useful tools
+** olivetti, whichkey, magit
+#+begin_src emacs-lisp
+  (use-package olivetti
+    :diminish
+    :hook
+    (text-mode . olivetti-mode)
+    :config
+    (setq olivetti-body-width 100)
+    )
+;;which-key
+      (use-package which-key
+        ;; :ensure t
+        :diminish which-key-mode
+        :config
+           (which-key-mode))
+
+      ;; magit
+      (use-package magit
+        ;; :ensure t
+        :defer t
+        :bind ("C-x g" . magit-status))
+#+end_src
+* org-mode
+** main
+#+begin_src emacs-lisp
+  (defun my/org-mode-setup ()
+    (org-indent-mode)
+    (setq evil-auto-indent nil
+          )
+    ;; remove olivetti keybindings
+    ;; https://emacs.stackexchange.com/questions/32389/how-do-you-disable-all-keybinding-for-a-package
+    (eval-after-load "olivetti"
+      '(assq-delete-all 'olivetti-mode minor-mode-map-alist))
+    )
+
+  (use-package org
+    :straight org-plus-contrib
+    :hook 
+    (org-mode . olivetti-mode)
+    (org-mode . which-function-mode)
+    (org-mode . my/org-mode-setup)
+    :custom
+    (olivetti-body-width 100)
+    (org-imenu-depth 4)
+    :config
+    (setq org-ellipsis " ▾")
+    )
+#+end_src
+** org roam
+Assumed =~/.org-roam= as ~org-roam-directory~ and ~index.org~ in it is the index file
+*** main
+#+begin_src emacs-lisp
+  (use-package org-roam
+    ;; :ensure t
+    ;; :hook
+    ;; (after-init . org-roam-mode)
+    :custom
+    (org-roam-directory "~/.org-roam")
+    (org-roam-index-file "~/.org-roam/index.org")
+    )
+#+end_src
+*** [[https://github.com/glucas/deft][deft]]
+Useful package to quickly search in all org-roam notes and go to them
+#+begin_src emacs-lisp
+(use-package deft
+  :bind ("<f8>" . deft)
+  :commands (deft)
+  :config (setq deft-directory "~/.org-roam"
+                deft-extensions '("md" "org")))
+#+end_src
+* Custom functions
+This function will give [[https://github.com/vimwiki/vimwiki][vimwiki]] like workflow in org-roam\\
+this function will be further modified so that it can closely replicate ~vimwiki~ workflow (using ~RET~ for making as well following the link depending on the context)
+#+begin_src emacs-lisp
+(defun my/org-roam-link-word-at-point ()
+  (interactive)
+  (when (word-at-point t)
+    (re-search-backward "\\b")
+    (mark-word)
+    (call-interactively #'org-roam-insert-immediate)))
+
+(defun my/org-roam-open-or-link-at-point ()
+  (interactive)
+  (let ((context (org-element-context)))
+    (if (equal (car context) 'link)
+        (org-open-at-point)
+        (my/org-roam-link-word-at-point))))
+#+end_src
+
+Following local org-roam-mode is defined so that org-roam keybinding is valid only in org-roam-directory
+#+begin_src emacs-lisp
+  (define-minor-mode my/local-org-roam-mode
+    "Local version of `org-roam-mode'.
+  Does nothing, can be used for local keybindings."
+    :init-value nil
+    :global nil
+    :lighter " OR local"
+    :keymap  (let ((map (make-sparse-keymap)))
+               map)
+    :group 'org-roam
+    :require 'org-roam
+    (when my/local-org-roam-mode
+      (message "Local keybindings for Org Roam enabled")))
+#+end_src
+
+* Keybinding
+[[https://www.masteringemacs.org/article/mastering-key-bindings-emacs][mastering emacs]] tips for setting emacs keybinding\\
+We will use ~general.el~ package for our keybinding
+** [[https://github.com/noctuid/general.el][General]] setup
+#+begin_src emacs-lisp
+(use-package general
+  :config
+  (general-evil-setup t)
+)
+#+end_src
+
+** Org keybinding
+#+begin_src emacs-lisp
+    (general-define-key
+     :states '(normal visual)
+     :keymaps 'org-mode-map
+     :prefix "SPC"
+        "e"  '(:ignore t :which-key "export")
+        "el" 'org-latex-export-to-pdf
+        "ep" 'org-publish-current-project
+        "s" 'org-store-link
+        "o" 'counsel-imenu
+    )
+#+end_src
+
+** org-roam
+#+begin_src emacs-lisp
+      (general-define-key
+       :states '(normal visual)
+       :keymaps 'my/local-org-roam-mode-map
+       :prefix "SPC"
+       "r"  '(:ignore t :which-key "roam")
+       "rr" 'rename-file
+       "rd" 'delete-file
+       "rh" 'org-roam-jump-to-index
+       "rb" 'org-roam
+       )
+;; rebind enter key in normal mode to my/org-roam-link-word-at-point
+  (define-key my/local-org-roam-mode-map  [remap evil-ret] 'my/org-roam-open-or-link-at-point)
+#+end_src
+
+* ~.dir-local.el~ for org-roam-directory
+Add following to the =~/.org-roam/.dir-local.el= file
+#+begin_src emacs-lisp
+;; for exporting all org-roam notes as light html project
+  ((nil . ((eval .
+  (setq org-publish-project-alist
+        '(
+  ("org-notes"
+   :base-directory "~/.org-roam/"
+   :base-extension "org"
+   :publishing-directory "~/.org-roam/public_html/"
+   :recursive t
+   :publishing-function org-html-publish-to-html
+   :headline-levels 4             ; Just the default for this project.
+   :auto-preamble t
+   )
+  ("org-static"
+   :base-directory "~/.org-roam/"
+   :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+   :publishing-directory "~/.org-roam/public_html/"
+   :recursive t
+   :publishing-function org-publish-attachment
+   )
+  ("org" :components ("org-notes" "org-static"))
+        ))
+  )))
+;; enable local org-roam-mode for files in this folder
+  (nil
+   (eval my/local-org-roam-mode +1))
+   )
+#+end_src
+
+* Migration from vimwiki to org-roam
+
+| Vimwiki keybind  | Vimwiki function description                | corresponding org-roam/emacs function    | optional keybinding in emacs |
+| <Leader>ww       | Open default wiki index file.               | ~org-roam-jump-to-index~                 | ~SPC r h~                    |
+| <Leader>wd       | Delete wiki file you are in.                | ~delete-file~                            | ~SPC r d~                    |
+| <Leader>wr       | Rename wiki file you are in.                | ~rename-file~                            | ~SPC r r~                    |
+| <Enter>          | Follow/Create wiki link.                    | ~my/org-roam-open-or-link-at-point~      | ~RET~                        |
+| <Shift-Enter>    | Split and follow/create wiki link.          | window management can be done separately | NA                           |
+| <Ctrl-Enter>     | Vertical split and follow/create wiki link. | window management can be done separately |     NA                       |
+| <Backspace>      | Go back to parent(previous) wiki link.      | use switch-buffer                        | ~C-x b~                      |
+| <Tab>            | Find next wiki link.                        | Will update                              |                              |
+| <Shift-Tab>      | Find previous wiki link.                    | Will update                              |                              |
+| :VimwikiAll2HTML | Convert all your wiki links to HTML.        | ~org-publish-current-project~            | ~SPC e p~                    |
+
+To use Follow link feature of ~vimwiki~ in ~org-roam~, one can use  ~C-c C-o~ (~org-open-at-point~) function.\\
+TODO : The ~my/org-roam-open-or-link-at-point~ can be modified further so that ~RET~ can make link word out of region selected. Will soon update this function.
+
+* Workflow
+TODO

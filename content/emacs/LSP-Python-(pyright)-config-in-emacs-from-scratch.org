@@ -1,0 +1,555 @@
+#+title: EMACS python configuration from scratch using lsp-pyright
+#+startup: overview
+* Installation of packages
+** Straight
+We will use ~straight.el~ to install packages
+#+begin_src emacs-lisp
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(straight-use-package 'use-package)
+(setq straight-use-package-by-default t)
+#+end_src
+
+** Performance
+These options improve performance for lsp in emacs. Use ~M-x~ ~lsp-doctor~ in lsp-mode to investigate performance of your config.\\
+
+check lsp documentation at [[https://emacs-lsp.github.io/lsp-mode/page/performance/][lsp performace]] \\
+
+#+begin_src emacs-lisp
+;; The default is 800 kilobytes.  Measured in bytes.
+(setq gc-cons-threshold (* 100 1024 1024)) ;; 100 MB
+(setq read-process-output-max (* 1 1024 1024)) ;; 1 MB
+#+end_src
+
+** No littering
+Keep clean =~/.emacs.d= folder. 
+
+Check ~lsp~ files in =~/.emacs.d/var/lsp/*=.
+
+You can delete/modify this folder to hard reset lsp configuration in emacs.
+
+[[https://github.com/daviwil/emacs-from-scratch/blob/master/Emacs.org#keep-folders-clean][taken from EFS]] \\
+
+#+begin_src emacs-lisp
+(use-package no-littering)
+
+;; no-littering doesn't set this by default so we must place
+;; auto save files in the same path as it uses for sessions
+(setq auto-save-file-name-transforms
+      `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+
+#+end_src
+
+* Evil
+evil mode [[https://evil.readthedocs.io/en/latest/overview.html#installation-via-package-el][source]]
+** evil mode
+[[https://github.com/emacs-evil/evil][github repo]]
+#+begin_src emacs-lisp
+  (use-package evil
+    :init
+    (setq evil-toggle-key "C-<f1>")
+    (setq evil-shift-width 2)
+    (setq evil-want-integration t)
+    (setq evil-want-keybinding nil)
+    :custom
+    (evil-undo-system 'undo-tree)
+    :config
+    (evil-mode 1)
+
+    (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+    (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+
+    ;; Use visual line motions even outside of visual-line-mode buffers
+    (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+    (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+
+    (evil-set-initial-state 'help-mode 'emacs)
+    (evil-set-initial-state 'inferior-python-mode 'emacs)
+    (evil-set-initial-state 'messages-buffer-mode 'emacs)
+    (evil-set-initial-state 'dashboard-mode 'emacs)
+    (evil-set-initial-state 'special-mode 'emacs)
+    (evil-set-initial-state 'view-mode 'emacs)
+    )
+#+end_src
+
+** evil-nerd-commentor
+Use ~M-/~ for comment/uncomment.
+
+[[https://github.com/redguardtoo/evil-nerd-commenter][source]]
+#+begin_src emacs-lisp
+  (use-package evil-nerd-commenter
+    :bind ("M-/" . evilnc-comment-or-uncomment-lines))
+#+end_src
+
+** undo-tree
+#+begin_src emacs-lisp
+  (use-package undo-tree
+    :diminish undo-tree-mode
+    :config
+    (global-undo-tree-mode)
+    )
+
+#+end_src
+
+* Ivy, counsel
+** counsel
+#+begin_src emacs-lisp
+  (use-package counsel
+    :diminish ivy-mode
+    :diminish counsel-mode
+    :bind (("C-s" . swiper)
+           :map ivy-minibuffer-map
+           ("TAB" . ivy-alt-done))
+    :init
+    (ivy-mode 1)
+    (counsel-mode 1)
+    :config
+    (setq ivy-use-virtual-buffers t)
+    (setq enable-recursive-minibuffers t))
+#+end_src
+
+** ivy-misc
+[[https://github.com/Yevgnen/ivy-rich]]
+#+begin_src emacs-lisp
+  (use-package ivy-xref
+    :init
+    ;; xref initialization is different in Emacs 27 - there are two different
+    ;; variables which can be set rather than just one
+    (when (>= emacs-major-version 27)
+      (setq xref-show-definitions-function #'ivy-xref-show-defs))
+    ;; Necessary in Emacs <27. In Emacs 27 it will affect all xref-based
+    ;; commands other than xref-find-definitions (e.g. project-find-regexp)
+    ;; as well
+    (setq xref-show-xrefs-function #'ivy-xref-show-xrefs))
+
+  (use-package ivy-rich
+    :init
+    (ivy-rich-mode 1))
+
+#+end_src
+
+** prescient
+#+begin_src emacs-lisp
+  (use-package ivy-prescient
+    :after counsel
+    :init
+    (ivy-prescient-mode)
+    (prescient-persist-mode)
+    )
+  (use-package prescient
+    :diminish
+    :config
+    )
+#+end_src
+
+* Treemacs
+#+begin_src emacs-lisp
+(use-package treemacs)
+#+end_src
+
+* Tools
+** which-key
+#+begin_src emacs-lisp
+  (use-package which-key
+    :diminish which-key-mode
+    :config
+    (which-key-mode))
+
+#+end_src
+
+** magit
+[[https://magit.vc/][Magit]] is the best Git interface. Common Git operations are easy to execute quickly using Magit’s command panel system.
+#+begin_src emacs-lisp
+  (use-package magit
+    :defer t
+    :bind ("C-x g" . magit-status))
+#+end_src
+
+** projectile
+[[https://docs.projectile.mx/projectile/index.html][Projectile]] is a project management library for Emacs which makes it a lot easier to navigate around code projects for various languages. Many packages integrate with Projectile so it’s a good idea to have it installed even if you don’t use its commands directly.
+
+#+begin_src emacs-lisp
+  (use-package projectile
+    :diminish projectile-mode
+    :hook
+    (after-init . projectile-mode)
+    :bind-keymap
+    ("C-c p" . projectile-command-map)
+    :init
+    ;; NOTE: Set this to the folder where you keep your Git repos!
+    (setq projectile-project-search-path '("~/foo/projects" "~/foo/reports"))
+    (setq projectile-switch-project-action #'projectile-dired)
+    :custom
+    (projectile-completion-system 'ivy)
+    (projectile-dynamic-mode-line nil)
+    (projectile-enable-caching t)
+    (projectile-indexing-method 'hybrid)
+    (projectile-track-known-projects-automatically nil))
+
+  (use-package counsel-projectile
+    :config (counsel-projectile-mode))
+
+#+end_src
+** eldoc
+#+begin_src emacs-lisp
+  (use-package eldoc
+    :diminish eldoc-mode
+    )
+#+end_src
+
+* Company
+** company-mode
+#+begin_src emacs-lisp
+  (use-package company
+    :diminish company-mode
+    :bind (:map company-active-map
+                ("<tab>" . nil)
+                ("TAB" . nil)
+                ("M-<tab>" . company-complete-common-or-cycle)
+                ("M-<tab>" . company-complete-selection))
+    (:map lsp-mode-map
+          ("M-<tab>" . company-indent-or-complete-common))
+    :custom
+    (company-minimum-prefix-length 2)
+    (company-idle-delay 0.01)
+    :config
+    )
+#+end_src
+
+** prescient
+#+begin_src emacs-lisp
+  (use-package company-prescient
+    :after company
+    :config
+    (company-prescient-mode 1)
+    (prescient-persist-mode)
+    )
+#+end_src
+
+* Yasnippet
+#+begin_src emacs-lisp
+  (use-package yasnippet-snippets)
+  (use-package yasnippet
+    :diminish yas-minor-mode
+    :config
+      (yas-reload-all)
+  )
+#+end_src
+
+* Flycheck
+#+begin_src emacs-lisp
+  (use-package flycheck
+    :diminish flycheck-mode
+    :init
+    (setq flycheck-check-syntax-automatically '(save new-line)
+          flycheck-idle-change-delay 5.0
+          flycheck-display-errors-delay 0.9
+          flycheck-highlighting-mode 'symbols
+          flycheck-indication-mode 'left-fringe
+          flycheck-standard-error-navigation t
+          flycheck-deferred-syntax-check nil)
+    )
+#+end_src
+
+* Lsp mode
+** lsp-mode
+[[https://github.com/daviwil/dotfiles/blob/master/Emacs.org#language-server-support][EFS notes]] \\
+
+Nice article about main features of emacs lsp-mode ([[https://emacs-lsp.github.io/lsp-mode/page/main-features/][source)]] \\
+
+EFS video [[https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-08.org][notes]]\\
+
+java specific lsp [[https://github.com/neppramod/java_emacs/blob/master/emacs-configuration.org][setting]] to learn how to setup lsp in emacs\\
+
+Nice article to switch on/off certain features of lsp ([[https://emacs-lsp.github.io/lsp-mode/tutorials/how-to-turn-off/][source)]] \\
+
+#+begin_src emacs-lisp
+  (use-package lsp-mode
+    :commands (lsp lsp-deferred)
+    :hook 
+    (lsp-mode . lsp-enable-which-key-integration)
+    :custom
+    (lsp-diagnostics-provider :capf)
+    (lsp-headerline-breadcrumb-enable t)
+    (lsp-headerline-breadcrumb-segments '(project file symbols))
+    (lsp-lens-enable nil)
+    (lsp-disabled-clients '((python-mode . pyls)))
+    :init
+    (setq lsp-keymap-prefix "C-c l") ;; Or 'C-l', 's-l'
+    :config
+    )
+#+end_src
+
+** lsp-ivy
+[[https://github.com/emacs-lsp/lsp-ivy][source github]]\\
+
+lsp-ivy integrates Ivy with lsp-mode to make it easy to search for things by name in your code. When you run these commands, a prompt will appear in the minibuffer allowing you to type part of the name of a symbol in your code. Results will be populated in the minibuffer so that you can find what you’re looking for and jump to that location in the code upon selecting the result.\\
+
+Try these commands with ~M-x~:\\
+
+    ~lsp-ivy-workspace-symbol~ - Search for a symbol name in the current project workspace\\
+
+    ~lsp-ivy-global-workspace-symbol~ - Search for a symbol name in all active project workspaces\\
+
+#+begin_src emacs-lisp
+  (use-package lsp-ivy
+    :after lsp-mode
+    )
+#+end_src
+
+** lsp-ui
+Documentation: [[https://emacs-lsp.github.io/lsp-ui/]]
+
+- ~lsp-ui-doc-focus-frame~ to enter the documentation frame to navigate and search around
+
+- ~lsp-ui-doc-unfocus-frame~ to leave documentation frame
+
+#+begin_src emacs-lisp
+  (use-package lsp-ui
+    :hook (lsp-mode . lsp-ui-mode)
+    :after lsp-mode
+    :custom
+    (lsp-ui-doc-show-with-cursor nil)
+    :config
+    (setq lsp-ui-doc-position 'bottom)
+    )
+#+end_src
+
+** lsp-treemacs
+Provides an even nicer UI on top of lsp-mode using Treemacs\\
+
+- ~lsp-treemacs-symbols~ - Show a tree view of the symbols in the current file
+
+- ~lsp-treemacs-references~ - Show a tree view for the references of the symbol under the cursor
+
+- ~lsp-treemacs-error-list~ - Show a tree view for the diagnostic messages in the project
+
+#+begin_src emacs-lisp
+  (use-package lsp-treemacs
+    :after (lsp-mode treemacs)
+    )
+#+end_src
+
+* Python configuration
+[[https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-IDE-02.org][efs series notes]]\\
+
+[[https://ddavis.io/posts/emacs-python-lsp]]\\
+
+some options are
+
+- [[https://emacs-lsp.github.io/lsp-mode/page/lsp-pyls/][pyls]] Palantir
+
+- [[https://emacs-lsp.github.io/lsp-python-ms][microsoft]] now depreciated by MS
+
+- [[https://emacs-lsp.github.io/lsp-pyright][pyright]] also by Microsoft
+
+** pyright
+[[https://emacs-lsp.github.io/lsp-pyright/#configuration][config]] \\
+
+#+begin_src emacs-lisp
+  (use-package lsp-pyright
+    :hook
+    (python-mode . (lambda ()
+                     (require 'lsp-pyright)
+                     (lsp-deferred))))
+#+end_src
+
+** pyvenv
+Strongly recommend to use python virtualenv to python work properly in emacs.\\
+
+Assuming venvs are installed here =~/.venvs=\\
+
+Learn about setting python virtual env below\\
+
+[[https://blog.fredrikmeyer.net/2020/08/26/emacs-python-venv.html]]\\
+
+[[https://ddavis.io/posts/emacs-python-lsp]]\\
+
+You can use ~M-x pyvenv-activate~ to activate specific venv \\
+
+#+begin_src emacs-lisp
+  (use-package pyvenv
+    :ensure t
+    :init
+    (setenv "WORKON_HOME" "~/.venvs/")
+    :config
+    ;; (pyvenv-mode t)
+
+    ;; Set correct Python interpreter
+    (setq pyvenv-post-activate-hooks
+          (list (lambda ()
+                  (setq python-shell-interpreter (concat pyvenv-virtual-env "bin/python")))))
+    (setq pyvenv-post-deactivate-hooks
+          (list (lambda ()
+                  (setq python-shell-interpreter "python3")))))
+
+#+end_src
+
+** formatting
+#+begin_src emacs-lisp
+  (use-package blacken
+    :init
+    (setq-default blacken-fast-unsafe t)
+    (setq-default blacken-line-length 80)
+    )
+#+end_src
+
+** python-mode
+#+begin_src emacs-lisp
+  (use-package python-mode
+    :hook
+    (python-mode . pyvenv-mode)
+    (python-mode . flycheck-mode)
+    (python-mode . company-mode)
+    (python-mode . blacken-mode)
+    (python-mode . yas-minor-mode)
+    :custom
+    ;; NOTE: Set these if Python 3 is called "python3" on your system!
+    (python-shell-interpreter "python3")
+    :config
+    )
+#+end_src
+
+* Keybinding
+Have a look at [[https://www.masteringemacs.org/article/mastering-key-bindings-emacs][mastering emacs]] tips for emacs keybinding.\\
+
+~C-c <LETTER>~ and ~F5-F9~ are meant for user bindings.\\
+
+For package maintainers, ~C-c C-<ANY>~ or ~C-c <DIGIT>~ or ~C-c [{};:<>]~ are reserved for the major mode. Any other are reserved for minor modes, e.g. ~C-c @~ in =outline-minor-mode=. \\
+
+See ~(info "(elisp) Key Binding Conventions")~ for a more complete explanation for package maintainers. You, as a user, can of course use any key binding you like, but keep in mind that those bindings might conflict with the ones chosen by the package maintainer.\\
+
+** General setup
+we will use general package ([[https://github.com/noctuid/general.el][source]]) for keybindings.
+#+begin_src emacs-lisp
+  (use-package general
+    :config
+    (general-evil-setup t)
+
+    (general-create-definer my/ctrl-c-keys
+      :prefix "C-c")
+    )
+#+end_src
+
+** Global keys
+use ~C-c~ prefix for global keybinding defined below
+#+begin_src emacs-lisp
+
+  (my/ctrl-c-keys
+    "t"  '(treemacs-select-window :which-key "treemacs-select")
+    )
+#+end_src
+
+** Lsp keybinding
+use ~SPC~ prefix for ~lsp-mode~ keybinding defined below. These keybindings are for ~evil~ normal mode.
+#+begin_src emacs-lisp
+
+  (general-define-key
+   :states '(normal visual)
+   :keymaps 'lsp-mode-map
+   :prefix "SPC"
+    "d" '(lsp-find-definition :which-key "find-definitions")
+    "r" '(lsp-find-references :which-key "find-references")
+    "h" '(lsp-describe-thing-at-point :which-key "help-detailed")
+    "e" '(lsp-ui-flycheck-list :which-key "flycheck-list")
+    "o" 'counsel-imenu
+    "x" 'lsp-execute-code-action)
+#+end_src
+
+* Workflow
+We assume following file structure for your project 
+#+begin_src
+fooproject
+|--- .git
+|--- src
+     |--- foo.py
+|--- .dir-locals.el
+|--- pyrightconfig.json
+
+#+end_src
+
+We assume =~/.venvs/foo_env= is the virtual environment you want to use for this project\\
+
+The =~/.venvs= folder is already set in ~pyvenv~ setting above.\\
+
+So, ~foo_env~ will be set using ~pyvenv-workon~ variable using ~.dir-locals.el~ file
+
+*** .dir-locals.el
+#+begin_src emacs-lisp
+(python-mode . ((pyvenv-workon . "foo_env")))
+#+end_src
+
+*** pyrightconfig.json (optional)
+You can using minimal expample as your pyrightconfig file
+
+Check following for more options ([[https://github.com/microsoft/pyright/blob/master/docs/configuration.md][source]])
+
+#+begin_src
+{
+  "include": [
+    "src"
+  ],
+  "executionEnvironments": [
+    {
+      "root": "src"
+    }
+  ]
+}
+#+end_src
+
+* How to set python virtualenv
+Some useful commands to setup virtualenv\\
+
+- installation
+
+#+begin_src
+$ pip3 install virtualenv
+$ pip3 list
+$ mkdir ~/.venvs
+$ cd ~/.venvs
+#+end_src
+
+- create virtual environment
+
+#+begin_src
+$ virtualenv foo_env
+$ source foo_env/bin/activate
+$ which python 
+#+end_src
+
+- install packages in virtual env
+
+#+begin_src
+$ pip install numpy
+$ pip list
+$ pip freeze --local > requirement.txt
+#+end_src
+
+- deactivate virtualenv
+
+#+begin_src 
+$ deactivate
+#+end_src
+
+- add pythonpath (~.pth~) to already existing virtulenv
+
+If you have external projects you want to include in the pythonpath of your virtualenv, checkout following,\\
+
+[[https://stackoverflow.com/a/47184788/237059]]
+
+#+begin_src shell
+cd $(python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+echo some/library/path > some-library.pth
+#+end_src
+
