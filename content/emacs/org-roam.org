@@ -22,6 +22,8 @@ The main actions you will perform:
  3. create links to existing notes (manually, or using auto [[https://www.orgroam.com/manual.html#Completions][completion]] frameworks)
  4. use any features of org mode you like (tables, source code block, bibliography, etc..)
 
+If you enjoy video content, you might want to watch the System Crafters playlist [[https://www.youtube.com/watch?v=AyhPmypHDEw&list=PLEoMzSkcN8oN3x3XaZQ-AXFKv52LZzjqD][Building a Second Brain in Emacs]].
+
 * Hints
 
 ** You can't find your notes, or they are not named properly
