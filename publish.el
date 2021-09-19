@@ -296,16 +296,16 @@ Note that any hline TABLE-ROW will be removed."
   (when (eq (org-element-property :type table-row) 'standard)
     ;; This function is heavily inspired by `org-html-table-row', although it is somewhat simplified.
     (let* ((group (org-export-table-row-group table-row info))
-	   ;; In order to have proper <thead> and <tbody> groups, we have to check whether
-	   ;; we're in the first group (see group above) and whether Org recognizes the first
-	   ;; row as a header (see `org-export-table-has-header-p' below).
+           ;; In order to have proper <thead> and <tbody> groups, we have to check whether
+           ;; we're in the first group (see group above) and whether Org recognizes the first
+           ;; row as a header (see `org-export-table-has-header-p' below).
            (group-tags
             (cond
-	     ((not (= 1 group)) '("<tbody>" . "</tbody>"))
-	     ((org-export-table-has-header-p (org-export-get-parent-table table-row) info)
-	      (cons (format "<thead class=\"%s\">" (mapconcat #'identity bk/org-minimal--table-thead-classes " "))
-		    "</thead>"))
-	     (t ('("<tbody>" . "</tbody>"))))))
+             ((not (= 1 group)) '("<tbody>" . "</tbody>"))
+             ((org-export-table-has-header-p (org-export-get-parent-table table-row) info)
+              (cons (format "<thead class=\"%s\">" (mapconcat #'identity bk/org-minimal--table-thead-classes " "))
+                    "</thead>"))
+             (t '("<tbody>" . "</tbody>")))))
       ;; We only use the group-tags if we either start or stop a group.
       (concat (and (org-export-table-row-starts-rowgroup-p table-row info) (car group-tags))
               "<tr>" contents "</tr>"
