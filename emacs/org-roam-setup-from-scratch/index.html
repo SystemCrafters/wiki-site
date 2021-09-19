@@ -1,0 +1,266 @@
+<!DOCTYPE html><html lang="en"><head><!--  --><meta charset="utf-8"/><meta author="David Wilson"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/fonts/iosevka-aile/iosevka-aile.css"/><link rel="stylesheet" href="/fonts/jetbrains-mono/jetbrains-mono.css"/><link rel="stylesheet" href="/css/code.css"/><link rel="stylesheet" href="/css/site.css"/><script defer="defer" data-domain="wiki.systemcrafters.net" src="https://plausible.io/js/plausible.js"></script><title> - System Crafters</title></head><body><div><div class="blog-header"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-8"><div class="blog-title">System Crafters</div></div><div class="col-sm col-md"><div class="blog-description text-sm-left text-md-right text-lg-right text-xl-right"></div></div></div></div></div><div class="blog-masthead"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-12"><nav class="nav"><a class="nav-link" href="/">Main Page</a> <a class="nav-link" href="/emacs">GNU Emacs</a> <a class="nav-link" href="/guix">GNU Guix</a><a class="nav-link" href="https://systemcrafters.net">System Crafters Home</a><form class="navbar-form navbar-right" role="search" action="https://duckduckgo.com/"><div class="form-group"><input type="text" name="q" class="form-control" placeholder="Search Wiki" style="overflow: hidden;margin-top: 3%;margin-bottom: 2%;"/><input type="hidden" name="sites" value="wiki.systemcrafters.net"/></div></form> </nav></div></div></div></div></div><div class="container"><div class="row"><div class="col-sm-12 blog-main"><div class="blog-post"><h1 class="blog-post-title"></h1><p class="blog-post-meta"></p><div><h2><a id="straightel-installation" class="anchor" href="#straightel-installation">¶</a>straight.el installation</h2><p>We will use <a href="https://github.com/raxod502/straight.el">straight.el</a> package manager instead of default emacs package manager
+</p>
+<pre><code class="emacs-lisp">(<span class="org-keyword">defvar</span> <span class="org-variable-name">bootstrap-version</span>)
+(<span class="org-keyword">let</span> ((bootstrap-file
+       (expand-file-name <span class="org-string">"straight/repos/straight.el/bootstrap.el"</span> user-emacs-directory))
+      (bootstrap-version 5))
+  (<span class="org-keyword">unless</span> (file-exists-p bootstrap-file)
+    (<span class="org-keyword">with-current-buffer</span>
+        (url-retrieve-synchronously
+         <span class="org-string">"https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"</span>
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(straight-use-package 'use-package)
+(<span class="org-keyword">setq</span> straight-use-package-by-default t)
+</code></pre>
+<h2><a id="evil-package" class="anchor" href="#evil-package">¶</a>evil package</h2><h3><a id="main-a-hrefhttpsgithubcomemacs-evilevilevila-package" class="anchor" href="#main-a-hrefhttpsgithubcomemacs-evilevilevila-package">¶</a>main <a href="https://github.com/emacs-evil/evil">evil</a> package</h3><pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">evil</span>
+    <span class="org-builtin">:init</span>
+    (<span class="org-keyword">setq</span> evil-toggle-key <span class="org-string">"C-&lt;f1&gt;"</span>)
+    (<span class="org-keyword">setq</span> evil-shift-width 2)
+    (<span class="org-keyword">setq</span> evil-want-integration t)
+    (<span class="org-keyword">setq</span> evil-want-keybinding nil)
+    <span class="org-builtin">:config</span>
+    (evil-mode 1)
+
+    <span class="org-comment-delimiter">;; </span><span class="org-comment">Use visual line motions even outside of visual-line-mode buffers</span>
+    (evil-global-set-key 'motion <span class="org-string">"j"</span> 'evil-next-visual-line)
+    (evil-global-set-key 'motion <span class="org-string">"k"</span> 'evil-previous-visual-line)
+
+    (evil-set-initial-state 'dired-mode 'emacs)
+    (evil-set-initial-state 'pdf-view-mode 'emacs)
+    (evil-set-initial-state 'messages-buffer-mode 'emacs)
+    (evil-set-initial-state 'special-mode 'emacs)
+    (evil-set-initial-state 'view-mode 'emacs)
+    (evil-set-initial-state 'deft-mode 'emacs)
+  )
+
+
+</code></pre>
+<h3><a id="evil-commentor" class="anchor" href="#evil-commentor">¶</a>evil commentor</h3><p><a href="https://github.com/redguardtoo/evil-nerd-commenter">This</a> package is used for commenting lines in emacs
+</p>
+<pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">evil-nerd-commenter</span>
+  <span class="org-builtin">:bind</span> (<span class="org-string">"M-/"</span> . evilnc-comment-or-uncomment-lines))
+</code></pre>
+<h3><a id="undo-tree" class="anchor" href="#undo-tree">¶</a>undo tree</h3><p>for proper working of evil keybindings
+</p>
+<pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">undo-tree</span>
+  <span class="org-builtin">:diminish</span> undo-tree-mode
+  <span class="org-builtin">:config</span>
+  (global-undo-tree-mode)
+  )
+</code></pre>
+<h2><a id="counsel-ivy-setting" class="anchor" href="#counsel-ivy-setting">¶</a>counsel ivy setting</h2><h3><a id="main-package" class="anchor" href="#main-package">¶</a>main package</h3><p><a href="https://github.com/abo-abo/swiper">ivy/counsel/swiper</a> is used for minibuffer completitions and searching
+</p>
+<pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">counsel</span>
+  <span class="org-builtin">:diminish</span> ivy-mode
+  <span class="org-builtin">:diminish</span> counsel-mode
+  <span class="org-builtin">:bind</span> ((<span class="org-string">"C-s"</span> . swiper)
+         <span class="org-builtin">:map</span> ivy-minibuffer-map
+         (<span class="org-string">"TAB"</span> . ivy-alt-done))
+  <span class="org-builtin">:init</span>
+  (ivy-mode 1)
+  (counsel-mode 1)
+  <span class="org-builtin">:config</span>
+  (<span class="org-keyword">setq</span> ivy-use-virtual-buffers t)
+  (<span class="org-keyword">setq</span> enable-recursive-minibuffers t))
+
+</code></pre>
+
+<h3><a id="prescientel" class="anchor" href="#prescientel">¶</a>prescient.el</h3><p><a href="https://github.com/raxod502/prescient.el">this</a> package give better completions in ivy minibuffer based on recent usage
+</p>
+<pre><code class="emacs-lisp">
+(<span class="org-keyword">use-package</span> <span class="org-constant">prescient</span>
+  <span class="org-builtin">:diminish</span>
+  <span class="org-builtin">:config</span>
+  )
+
+(<span class="org-keyword">use-package</span> <span class="org-constant">ivy-prescient</span>
+  <span class="org-builtin">:after</span> counsel
+  <span class="org-builtin">:init</span>
+  (ivy-prescient-mode)
+  (prescient-persist-mode)
+  )
+</code></pre>
+
+<h2><a id="other-useful-tools" class="anchor" href="#other-useful-tools">¶</a>other useful tools</h2><h3><a id="olivetti-whichkey-magit" class="anchor" href="#olivetti-whichkey-magit">¶</a>olivetti, whichkey, magit</h3><pre><code class="emacs-lisp">  (<span class="org-keyword">use-package</span> <span class="org-constant">olivetti</span>
+    <span class="org-builtin">:diminish</span>
+    <span class="org-builtin">:hook</span>
+    (text-mode . olivetti-mode)
+    <span class="org-builtin">:config</span>
+    (<span class="org-keyword">setq</span> olivetti-body-width 100)
+    )
+<span class="org-comment-delimiter">;;</span><span class="org-comment">which-key</span>
+      (<span class="org-keyword">use-package</span> <span class="org-constant">which-key</span>
+        <span class="org-comment-delimiter">;; </span><span class="org-comment">:ensure t</span>
+        <span class="org-builtin">:diminish</span> which-key-mode
+        <span class="org-builtin">:config</span>
+           (which-key-mode))
+
+      <span class="org-comment-delimiter">;; </span><span class="org-comment">magit</span>
+      (<span class="org-keyword">use-package</span> <span class="org-constant">magit</span>
+        <span class="org-comment-delimiter">;; </span><span class="org-comment">:ensure t</span>
+        <span class="org-builtin">:defer</span> t
+        <span class="org-builtin">:bind</span> (<span class="org-string">"C-x g"</span> . magit-status))
+</code></pre>
+<h2><a id="org-mode" class="anchor" href="#org-mode">¶</a>org-mode</h2><h3><a id="main" class="anchor" href="#main">¶</a>main</h3><pre><code class="emacs-lisp">(<span class="org-keyword">defun</span> <span class="org-function-name">my/org-mode-setup</span> ()
+  (org-indent-mode)
+  (<span class="org-keyword">setq</span> evil-auto-indent nil
+        )
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">remove olivetti keybindings</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">https://emacs.stackexchange.com/questions/32389/how-do-you-disable-all-keybinding-for-a-package</span>
+  (eval-after-load <span class="org-string">"olivetti"</span>
+    '(assq-delete-all 'olivetti-mode minor-mode-map-alist))
+  )
+
+(<span class="org-keyword">use-package</span> <span class="org-constant">org</span>
+  <span class="org-builtin">:straight</span> org-plus-contrib
+  <span class="org-builtin">:hook</span> 
+  (org-mode . olivetti-mode)
+  (org-mode . which-function-mode)
+  (org-mode . my/org-mode-setup)
+  <span class="org-builtin">:custom</span>
+  (olivetti-body-width 100)
+  (org-imenu-depth 4)
+  <span class="org-builtin">:config</span>
+  (<span class="org-keyword">setq</span> org-ellipsis <span class="org-string">" &#9662;"</span>)
+  )
+</code></pre>
+<h3><a id="org-roam" class="anchor" href="#org-roam">¶</a>org roam</h3><p>Assumed <kbd>~/.org-roam</kbd> as <kbd>org-roam-directory</kbd> and <kbd>index.org</kbd> in it is the index file
+</p>
+<h4><a id="main" class="anchor" href="#main">¶</a>main</h4><pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">org-roam</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">:ensure t</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">:hook</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">(after-init . org-roam-mode)</span>
+  <span class="org-builtin">:custom</span>
+  (org-roam-directory <span class="org-string">"~/.org-roam"</span>)
+  (org-roam-index-file <span class="org-string">"~/.org-roam/index.org"</span>)
+  )
+</code></pre>
+<h4><a id="a-hrefhttpsgithubcomglucasdeftdefta" class="anchor" href="#a-hrefhttpsgithubcomglucasdeftdefta">¶</a><a href="https://github.com/glucas/deft">deft</a></h4><p>Useful package to quickly search in all org-roam notes and go to them
+</p>
+<pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">deft</span>
+  <span class="org-builtin">:bind</span> (<span class="org-string">"&lt;f8&gt;"</span> . deft)
+  <span class="org-builtin">:commands</span> (deft)
+  <span class="org-builtin">:config</span> (<span class="org-keyword">setq</span> deft-directory <span class="org-string">"~/.org-roam"</span>
+                deft-extensions '(<span class="org-string">"md"</span> <span class="org-string">"org"</span>)))
+</code></pre>
+<h2><a id="custom-functions" class="anchor" href="#custom-functions">¶</a>Custom functions</h2><p>This function will give <a href="https://github.com/vimwiki/vimwiki">vimwiki</a> like workflow in org-roamthis function will be further modified so that it can closely replicate <kbd>vimwiki</kbd> workflow (using <kbd>RET</kbd> for making as well following the link depending on the context)
+</p>
+<pre><code class="emacs-lisp">(<span class="org-keyword">defun</span> <span class="org-function-name">my/org-roam-link-word-at-point</span> ()
+  (<span class="org-keyword">interactive</span>)
+  (<span class="org-keyword">when</span> (word-at-point t)
+    (re-search-backward <span class="org-string">"\\b"</span>)
+    (mark-word)
+    (call-interactively #'org-roam-insert-immediate)))
+
+(<span class="org-keyword">defun</span> <span class="org-function-name">my/org-roam-open-or-link-at-point</span> ()
+  (<span class="org-keyword">interactive</span>)
+  (<span class="org-keyword">let</span> ((context (org-element-context)))
+    (<span class="org-keyword">if</span> (equal (car context) 'link)
+        (org-open-at-point)
+        (my/org-roam-link-word-at-point))))
+</code></pre>
+
+<p>Following local org-roam-mode is defined so that org-roam keybinding is valid only in org-roam-directory
+</p>
+<pre><code class="emacs-lisp">(<span class="org-keyword">define-minor-mode</span> <span class="org-function-name">my/local-org-roam-mode</span>
+  <span class="org-doc">"Local version of `</span><span class="org-doc"><span class="org-constant">org-roam-mode</span></span><span class="org-doc">'.</span>
+<span class="org-doc">Does nothing, can be used for local keybindings."</span>
+  <span class="org-builtin">:init-value</span> nil
+  <span class="org-builtin">:global</span> nil
+  <span class="org-builtin">:lighter</span> <span class="org-string">" OR local"</span>
+  <span class="org-builtin">:keymap</span>  (<span class="org-keyword">let</span> ((map (make-sparse-keymap)))
+             map)
+  <span class="org-builtin">:group</span> 'org-roam
+  <span class="org-builtin">:require</span> 'org-roam
+  (<span class="org-keyword">when</span> my/local-org-roam-mode
+    (message <span class="org-string">"Local keybindings for Org Roam enabled"</span>)))
+</code></pre>
+
+<h2><a id="keybinding" class="anchor" href="#keybinding">¶</a>Keybinding</h2><p><a href="https://www.masteringemacs.org/article/mastering-key-bindings-emacs">mastering emacs</a> tips for setting emacs keybindingWe will use <kbd>general.el</kbd> package for our keybinding
+</p>
+<h3><a id="a-hrefhttpsgithubcomnoctuidgeneralelgenerala-setup" class="anchor" href="#a-hrefhttpsgithubcomnoctuidgeneralelgenerala-setup">¶</a><a href="https://github.com/noctuid/general.el">General</a> setup</h3><pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">general</span>
+  <span class="org-builtin">:config</span>
+  (general-evil-setup t)
+)
+</code></pre>
+
+<h3><a id="org-keybinding" class="anchor" href="#org-keybinding">¶</a>Org keybinding</h3><pre><code class="emacs-lisp">(general-define-key
+ <span class="org-builtin">:states</span> '(normal visual)
+ <span class="org-builtin">:keymaps</span> 'org-mode-map
+ <span class="org-builtin">:prefix</span> <span class="org-string">"SPC"</span>
+    <span class="org-string">"e"</span>  '(<span class="org-builtin">:ignore</span> t <span class="org-builtin">:which-key</span> <span class="org-string">"export"</span>)
+    <span class="org-string">"el"</span> 'org-latex-export-to-pdf
+    <span class="org-string">"ep"</span> 'org-publish-current-project
+    <span class="org-string">"s"</span> 'org-store-link
+    <span class="org-string">"o"</span> 'counsel-imenu
+)
+</code></pre>
+
+<h3><a id="org-roam" class="anchor" href="#org-roam">¶</a>org-roam</h3><pre><code class="emacs-lisp">      (general-define-key
+       <span class="org-builtin">:states</span> '(normal visual)
+       <span class="org-builtin">:keymaps</span> 'my/local-org-roam-mode-map
+       <span class="org-builtin">:prefix</span> <span class="org-string">"SPC"</span>
+       <span class="org-string">"r"</span>  '(<span class="org-builtin">:ignore</span> t <span class="org-builtin">:which-key</span> <span class="org-string">"roam"</span>)
+       <span class="org-string">"rr"</span> 'rename-file
+       <span class="org-string">"rd"</span> 'delete-file
+       <span class="org-string">"rh"</span> 'org-roam-jump-to-index
+       <span class="org-string">"rb"</span> 'org-roam
+       )
+<span class="org-comment-delimiter">;; </span><span class="org-comment">rebind enter key in normal mode to my/org-roam-link-word-at-point</span>
+  (define-key my/local-org-roam-mode-map  [remap evil-ret] 'my/org-roam-open-or-link-at-point)
+</code></pre>
+
+<h2><a id="kbddir-localelkbd-for-org-roam-directory" class="anchor" href="#kbddir-localelkbd-for-org-roam-directory">¶</a><kbd>.dir-local.el</kbd> for org-roam-directory</h2><p>Add following to the <kbd>~/.org-roam/.dir-local.el</kbd> file
+</p>
+<pre><code class="emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">for exporting all org-roam notes as light html project</span>
+  ((nil . ((eval .
+  (<span class="org-keyword">setq</span> org-publish-project-alist
+        '(
+  (<span class="org-string">"org-notes"</span>
+   <span class="org-builtin">:base-directory</span> <span class="org-string">"~/.org-roam/"</span>
+   <span class="org-builtin">:base-extension</span> <span class="org-string">"org"</span>
+   <span class="org-builtin">:publishing-directory</span> <span class="org-string">"~/.org-roam/public_html/"</span>
+   <span class="org-builtin">:recursive</span> t
+   <span class="org-builtin">:publishing-function</span> org-html-publish-to-html
+   <span class="org-builtin">:headline-levels</span> 4             <span class="org-comment-delimiter">; </span><span class="org-comment">Just the default for this project.</span>
+   <span class="org-builtin">:auto-preamble</span> t
+   )
+  (<span class="org-string">"org-static"</span>
+   <span class="org-builtin">:base-directory</span> <span class="org-string">"~/.org-roam/"</span>
+   <span class="org-builtin">:base-extension</span> <span class="org-string">"css</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">|</span></span><span class="org-string">js</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">|</span></span><span class="org-string">png</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">|</span></span><span class="org-string">jpg</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">|</span></span><span class="org-string">gif</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">|</span></span><span class="org-string">pdf</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">|</span></span><span class="org-string">mp3</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">|</span></span><span class="org-string">ogg</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">|</span></span><span class="org-string">swf"</span>
+   <span class="org-builtin">:publishing-directory</span> <span class="org-string">"~/.org-roam/public_html/"</span>
+   <span class="org-builtin">:recursive</span> t
+   <span class="org-builtin">:publishing-function</span> org-publish-attachment
+   )
+  (<span class="org-string">"org"</span> <span class="org-builtin">:components</span> (<span class="org-string">"org-notes"</span> <span class="org-string">"org-static"</span>))
+        ))
+  )))
+<span class="org-comment-delimiter">;; </span><span class="org-comment">enable local org-roam-mode for files in this folder</span>
+  (nil
+   (eval my/local-org-roam-mode +1))
+   )
+</code></pre>
+
+<h2><a id="migration-from-vimwiki-to-org-roam" class="anchor" href="#migration-from-vimwiki-to-org-roam">¶</a>Migration from vimwiki to org-roam</h2><table class="table table-dark"><tbody><tr><td>Vimwiki keybind</td><td>Vimwiki function description</td><td>corresponding org-roam/emacs function</td><td>optional keybinding in emacs</td></tr>
+<tr><td>&lt;Leader&gt;ww</td><td>Open default wiki index file.</td><td><kbd>org-roam-jump-to-index</kbd></td><td><kbd>SPC r h</kbd></td></tr>
+<tr><td>&lt;Leader&gt;wd</td><td>Delete wiki file you are in.</td><td><kbd>delete-file</kbd></td><td><kbd>SPC r d</kbd></td></tr>
+<tr><td>&lt;Leader&gt;wr</td><td>Rename wiki file you are in.</td><td><kbd>rename-file</kbd></td><td><kbd>SPC r r</kbd></td></tr>
+<tr><td>&lt;Enter&gt;</td><td>Follow/Create wiki link.</td><td><kbd>my/org-roam-open-or-link-at-point</kbd></td><td><kbd>RET</kbd></td></tr>
+<tr><td>&lt;Shift-Enter&gt;</td><td>Split and follow/create wiki link.</td><td>window management can be done separately</td><td>NA</td></tr>
+<tr><td>&lt;Ctrl-Enter&gt;</td><td>Vertical split and follow/create wiki link.</td><td>window management can be done separately</td><td>NA</td></tr>
+<tr><td>&lt;Backspace&gt;</td><td>Go back to parent(previous) wiki link.</td><td>use switch-buffer</td><td><kbd>C-x b</kbd></td></tr>
+<tr><td>&lt;Tab&gt;</td><td>Find next wiki link.</td><td>Will update</td><td></td></tr>
+<tr><td>&lt;Shift-Tab&gt;</td><td>Find previous wiki link.</td><td>Will update</td><td></td></tr>
+<tr><td>:VimwikiAll2HTML</td><td>Convert all your wiki links to HTML.</td><td><kbd>org-publish-current-project</kbd></td><td><kbd>SPC e p</kbd></td></tr></tbody>
+</table>
+
+<p>To use Follow link feature of <kbd>vimwiki</kbd> in <kbd>org-roam</kbd>, one can use  <kbd>C-c C-o</kbd> (<kbd>org-open-at-point</kbd>) function.TODO : The <kbd>my/org-roam-open-or-link-at-point</kbd> can be modified further so that <kbd>RET</kbd> can make link word out of region selected. Will soon update this function.
+</p>
+
+<h2><a id="workflow" class="anchor" href="#workflow">¶</a>Workflow</h2><p>TODO
+</p>
+</div></div></div></div></div><footer class="blog-footer"><div class="container"><div class="row"><div class="col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right"><p>Made with Emacs 27.2 (Org mode 9.4.4)</p><p><a href="https://systemcrafters.net/privacy-policy/">Privacy Policy</a></p></div></div></div></footer><script src="/js/bootstrap.bundle.min.js"/></body></html>

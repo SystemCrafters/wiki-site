@@ -1,0 +1,504 @@
+<!DOCTYPE html><html lang="en"><head><!--  --><meta charset="utf-8"/><meta author="David Wilson"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/fonts/iosevka-aile/iosevka-aile.css"/><link rel="stylesheet" href="/fonts/jetbrains-mono/jetbrains-mono.css"/><link rel="stylesheet" href="/css/code.css"/><link rel="stylesheet" href="/css/site.css"/><script defer="defer" data-domain="wiki.systemcrafters.net" src="https://plausible.io/js/plausible.js"></script><title>EMACS python configuration from scratch using lsp-pyright - System Crafters</title></head><body><div><div class="blog-header"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-8"><div class="blog-title">System Crafters</div></div><div class="col-sm col-md"><div class="blog-description text-sm-left text-md-right text-lg-right text-xl-right"></div></div></div></div></div><div class="blog-masthead"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-12"><nav class="nav"><a class="nav-link" href="/">Main Page</a> <a class="nav-link" href="/emacs">GNU Emacs</a> <a class="nav-link" href="/guix">GNU Guix</a><a class="nav-link" href="https://systemcrafters.net">System Crafters Home</a><form class="navbar-form navbar-right" role="search" action="https://duckduckgo.com/"><div class="form-group"><input type="text" name="q" class="form-control" placeholder="Search Wiki" style="overflow: hidden;margin-top: 3%;margin-bottom: 2%;"/><input type="hidden" name="sites" value="wiki.systemcrafters.net"/></div></form> </nav></div></div></div></div></div><div class="container"><div class="row"><div class="col-sm-12 blog-main"><div class="blog-post"><h1 class="blog-post-title">EMACS python configuration from scratch using lsp-pyright</h1><p class="blog-post-meta"></p><div><h2><a id="installation-of-packages" class="anchor" href="#installation-of-packages">¶</a>Installation of packages</h2><h3><a id="straight" class="anchor" href="#straight">¶</a>Straight</h3><p>We will use <kbd>straight.el</kbd> to install packages
+</p>
+<pre><code class="emacs-lisp">(<span class="org-keyword">defvar</span> <span class="org-variable-name">bootstrap-version</span>)
+(<span class="org-keyword">let</span> ((bootstrap-file
+       (expand-file-name <span class="org-string">"straight/repos/straight.el/bootstrap.el"</span> user-emacs-directory))
+      (bootstrap-version 5))
+  (<span class="org-keyword">unless</span> (file-exists-p bootstrap-file)
+    (<span class="org-keyword">with-current-buffer</span>
+        (url-retrieve-synchronously
+         <span class="org-string">"https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"</span>
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(straight-use-package 'use-package)
+(<span class="org-keyword">setq</span> straight-use-package-by-default t)
+</code></pre>
+
+<h3><a id="performance" class="anchor" href="#performance">¶</a>Performance</h3><p>These options improve performance for lsp in emacs. Use <kbd>M-x</kbd> <kbd>lsp-doctor</kbd> in lsp-mode to investigate performance of your config.</p>
+
+<p>check lsp documentation at <a href="https://emacs-lsp.github.io/lsp-mode/page/performance/">lsp performace</a> </p>
+
+<pre><code class="emacs-lisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">The default is 800 kilobytes.  Measured in bytes.</span>
+(<span class="org-keyword">setq</span> gc-cons-threshold (* 100 1024 1024)) <span class="org-comment-delimiter">;; </span><span class="org-comment">100 MB</span>
+(<span class="org-keyword">setq</span> read-process-output-max (* 1 1024 1024)) <span class="org-comment-delimiter">;; </span><span class="org-comment">1 MB</span>
+</code></pre>
+
+<h3><a id="no-littering" class="anchor" href="#no-littering">¶</a>No littering</h3><p>Keep clean <kbd>~/.emacs.d</kbd> folder. 
+</p>
+
+<p>Check <kbd>lsp</kbd> files in <kbd>~/.emacs.d/var/lsp/*</kbd>.
+</p>
+
+<p>You can delete/modify this folder to hard reset lsp configuration in emacs.
+</p>
+
+<p><a href="https://github.com/daviwil/emacs-from-scratch/blob/master/Emacs.org#keep-folders-clean">taken from EFS</a> </p>
+
+<pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">no-littering</span>)
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">no-littering doesn't set this by default so we must place</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">auto save files in the same path as it uses for sessions</span>
+(<span class="org-keyword">setq</span> auto-save-file-name-transforms
+      `((<span class="org-string">".*"</span> ,(no-littering-expand-var-file-name <span class="org-string">"auto-save/"</span>) t)))
+
+</code></pre>
+
+<h2><a id="evil" class="anchor" href="#evil">¶</a>Evil</h2><p>evil mode <a href="https://evil.readthedocs.io/en/latest/overview.html#installation-via-package-el">source</a>
+</p>
+<h3><a id="evil-mode" class="anchor" href="#evil-mode">¶</a>evil mode</h3><p><a href="https://github.com/emacs-evil/evil">github repo</a>
+</p>
+<pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">evil</span>
+  <span class="org-builtin">:init</span>
+  (<span class="org-keyword">setq</span> evil-toggle-key <span class="org-string">"C-&lt;f1&gt;"</span>)
+  (<span class="org-keyword">setq</span> evil-shift-width 2)
+  (<span class="org-keyword">setq</span> evil-want-integration t)
+  (<span class="org-keyword">setq</span> evil-want-keybinding nil)
+  <span class="org-builtin">:custom</span>
+  (evil-undo-system 'undo-tree)
+  <span class="org-builtin">:config</span>
+  (evil-mode 1)
+
+  (define-key evil-insert-state-map (kbd <span class="org-string">"C-g"</span>) 'evil-normal-state)
+  (define-key evil-insert-state-map (kbd <span class="org-string">"C-h"</span>) 'evil-delete-backward-char-and-join)
+
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">Use visual line motions even outside of visual-line-mode buffers</span>
+  (evil-global-set-key 'motion <span class="org-string">"j"</span> 'evil-next-visual-line)
+  (evil-global-set-key 'motion <span class="org-string">"k"</span> 'evil-previous-visual-line)
+
+  (evil-set-initial-state 'help-mode 'emacs)
+  (evil-set-initial-state 'inferior-python-mode 'emacs)
+  (evil-set-initial-state 'messages-buffer-mode 'emacs)
+  (evil-set-initial-state 'dashboard-mode 'emacs)
+  (evil-set-initial-state 'special-mode 'emacs)
+  (evil-set-initial-state 'view-mode 'emacs)
+  )
+</code></pre>
+
+<h3><a id="evil-nerd-commentor" class="anchor" href="#evil-nerd-commentor">¶</a>evil-nerd-commentor</h3><p>Use <kbd>M-/</kbd> for comment/uncomment.
+</p>
+
+<p><a href="https://github.com/redguardtoo/evil-nerd-commenter">source</a>
+</p>
+<pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">evil-nerd-commenter</span>
+  <span class="org-builtin">:bind</span> (<span class="org-string">"M-/"</span> . evilnc-comment-or-uncomment-lines))
+</code></pre>
+
+<h3><a id="undo-tree" class="anchor" href="#undo-tree">¶</a>undo-tree</h3><pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">undo-tree</span>
+  <span class="org-builtin">:diminish</span> undo-tree-mode
+  <span class="org-builtin">:config</span>
+  (global-undo-tree-mode)
+  )
+
+</code></pre>
+
+<h2><a id="ivy-counsel" class="anchor" href="#ivy-counsel">¶</a>Ivy, counsel</h2><h3><a id="counsel" class="anchor" href="#counsel">¶</a>counsel</h3><pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">counsel</span>
+  <span class="org-builtin">:diminish</span> ivy-mode
+  <span class="org-builtin">:diminish</span> counsel-mode
+  <span class="org-builtin">:bind</span> ((<span class="org-string">"C-s"</span> . swiper)
+         <span class="org-builtin">:map</span> ivy-minibuffer-map
+         (<span class="org-string">"TAB"</span> . ivy-alt-done))
+  <span class="org-builtin">:init</span>
+  (ivy-mode 1)
+  (counsel-mode 1)
+  <span class="org-builtin">:config</span>
+  (<span class="org-keyword">setq</span> ivy-use-virtual-buffers t)
+  (<span class="org-keyword">setq</span> enable-recursive-minibuffers t))
+</code></pre>
+
+<h3><a id="ivy-misc" class="anchor" href="#ivy-misc">¶</a>ivy-misc</h3><p><a href="https://github.com/Yevgnen/ivy-rich">https://github.com/Yevgnen/ivy-rich</a>
+</p>
+<pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">ivy-xref</span>
+  <span class="org-builtin">:init</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">xref initialization is different in Emacs 27 - there are two different</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">variables which can be set rather than just one</span>
+  (<span class="org-keyword">when</span> (&gt;= emacs-major-version 27)
+    (<span class="org-keyword">setq</span> xref-show-definitions-function #'ivy-xref-show-defs))
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">Necessary in Emacs &lt;27. In Emacs 27 it will affect all xref-based</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">commands other than xref-find-definitions (e.g. project-find-regexp)</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">as well</span>
+  (<span class="org-keyword">setq</span> xref-show-xrefs-function #'ivy-xref-show-xrefs))
+
+(<span class="org-keyword">use-package</span> <span class="org-constant">ivy-rich</span>
+  <span class="org-builtin">:init</span>
+  (ivy-rich-mode 1))
+
+</code></pre>
+
+<h3><a id="prescient" class="anchor" href="#prescient">¶</a>prescient</h3><pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">ivy-prescient</span>
+  <span class="org-builtin">:after</span> counsel
+  <span class="org-builtin">:init</span>
+  (ivy-prescient-mode)
+  (prescient-persist-mode)
+  )
+(<span class="org-keyword">use-package</span> <span class="org-constant">prescient</span>
+  <span class="org-builtin">:diminish</span>
+  <span class="org-builtin">:config</span>
+  )
+</code></pre>
+
+<h2><a id="treemacs" class="anchor" href="#treemacs">¶</a>Treemacs</h2><pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">treemacs</span>)
+</code></pre>
+
+<h2><a id="tools" class="anchor" href="#tools">¶</a>Tools</h2><h3><a id="which-key" class="anchor" href="#which-key">¶</a>which-key</h3><pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">which-key</span>
+  <span class="org-builtin">:diminish</span> which-key-mode
+  <span class="org-builtin">:config</span>
+  (which-key-mode))
+
+</code></pre>
+
+<h3><a id="magit" class="anchor" href="#magit">¶</a>magit</h3><p><a href="https://magit.vc/">Magit</a> is the best Git interface. Common Git operations are easy to execute quickly using Magit’s command panel system.
+</p>
+<pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">magit</span>
+  <span class="org-builtin">:defer</span> t
+  <span class="org-builtin">:bind</span> (<span class="org-string">"C-x g"</span> . magit-status))
+</code></pre>
+
+<h3><a id="projectile" class="anchor" href="#projectile">¶</a>projectile</h3><p><a href="https://docs.projectile.mx/projectile/index.html">Projectile</a> is a project management library for Emacs which makes it a lot easier to navigate around code projects for various languages. Many packages integrate with Projectile so it’s a good idea to have it installed even if you don’t use its commands directly.
+</p>
+
+<pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">projectile</span>
+  <span class="org-builtin">:diminish</span> projectile-mode
+  <span class="org-builtin">:hook</span>
+  (after-init . projectile-mode)
+  <span class="org-builtin">:bind-keymap</span>
+  (<span class="org-string">"C-c p"</span> . projectile-command-map)
+  <span class="org-builtin">:init</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">NOTE: Set this to the folder where you keep your Git repos!</span>
+  (<span class="org-keyword">setq</span> projectile-project-search-path '(<span class="org-string">"~/foo/projects"</span> <span class="org-string">"~/foo/reports"</span>))
+  (<span class="org-keyword">setq</span> projectile-switch-project-action #'projectile-dired)
+  <span class="org-builtin">:custom</span>
+  (projectile-completion-system 'ivy)
+  (projectile-dynamic-mode-line nil)
+  (projectile-enable-caching t)
+  (projectile-indexing-method 'hybrid)
+  (projectile-track-known-projects-automatically nil))
+
+(<span class="org-keyword">use-package</span> <span class="org-constant">counsel-projectile</span>
+  <span class="org-builtin">:config</span> (counsel-projectile-mode))
+
+</code></pre>
+<h3><a id="eldoc" class="anchor" href="#eldoc">¶</a>eldoc</h3><pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">eldoc</span>
+  <span class="org-builtin">:diminish</span> eldoc-mode
+  )
+</code></pre>
+
+<h2><a id="company" class="anchor" href="#company">¶</a>Company</h2><h3><a id="company-mode" class="anchor" href="#company-mode">¶</a>company-mode</h3><pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">company</span>
+  <span class="org-builtin">:diminish</span> company-mode
+  <span class="org-builtin">:bind</span> (<span class="org-builtin">:map</span> company-active-map
+              (<span class="org-string">"&lt;tab&gt;"</span> . nil)
+              (<span class="org-string">"TAB"</span> . nil)
+              (<span class="org-string">"M-&lt;tab&gt;"</span> . company-complete-common-or-cycle)
+              (<span class="org-string">"M-&lt;tab&gt;"</span> . company-complete-selection))
+  (<span class="org-builtin">:map</span> lsp-mode-map
+        (<span class="org-string">"M-&lt;tab&gt;"</span> . company-indent-or-complete-common))
+  <span class="org-builtin">:custom</span>
+  (company-minimum-prefix-length 2)
+  (company-idle-delay 0.01)
+  <span class="org-builtin">:config</span>
+  )
+</code></pre>
+
+<h3><a id="prescient" class="anchor" href="#prescient">¶</a>prescient</h3><pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">company-prescient</span>
+  <span class="org-builtin">:after</span> company
+  <span class="org-builtin">:config</span>
+  (company-prescient-mode 1)
+  (prescient-persist-mode)
+  )
+</code></pre>
+
+<h2><a id="yasnippet" class="anchor" href="#yasnippet">¶</a>Yasnippet</h2><pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">yasnippet-snippets</span>)
+(<span class="org-keyword">use-package</span> <span class="org-constant">yasnippet</span>
+  <span class="org-builtin">:diminish</span> yas-minor-mode
+  <span class="org-builtin">:config</span>
+    (yas-reload-all)
+)
+</code></pre>
+
+<h2><a id="flycheck" class="anchor" href="#flycheck">¶</a>Flycheck</h2><pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">flycheck</span>
+  <span class="org-builtin">:diminish</span> flycheck-mode
+  <span class="org-builtin">:init</span>
+  (<span class="org-keyword">setq</span> flycheck-check-syntax-automatically '(save new-line)
+        flycheck-idle-change-delay 5.0
+        flycheck-display-errors-delay 0.9
+        flycheck-highlighting-mode 'symbols
+        flycheck-indication-mode 'left-fringe
+        flycheck-standard-error-navigation t
+        flycheck-deferred-syntax-check nil)
+  )
+</code></pre>
+
+<h2><a id="lsp-mode" class="anchor" href="#lsp-mode">¶</a>Lsp mode</h2><h3><a id="lsp-mode" class="anchor" href="#lsp-mode">¶</a>lsp-mode</h3><p><a href="https://github.com/daviwil/dotfiles/blob/master/Emacs.org#language-server-support">EFS notes</a> </p>
+
+<p>Nice article about main features of emacs lsp-mode (<a href="https://emacs-lsp.github.io/lsp-mode/page/main-features/">source)</a> </p>
+
+<p>EFS video <a href="https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-08.org">notes</a></p>
+
+<p>java specific lsp <a href="https://github.com/neppramod/java_emacs/blob/master/emacs-configuration.org">setting</a> to learn how to setup lsp in emacs</p>
+
+<p>Nice article to switch on/off certain features of lsp (<a href="https://emacs-lsp.github.io/lsp-mode/tutorials/how-to-turn-off/">source)</a> </p>
+
+<pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">lsp-mode</span>
+  <span class="org-builtin">:commands</span> (lsp lsp-deferred)
+  <span class="org-builtin">:hook</span> 
+  (lsp-mode . lsp-enable-which-key-integration)
+  <span class="org-builtin">:custom</span>
+  (lsp-diagnostics-provider <span class="org-builtin">:capf</span>)
+  (lsp-headerline-breadcrumb-enable t)
+  (lsp-headerline-breadcrumb-segments '(project file symbols))
+  (lsp-lens-enable nil)
+  (lsp-disabled-clients '((python-mode . pyls)))
+  <span class="org-builtin">:init</span>
+  (<span class="org-keyword">setq</span> lsp-keymap-prefix <span class="org-string">"C-c l"</span>) <span class="org-comment-delimiter">;; </span><span class="org-comment">Or 'C-l', 's-l'</span>
+  <span class="org-builtin">:config</span>
+  )
+</code></pre>
+
+<h3><a id="lsp-ivy" class="anchor" href="#lsp-ivy">¶</a>lsp-ivy</h3><p><a href="https://github.com/emacs-lsp/lsp-ivy">source github</a></p>
+
+<p>lsp-ivy integrates Ivy with lsp-mode to make it easy to search for things by name in your code. When you run these commands, a prompt will appear in the minibuffer allowing you to type part of the name of a symbol in your code. Results will be populated in the minibuffer so that you can find what you’re looking for and jump to that location in the code upon selecting the result.</p>
+
+<p>Try these commands with <kbd>M-x</kbd>:</p>
+
+<p><kbd>lsp-ivy-workspace-symbol</kbd> - Search for a symbol name in the current project workspace</p>
+
+<p><kbd>lsp-ivy-global-workspace-symbol</kbd> - Search for a symbol name in all active project workspaces</p>
+
+<pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">lsp-ivy</span>
+  <span class="org-builtin">:after</span> lsp-mode
+  )
+</code></pre>
+
+<h3><a id="lsp-ui" class="anchor" href="#lsp-ui">¶</a>lsp-ui</h3><p>Documentation: <a href="https://emacs-lsp.github.io/lsp-ui/">https://emacs-lsp.github.io/lsp-ui/</a>
+</p>
+
+<ul><li><kbd>lsp-ui-doc-focus-frame</kbd> to enter the documentation frame to navigate and search around</li>
+
+<li><kbd>lsp-ui-doc-unfocus-frame</kbd> to leave documentation frame</li>
+</ul>
+
+<pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">lsp-ui</span>
+  <span class="org-builtin">:hook</span> (lsp-mode . lsp-ui-mode)
+  <span class="org-builtin">:after</span> lsp-mode
+  <span class="org-builtin">:custom</span>
+  (lsp-ui-doc-show-with-cursor nil)
+  <span class="org-builtin">:config</span>
+  (<span class="org-keyword">setq</span> lsp-ui-doc-position 'bottom)
+  )
+</code></pre>
+
+<h3><a id="lsp-treemacs" class="anchor" href="#lsp-treemacs">¶</a>lsp-treemacs</h3><p>Provides an even nicer UI on top of lsp-mode using Treemacs</p>
+
+<ul><li><kbd>lsp-treemacs-symbols</kbd> - Show a tree view of the symbols in the current file</li>
+
+<li><kbd>lsp-treemacs-references</kbd> - Show a tree view for the references of the symbol under the cursor</li>
+
+<li><kbd>lsp-treemacs-error-list</kbd> - Show a tree view for the diagnostic messages in the project</li>
+</ul>
+
+<pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">lsp-treemacs</span>
+  <span class="org-builtin">:after</span> (lsp-mode treemacs)
+  )
+</code></pre>
+
+<h2><a id="python-configuration" class="anchor" href="#python-configuration">¶</a>Python configuration</h2><p><a href="https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-IDE-02.org">efs series notes</a></p>
+
+<p><a href="https://ddavis.io/posts/emacs-python-lsp">https://ddavis.io/posts/emacs-python-lsp</a></p>
+
+<p>some options are
+</p>
+
+<ul><li><a href="https://emacs-lsp.github.io/lsp-mode/page/lsp-pyls/">pyls</a> Palantir</li>
+
+<li><a href="https://emacs-lsp.github.io/lsp-python-ms">microsoft</a> now depreciated by MS</li>
+
+<li><a href="https://emacs-lsp.github.io/lsp-pyright">pyright</a> also by Microsoft</li>
+</ul>
+
+<h3><a id="pyright" class="anchor" href="#pyright">¶</a>pyright</h3><p><a href="https://emacs-lsp.github.io/lsp-pyright/#configuration">config</a> </p>
+
+<pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">lsp-pyright</span>
+  <span class="org-builtin">:hook</span>
+  (python-mode . (<span class="org-keyword">lambda</span> ()
+                   (<span class="org-keyword">require</span> '<span class="org-constant">lsp-pyright</span>)
+                   (lsp-deferred))))
+</code></pre>
+
+<h3><a id="pyvenv" class="anchor" href="#pyvenv">¶</a>pyvenv</h3><p>Strongly recommend to use python virtualenv to python work properly in emacs.</p>
+
+<p>Assuming venvs are installed here <kbd>~/.venvs</kbd></p>
+
+<p>Learn about setting python virtual env below</p>
+
+<p><a href="https://blog.fredrikmeyer.net/2020/08/26/emacs-python-venv.html">https://blog.fredrikmeyer.net/2020/08/26/emacs-python-venv.html</a></p>
+
+<p><a href="https://ddavis.io/posts/emacs-python-lsp">https://ddavis.io/posts/emacs-python-lsp</a></p>
+
+<p>You can use <kbd>M-x pyvenv-activate</kbd> to activate specific venv </p>
+
+<pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">pyvenv</span>
+  <span class="org-builtin">:ensure</span> t
+  <span class="org-builtin">:init</span>
+  (setenv <span class="org-string">"WORKON_HOME"</span> <span class="org-string">"~/.venvs/"</span>)
+  <span class="org-builtin">:config</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">(pyvenv-mode t)</span>
+
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">Set correct Python interpreter</span>
+  (<span class="org-keyword">setq</span> pyvenv-post-activate-hooks
+        (list (<span class="org-keyword">lambda</span> ()
+                (<span class="org-keyword">setq</span> python-shell-interpreter (concat pyvenv-virtual-env <span class="org-string">"bin/python"</span>)))))
+  (<span class="org-keyword">setq</span> pyvenv-post-deactivate-hooks
+        (list (<span class="org-keyword">lambda</span> ()
+                (<span class="org-keyword">setq</span> python-shell-interpreter <span class="org-string">"python3"</span>)))))
+
+</code></pre>
+
+<h3><a id="formatting" class="anchor" href="#formatting">¶</a>formatting</h3><pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">blacken</span>
+  <span class="org-builtin">:init</span>
+  (<span class="org-keyword">setq-default</span> blacken-fast-unsafe t)
+  (<span class="org-keyword">setq-default</span> blacken-line-length 80)
+  )
+</code></pre>
+
+<h3><a id="python-mode" class="anchor" href="#python-mode">¶</a>python-mode</h3><pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">python-mode</span>
+  <span class="org-builtin">:hook</span>
+  (python-mode . pyvenv-mode)
+  (python-mode . flycheck-mode)
+  (python-mode . company-mode)
+  (python-mode . blacken-mode)
+  (python-mode . yas-minor-mode)
+  <span class="org-builtin">:custom</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">NOTE: Set these if Python 3 is called "python3" on your system!</span>
+  (python-shell-interpreter <span class="org-string">"python3"</span>)
+  <span class="org-builtin">:config</span>
+  )
+</code></pre>
+
+<h2><a id="keybinding" class="anchor" href="#keybinding">¶</a>Keybinding</h2><p>Have a look at <a href="https://www.masteringemacs.org/article/mastering-key-bindings-emacs">mastering emacs</a> tips for emacs keybinding.</p>
+
+<p><kbd>C-c &lt;LETTER&gt;</kbd> and <kbd>F5-F9</kbd> are meant for user bindings.</p>
+
+<p>For package maintainers, <kbd>C-c C-&lt;ANY&gt;</kbd> or <kbd>C-c &lt;DIGIT&gt;</kbd> or <kbd>C-c [{};:&lt;&gt;]</kbd> are reserved for the major mode. Any other are reserved for minor modes, e.g. <kbd>C-c @</kbd> in <kbd>outline-minor-mode</kbd>. </p>
+
+<p>See <kbd>(info "(elisp) Key Binding Conventions")</kbd> for a more complete explanation for package maintainers. You, as a user, can of course use any key binding you like, but keep in mind that those bindings might conflict with the ones chosen by the package maintainer.</p>
+
+<h3><a id="general-setup" class="anchor" href="#general-setup">¶</a>General setup</h3><p>we will use general package (<a href="https://github.com/noctuid/general.el">source</a>) for keybindings.
+</p>
+<pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">general</span>
+  <span class="org-builtin">:config</span>
+  (general-evil-setup t)
+
+  (general-create-definer my/ctrl-c-keys
+    <span class="org-builtin">:prefix</span> <span class="org-string">"C-c"</span>)
+  )
+</code></pre>
+
+<h3><a id="global-keys" class="anchor" href="#global-keys">¶</a>Global keys</h3><p>use <kbd>C-c</kbd> prefix for global keybinding defined below
+</p>
+<pre><code class="emacs-lisp">
+(my/ctrl-c-keys
+  <span class="org-string">"t"</span>  '(treemacs-select-window <span class="org-builtin">:which-key</span> <span class="org-string">"treemacs-select"</span>)
+  )
+</code></pre>
+
+<h3><a id="lsp-keybinding" class="anchor" href="#lsp-keybinding">¶</a>Lsp keybinding</h3><p>use <kbd>SPC</kbd> prefix for <kbd>lsp-mode</kbd> keybinding defined below. These keybindings are for <kbd>evil</kbd> normal mode.
+</p>
+<pre><code class="emacs-lisp">
+(general-define-key
+ <span class="org-builtin">:states</span> '(normal visual)
+ <span class="org-builtin">:keymaps</span> 'lsp-mode-map
+ <span class="org-builtin">:prefix</span> <span class="org-string">"SPC"</span>
+  <span class="org-string">"d"</span> '(lsp-find-definition <span class="org-builtin">:which-key</span> <span class="org-string">"find-definitions"</span>)
+  <span class="org-string">"r"</span> '(lsp-find-references <span class="org-builtin">:which-key</span> <span class="org-string">"find-references"</span>)
+  <span class="org-string">"h"</span> '(lsp-describe-thing-at-point <span class="org-builtin">:which-key</span> <span class="org-string">"help-detailed"</span>)
+  <span class="org-string">"e"</span> '(lsp-ui-flycheck-list <span class="org-builtin">:which-key</span> <span class="org-string">"flycheck-list"</span>)
+  <span class="org-string">"o"</span> 'counsel-imenu
+  <span class="org-string">"x"</span> 'lsp-execute-code-action)
+</code></pre>
+
+<h2><a id="workflow" class="anchor" href="#workflow">¶</a>Workflow</h2><p>We assume following file structure for your project 
+</p>
+<pre><code class="nil">fooproject
+|--- .git
+|--- src
+     |--- foo.py
+|--- .dir-locals.el
+|--- pyrightconfig.json
+
+</code></pre>
+
+<p>We assume <kbd>~/.venvs/foo_env</kbd> is the virtual environment you want to use for this project</p>
+
+<p>The <kbd>~/.venvs</kbd> folder is already set in <kbd>pyvenv</kbd> setting above.</p>
+
+<p>So, <kbd>foo_env</kbd> will be set using <kbd>pyvenv-workon</kbd> variable using <kbd>.dir-locals.el</kbd> file
+</p>
+
+<h4><a id="dir-localsel" class="anchor" href="#dir-localsel">¶</a>.dir-locals.el</h4><pre><code class="emacs-lisp">(python-mode . ((pyvenv-workon . <span class="org-string">"foo_env"</span>)))
+</code></pre>
+
+<h4><a id="pyrightconfigjson-optional" class="anchor" href="#pyrightconfigjson-optional">¶</a>pyrightconfig.json (optional)</h4><p>You can using minimal expample as your pyrightconfig file
+</p>
+
+<p>Check following for more options (<a href="https://github.com/microsoft/pyright/blob/master/docs/configuration.md">source</a>)
+</p>
+
+<pre><code class="nil">{
+  "include": [
+    "src"
+  ],
+  "executionEnvironments": [
+    {
+      "root": "src"
+    }
+  ]
+}
+</code></pre>
+
+<h2><a id="how-to-set-python-virtualenv" class="anchor" href="#how-to-set-python-virtualenv">¶</a>How to set python virtualenv</h2><p>Some useful commands to setup virtualenv</p>
+
+<ul><li>installation</li>
+</ul>
+
+<pre><code class="nil">$ pip3 install virtualenv
+$ pip3 list
+$ mkdir ~/.venvs
+$ cd ~/.venvs
+</code></pre>
+
+<ul><li>create virtual environment</li>
+</ul>
+
+<pre><code class="nil">$ virtualenv foo_env
+$ source foo_env/bin/activate
+$ which python 
+</code></pre>
+
+<ul><li>install packages in virtual env</li>
+</ul>
+
+<pre><code class="nil">$ pip install numpy
+$ pip list
+$ pip freeze --local &gt; requirement.txt
+</code></pre>
+
+<ul><li>deactivate virtualenv</li>
+</ul>
+
+<pre><code class="nil">$ deactivate
+</code></pre>
+
+<ul><li>add pythonpath (<kbd>.pth</kbd>) to already existing virtulenv</li>
+</ul>
+
+<p>If you have external projects you want to include in the pythonpath of your virtualenv, checkout following,</p>
+
+<p><a href="https://stackoverflow.com/a/47184788/237059">https://stackoverflow.com/a/47184788/237059</a>
+</p>
+
+<pre><code class="shell"><span class="org-builtin">cd</span> $(python -c <span class="org-string">"from distutils.sysconfig import get_python_lib; print(get_python_lib())"</span>)
+<span class="org-builtin">echo</span> some/library/path &gt; some-library.pth
+</code></pre>
+</div></div></div></div></div><footer class="blog-footer"><div class="container"><div class="row"><div class="col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right"><p>Made with Emacs 27.2 (Org mode 9.4.4)</p><p><a href="https://systemcrafters.net/privacy-policy/">Privacy Policy</a></p></div></div></div></footer><script src="/js/bootstrap.bundle.min.js"/></body></html>

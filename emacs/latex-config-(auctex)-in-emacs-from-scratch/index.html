@@ -1,0 +1,329 @@
+<!DOCTYPE html><html lang="en"><head><!--  --><meta charset="utf-8"/><meta author="David Wilson"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/fonts/iosevka-aile/iosevka-aile.css"/><link rel="stylesheet" href="/fonts/jetbrains-mono/jetbrains-mono.css"/><link rel="stylesheet" href="/css/code.css"/><link rel="stylesheet" href="/css/site.css"/><script defer="defer" data-domain="wiki.systemcrafters.net" src="https://plausible.io/js/plausible.js"></script><title> - System Crafters</title></head><body><div><div class="blog-header"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-8"><div class="blog-title">System Crafters</div></div><div class="col-sm col-md"><div class="blog-description text-sm-left text-md-right text-lg-right text-xl-right"></div></div></div></div></div><div class="blog-masthead"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-12"><nav class="nav"><a class="nav-link" href="/">Main Page</a> <a class="nav-link" href="/emacs">GNU Emacs</a> <a class="nav-link" href="/guix">GNU Guix</a><a class="nav-link" href="https://systemcrafters.net">System Crafters Home</a><form class="navbar-form navbar-right" role="search" action="https://duckduckgo.com/"><div class="form-group"><input type="text" name="q" class="form-control" placeholder="Search Wiki" style="overflow: hidden;margin-top: 3%;margin-bottom: 2%;"/><input type="hidden" name="sites" value="wiki.systemcrafters.net"/></div></form> </nav></div></div></div></div></div><div class="container"><div class="row"><div class="col-sm-12 blog-main"><div class="blog-post"><h1 class="blog-post-title"></h1><p class="blog-post-meta"></p><div><h2><a id="packages-and-config" class="anchor" href="#packages-and-config">¶</a>Packages and config</h2><h3><a id="straight" class="anchor" href="#straight">¶</a>straight</h3><pre><code class="emacs-lisp">(<span class="org-keyword">defvar</span> <span class="org-variable-name">bootstrap-version</span>)
+(<span class="org-keyword">let</span> ((bootstrap-file
+       (expand-file-name <span class="org-string">"straight/repos/straight.el/bootstrap.el"</span> user-emacs-directory))
+      (bootstrap-version 5))
+  (<span class="org-keyword">unless</span> (file-exists-p bootstrap-file)
+    (<span class="org-keyword">with-current-buffer</span>
+        (url-retrieve-synchronously
+         <span class="org-string">"https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"</span>
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(straight-use-package 'use-package)
+(<span class="org-keyword">setq</span> straight-use-package-by-default t)
+</code></pre>
+
+<h3><a id="evil" class="anchor" href="#evil">¶</a>evil</h3><pre><code class="emacs-lisp">  (<span class="org-keyword">use-package</span> <span class="org-constant">evil</span>
+    <span class="org-builtin">:init</span>
+    (<span class="org-keyword">setq</span> evil-toggle-key <span class="org-string">"C-&lt;f1&gt;"</span>)
+    (<span class="org-keyword">setq</span> evil-shift-width 2)
+    (<span class="org-keyword">setq</span> evil-want-integration t)
+    (<span class="org-keyword">setq</span> evil-want-keybinding nil)
+    <span class="org-builtin">:config</span>
+    (evil-mode 1)
+
+    <span class="org-comment-delimiter">;; </span><span class="org-comment">Use visual line motions even outside of visual-line-mode buffers</span>
+    (evil-global-set-key 'motion <span class="org-string">"j"</span> 'evil-next-visual-line)
+    (evil-global-set-key 'motion <span class="org-string">"k"</span> 'evil-previous-visual-line)
+
+    (evil-set-initial-state 'dired-mode 'emacs)
+    (evil-set-initial-state 'pdf-view-mode 'emacs)
+    (evil-set-initial-state 'messages-buffer-mode 'emacs)
+  )
+
+(<span class="org-keyword">use-package</span> <span class="org-constant">evil-nerd-commenter</span>
+  <span class="org-builtin">:bind</span> (<span class="org-string">"M-/"</span> . evilnc-comment-or-uncomment-lines))
+
+</code></pre>
+<h3><a id="counsel-ivy-setting" class="anchor" href="#counsel-ivy-setting">¶</a>counsel, ivy setting</h3><pre><code class="emacs-lisp">  (<span class="org-keyword">use-package</span> <span class="org-constant">counsel</span>
+    <span class="org-builtin">:diminish</span> ivy-mode
+    <span class="org-builtin">:diminish</span> counsel-mode
+    <span class="org-builtin">:bind</span> ((<span class="org-string">"C-s"</span> . swiper)
+         <span class="org-builtin">:map</span> ivy-minibuffer-map
+         (<span class="org-string">"TAB"</span> . ivy-alt-done))
+    <span class="org-builtin">:init</span>
+    (ivy-mode 1)
+    (counsel-mode 1)
+    <span class="org-builtin">:config</span>
+    (<span class="org-keyword">setq</span> ivy-use-virtual-buffers t)
+    (<span class="org-keyword">setq</span> enable-recursive-minibuffers t))
+
+  (<span class="org-keyword">use-package</span> <span class="org-constant">prescient</span>
+    <span class="org-builtin">:diminish</span>
+    <span class="org-builtin">:config</span>
+    <span class="org-comment-delimiter">;; </span><span class="org-comment">(prescient-persist-mode)</span>
+)
+
+
+  (<span class="org-keyword">use-package</span> <span class="org-constant">ivy-prescient</span>
+    <span class="org-builtin">:after</span> counsel
+    <span class="org-builtin">:init</span>
+    (ivy-prescient-mode)
+    (prescient-persist-mode)
+    )
+</code></pre>
+<h3><a id="company" class="anchor" href="#company">¶</a>company</h3><pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">company</span>
+  <span class="org-builtin">:straight</span> (company <span class="org-builtin">:files</span> (<span class="org-builtin">:defaults</span> <span class="org-string">"icons"</span>))
+  <span class="org-builtin">:diminish</span> company-mode
+  <span class="org-builtin">:bind</span> (<span class="org-builtin">:map</span> company-active-map
+          (<span class="org-string">"&lt;tab&gt;"</span> . nil)
+          (<span class="org-string">"TAB"</span> . nil))
+  <span class="org-builtin">:custom</span>
+  (company-minimum-prefix-length 2)
+  (company-idle-delay 0.01)
+  <span class="org-builtin">:config</span>
+ )
+
+(<span class="org-keyword">use-package</span> <span class="org-constant">company-prescient</span>
+    <span class="org-builtin">:after</span> company
+    <span class="org-builtin">:config</span>
+    (company-prescient-mode 1)
+    (prescient-persist-mode)
+  )
+</code></pre>
+
+<h3><a id="magit-which-key" class="anchor" href="#magit-which-key">¶</a>magit, which key</h3><pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">which-key</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">:ensure t</span>
+  <span class="org-builtin">:diminish</span> which-key-mode
+  <span class="org-builtin">:config</span>
+     (which-key-mode))
+
+<span class="org-comment-delimiter">; </span><span class="org-comment">magit</span>
+(<span class="org-keyword">use-package</span> <span class="org-constant">magit</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">:ensure t</span>
+  <span class="org-builtin">:defer</span> t
+  <span class="org-builtin">:bind</span> (<span class="org-string">"C-x g"</span> . magit-status))
+</code></pre>
+<h3><a id="pdf-tools" class="anchor" href="#pdf-tools">¶</a>pdf-tools</h3><pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">pdf-tools</span>
+  <span class="org-builtin">:magic</span> (<span class="org-string">"%PDF"</span> . pdf-view-mode)
+  <span class="org-builtin">:config</span>
+  (pdf-tools-install)
+  (<span class="org-keyword">setq-default</span> pdf-view-display-size 'fit-page)
+  )
+
+</code></pre>
+
+<h3><a id="custom-functions" class="anchor" href="#custom-functions">¶</a>Custom functions</h3><pre><code class="emacs-lisp">
+(<span class="org-keyword">defun</span> <span class="org-function-name">try/TeX-command-save-buffer-and-run-all</span> ()
+    <span class="org-doc">"Save the buffer and run TeX-command-run-all"</span>
+    (<span class="org-keyword">interactive</span>)
+    (<span class="org-keyword">let</span> (TeX-save-query) (TeX-save-document (TeX-master-file)))
+    (TeX-command-run-all nil))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">copied ivy-bibtex and modified it to cite action</span>
+(<span class="org-keyword">defun</span> <span class="org-function-name">try/ivy-bibtex-cite</span> (<span class="org-type">&amp;optional</span> arg local-bib)
+  <span class="org-doc">"Search BibTeX entries using ivy.</span>
+
+<span class="org-doc">With a prefix ARG the cache is invalidated and the bibliography</span>
+<span class="org-doc">reread.</span>
+
+<span class="org-doc">If LOCAL-BIB is non-nil, display that the BibTeX entries are read</span>
+<span class="org-doc">from the local bibliography.  This is set internally by</span>
+<span class="org-doc">`</span><span class="org-doc"><span class="org-constant">ivy-bibtex-with-local-bibliography</span></span><span class="org-doc">'."</span>
+  (<span class="org-keyword">interactive</span> <span class="org-string">"P"</span>)
+  (<span class="org-keyword">when</span> arg
+    (bibtex-completion-clear-cache))
+  (bibtex-completion-init)
+  (<span class="org-keyword">let*</span> ((candidates (bibtex-completion-candidates))
+          (key (bibtex-completion-key-at-point))
+          (preselect (<span class="org-keyword">and</span> key
+                          (cl-position-if (<span class="org-keyword">lambda</span> (cand)
+                                            (member (cons <span class="org-string">"=key="</span> key)
+                                                    (cdr cand)))
+                                          candidates))))
+    (ivy-read (format <span class="org-string">"Insert citation %s: "</span> (<span class="org-keyword">if</span> local-bib <span class="org-string">" (local)"</span> <span class="org-string">""</span>))
+              candidates
+              <span class="org-builtin">:preselect</span> preselect
+              <span class="org-builtin">:caller</span> 'ivy-bibtex
+              <span class="org-builtin">:history</span> 'ivy-bibtex-history
+              <span class="org-builtin">:action</span> 'ivy-bibtex-insert-citation)))
+
+(<span class="org-keyword">defun</span> <span class="org-function-name">try/latex-mode-setup</span> ()
+  (<span class="org-keyword">require</span> '<span class="org-constant">company-reftex</span>)
+        (turn-on-reftex)
+        (<span class="org-keyword">require</span> '<span class="org-constant">company-auctex</span>)
+        (<span class="org-keyword">require</span> '<span class="org-constant">company-math</span>)
+(<span class="org-keyword">setq-local</span> company-backends
+      
+    (append '(
+                              (company-reftex-labels
+                                company-reftex-citations)
+              (company-math-symbols-unicode company-math-symbols-latex company-latex-commands)
+              (company-auctex-macros company-auctex-symbols company-auctex-environments)
+              company-ispell
+              )
+            company-backends)))
+
+
+(<span class="org-keyword">defun</span> <span class="org-function-name">try/counsel-insert-file-path</span> ()
+  <span class="org-doc">"Insert relative file path using counsel minibuffer"</span>
+  (<span class="org-keyword">interactive</span>)
+  (<span class="org-keyword">unless</span> (<span class="org-keyword">featurep</span> '<span class="org-constant">counsel</span>) (<span class="org-keyword">require</span> '<span class="org-constant">counsel</span>))
+  (ivy-read <span class="org-string">"Insert filename: "</span> 'read-file-name-internal
+            <span class="org-builtin">:matcher</span> #'counsel--find-file-matcher
+            <span class="org-builtin">:action</span>
+            (<span class="org-keyword">lambda</span> (x)
+              (insert (file-relative-name x)))))
+
+</code></pre>
+
+<h3><a id="olivetti" class="anchor" href="#olivetti">¶</a>Olivetti</h3><pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">olivetti</span>
+<span class="org-builtin">:diminish</span>
+<span class="org-builtin">:hook</span> (text-mode . olivetti-mode)
+<span class="org-builtin">:config</span>
+(<span class="org-keyword">setq</span> olivetti-body-width 100)
+)
+</code></pre>
+
+<h3><a id="latex" class="anchor" href="#latex">¶</a>latex</h3><h4><a id="foldingunfolding-like-org-mode" class="anchor" href="#foldingunfolding-like-org-mode">¶</a>folding/unfolding like org-mode</h4><p>Enable folding and unfolding sections just like org-mode (using <kbd>TAB</kbd>) using <a href="https://github.com/alphapapa/outshine/issues/85">outshine</a>
+</p>
+
+<p>Check <kbd>outshine-cycle</kbd> for more options.
+</p>
+<pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">outshine</span>
+  <span class="org-builtin">:config</span>
+(<span class="org-keyword">setq</span> LaTeX-section-list '(
+                           (<span class="org-string">"part"</span> 0)
+                           (<span class="org-string">"chapter"</span> 1)
+                           (<span class="org-string">"section"</span> 2)
+                           (<span class="org-string">"subsection"</span> 3)
+                           (<span class="org-string">"subsubsection"</span> 4)
+                           (<span class="org-string">"paragraph"</span> 5)
+                           (<span class="org-string">"subparagraph"</span> 6)
+                           (<span class="org-string">"begin"</span> 7)
+                           )
+      )
+(add-hook 'LaTeX-mode-hook #'(lambda ()
+                               (outshine-mode 1)
+                               (<span class="org-keyword">setq</span> outline-level #'LaTeX-outline-level)
+                               (<span class="org-keyword">setq</span> outline-regexp (LaTeX-outline-regexp t))
+                               (<span class="org-keyword">setq</span> outline-heading-alist
+                                     (mapcar (<span class="org-keyword">lambda</span> (x)
+                                               (cons (concat <span class="org-string">"\\"</span> (nth 0 x)) (nth 1 x)))
+                                             LaTeX-section-list))))
+
+  )
+
+    (general-define-key
+      <span class="org-builtin">:states</span> '(normal visual)
+      <span class="org-builtin">:keymaps</span> 'LaTeX-mode-map
+      <span class="org-string">"TAB"</span>  '(outshine-cycle <span class="org-builtin">:which-key</span> <span class="org-string">"outshine-cycle"</span>)
+  )
+</code></pre>
+<h4><a id="auctex" class="anchor" href="#auctex">¶</a>auctex</h4><p><a href="https://people.umass.edu/weikaichen/post/emacs-academic-tools/">source: blog</a>
+</p>
+<pre><code class="emacs-lisp">
+      <span class="org-comment-delimiter">;; </span><span class="org-comment">latexmk</span>
+      (<span class="org-keyword">use-package</span> <span class="org-constant">auctex-latexmk</span>)
+      <span class="org-comment-delimiter">;; </span><span class="org-comment">company</span>
+      (<span class="org-keyword">use-package</span> <span class="org-constant">company-math</span>)
+      (<span class="org-keyword">use-package</span> <span class="org-constant">company-auctex</span>)
+(<span class="org-keyword">use-package</span> <span class="org-constant">company-reftex</span>)
+
+
+      <span class="org-comment-delimiter">;;  </span><span class="org-comment">use cdlatex</span>
+      (<span class="org-keyword">use-package</span> <span class="org-constant">cdlatex</span>)
+
+      <span class="org-comment-delimiter">;; </span><span class="org-comment">https://gist.github.com/saevarb/367d3266b3f302ecc896</span>
+      <span class="org-comment-delimiter">;; </span><span class="org-comment">https://piotr.is/2010/emacs-as-the-ultimate-latex-editor/</span>
+
+      (<span class="org-keyword">use-package</span> <span class="org-constant">latex</span>
+        <span class="org-builtin">:straight</span> auctex
+        <span class="org-builtin">:defer</span> t
+        <span class="org-builtin">:custom</span>
+        (olivetti-body-width 100)
+        (cdlatex-simplify-sub-super-scripts nil)
+        (reftex-default-bibliography
+              '(<span class="org-string">"~/ref.bib"</span>))
+        (bibtex-dialect 'biblatex)
+        <span class="org-builtin">:mode</span>
+          (<span class="org-string">"\\.tex\\'"</span> . latex-mode)
+        <span class="org-builtin">:bind</span> (<span class="org-builtin">:map</span> LaTeX-mode-map
+                  (<span class="org-string">"C-c C-e"</span> . cdlatex-environment)
+              )
+        <span class="org-builtin">:hook</span>
+          (LaTeX-mode . olivetti-mode)
+          (LaTeX-mode . TeX-PDF-mode)
+          (LaTeX-mode . company-mode)
+          (LaTeX-mode . flyspell-mode)
+          (LaTeX-mode . flycheck-mode)
+          (LaTeX-mode . LaTeX-math-mode)
+          (LaTeX-mode . turn-on-reftex)
+          (LaTeX-mode . TeX-source-correlate-mode)
+          (LaTeX-mode . try/latex-mode-setup)
+          (LaTeX-mode . turn-on-cdlatex)
+
+        <span class="org-builtin">:config</span>
+          (<span class="org-keyword">setq</span> TeX-auto-save t)
+          (<span class="org-keyword">setq</span> TeX-parse-self t)
+          (<span class="org-keyword">setq-default</span> TeX-master nil)
+          (<span class="org-keyword">setq</span> TeX-save-query nil)
+
+          (<span class="org-keyword">setq</span> reftex-plug-into-AUCTeX t)
+
+          <span class="org-comment-delimiter">;; </span><span class="org-comment">pdftools</span>
+          <span class="org-comment-delimiter">;; </span><span class="org-comment">https://emacs.stackexchange.com/questions/21755/use-pdfview-as-default-auctex-pdf-viewer#21764</span>
+          (<span class="org-keyword">setq</span> TeX-view-program-selection '((output-pdf <span class="org-string">"PDF Tools"</span>))
+              TeX-view-program-list '((<span class="org-string">"PDF Tools"</span> TeX-pdf-tools-sync-view))
+              TeX-source-correlate-start-server t) <span class="org-comment-delimiter">;; </span><span class="org-comment">not sure if last line is neccessary</span>
+          <span class="org-comment-delimiter">;; </span><span class="org-comment">to have the buffer refresh after compilation,</span>
+          <span class="org-comment-delimiter">;; </span><span class="org-comment">very important so that PDFView refesh itself after comilation</span>
+          (add-hook 'TeX-after-compilation-finished-functions
+                      #'TeX-revert-document-buffer)
+
+          <span class="org-comment-delimiter">;; </span><span class="org-comment">latexmk</span>
+          (<span class="org-keyword">require</span> '<span class="org-constant">auctex-latexmk</span>)
+          (auctex-latexmk-setup)
+          (<span class="org-keyword">setq</span> auctex-latexmk-inherit-TeX-PDF-mode t)
+      )
+</code></pre>
+
+<h4><a id="ivy-bibtex" class="anchor" href="#ivy-bibtex">¶</a>ivy-bibtex</h4><pre><code class="emacs-lisp">
+(<span class="org-keyword">use-package</span> <span class="org-constant">ivy-bibtex</span>
+  <span class="org-builtin">:custom</span>
+  (bibtex-completion-bibliography
+        '(<span class="org-string">"~/ref.bib"</span>))
+  (bibtex-completion-library-path '(<span class="org-string">"~/papers"</span>))
+  (bibtex-completion-cite-prompt-for-optional-arguments nil)
+  (bibtex-completion-cite-default-as-initial-input t)
+)
+
+</code></pre>
+<h4><a id="org-ref" class="anchor" href="#org-ref">¶</a>org-ref</h4><pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">org-ref</span>
+<span class="org-builtin">:custom</span>
+(org-ref-default-bibliography <span class="org-string">"~/ref.bib"</span>)
+(org-ref-pdf-directory <span class="org-string">"~/papers"</span>)
+(org-ref-completion-library 'org-ref-ivy-cite)
+<span class="org-builtin">:config</span>
+(<span class="org-keyword">require</span> '<span class="org-constant">org-ref-wos</span>)
+(<span class="org-keyword">require</span> '<span class="org-constant">doi-utils</span>)
+)
+</code></pre>
+
+<h2><a id="keybinding" class="anchor" href="#keybinding">¶</a>Keybinding</h2><p>Use <kbd>SPC</kbd> has leader key (in evil normal mode) for local latex mode keybindings
+</p>
+<pre><code class="emacs-lisp">
+(<span class="org-keyword">use-package</span> <span class="org-constant">general</span>
+  <span class="org-builtin">:config</span>
+  (general-evil-setup t))
+
+  (general-define-key
+    <span class="org-builtin">:states</span> '(normal visual)
+    <span class="org-builtin">:keymaps</span> 'LaTeX-mode-map
+    <span class="org-builtin">:prefix</span> <span class="org-string">"SPC"</span>
+      <span class="org-string">"f"</span>  '(LaTeX-fill-region <span class="org-builtin">:which-key</span> <span class="org-string">"latex-fill-region"</span>)
+      <span class="org-string">"SPC"</span>  '(try/TeX-command-save-buffer-and-run-all <span class="org-builtin">:which-key</span> <span class="org-string">"latex-save-run"</span>)
+      <span class="org-string">"c"</span>  '(try/ivy-bibtex-cite <span class="org-builtin">:which-key</span> <span class="org-string">"ivy-cite"</span>)
+      <span class="org-string">"i"</span>   '(try/counsel-insert-file-path <span class="org-builtin">:which-key</span> <span class="org-string">"insert-relative-filepath"</span>)
+      <span class="org-string">"b"</span> '(ivy-bibtex <span class="org-builtin">:which-key</span> <span class="org-string">"ivy-bibtex"</span>)
+      <span class="org-string">"t"</span> '(tab-bar-switch-to-tab <span class="org-builtin">:which-key</span> <span class="org-string">"tab-switch-name"</span>)
+   <span class="org-string">"o"</span>  '(outshine-imenu <span class="org-builtin">:which-key</span> <span class="org-string">"menu"</span>)
+   <span class="org-string">"t"</span>  '(outshine-cycle-buffer <span class="org-builtin">:which-key</span> <span class="org-string">"fold-buffer"</span>)
+  )
+</code></pre>
+
+<h2><a id="workflow" class="anchor" href="#workflow">¶</a>Workflow</h2><p>TODO
+</p>
+</div></div></div></div></div><footer class="blog-footer"><div class="container"><div class="row"><div class="col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right"><p>Made with Emacs 27.2 (Org mode 9.4.4)</p><p><a href="https://systemcrafters.net/privacy-policy/">Privacy Policy</a></p></div></div></div></footer><script src="/js/bootstrap.bundle.min.js"/></body></html>

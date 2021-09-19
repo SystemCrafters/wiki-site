@@ -1,0 +1,104 @@
+<!DOCTYPE html><html lang="en"><head><!--  --><meta charset="utf-8"/><meta author="David Wilson"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/fonts/iosevka-aile/iosevka-aile.css"/><link rel="stylesheet" href="/fonts/jetbrains-mono/jetbrains-mono.css"/><link rel="stylesheet" href="/css/code.css"/><link rel="stylesheet" href="/css/site.css"/><script defer="defer" data-domain="wiki.systemcrafters.net" src="https://plausible.io/js/plausible.js"></script><title> - System Crafters</title></head><body><div><div class="blog-header"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-8"><div class="blog-title">System Crafters</div></div><div class="col-sm col-md"><div class="blog-description text-sm-left text-md-right text-lg-right text-xl-right"></div></div></div></div></div><div class="blog-masthead"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-12"><nav class="nav"><a class="nav-link" href="/">Main Page</a> <a class="nav-link" href="/emacs">GNU Emacs</a> <a class="nav-link" href="/guix">GNU Guix</a><a class="nav-link" href="https://systemcrafters.net">System Crafters Home</a><form class="navbar-form navbar-right" role="search" action="https://duckduckgo.com/"><div class="form-group"><input type="text" name="q" class="form-control" placeholder="Search Wiki" style="overflow: hidden;margin-top: 3%;margin-bottom: 2%;"/><input type="hidden" name="sites" value="wiki.systemcrafters.net"/></div></form> </nav></div></div></div></div></div><div class="container"><div class="row"><div class="col-sm-12 blog-main"><div class="blog-post"><h1 class="blog-post-title"></h1><p class="blog-post-meta"></p><div><p>In this article we will see various steps to test/try <kbd>emacs-28</kbd> with native compilation support on <kbd>Ubuntu 20.04LTS</kbd>. We will not touch existing emacs installed using <kbd>apt</kbd> on the Ubuntu, but will manually compile another version of <kbd>emacs-28</kbd> with <kbd>native-compilation</kbd> support (called <kbd>gccemacs</kbd> henceforth) in the <kbd>~/opt/emacs-native</kbd> folder. These two versions of emacs (already installed and <kbd>gccemacs</kbd>) will use different config files (<kbd>init.el</kbd>) and user-directories (<kbd>~/.emacs.d</kbd>) using <kbd>chemacs2</kbd>, so that they don't interfere with each other. Using this approach users can try <kbd>gccemacs</kbd> without breaking their stable emacs config.
+</p>
+
+<p>Please help us improving this wiki by reporting any bugs/issues in the wiki github repo. 
+</p>
+
+<h2><a id="installing-gccemacs" class="anchor" href="#installing-gccemacs">¶</a>Installing gccemacs</h2><p>check for any errors during <kbd>./configure</kbd> step, you may be missing some libraries, which need to be installed using <kbd>apt</kbd>.
+</p>
+
+<pre><code class="shell">mkdir -p ~/opt
+mkdir -p ~/opt/emacs-native
+<span class="org-builtin">cd</span> ~/opt
+sudo add-apt-repository ppa:ubuntu-toolchain-r/ppa
+sudo apt install gcc-10 g++-10 libgccjit0 libgccjit-10-dev libjansson4 libjansson-dev
+sudo apt install libxpm-dev libgif-dev libtiff-dev libgnutls28-dev libmagick++-dev
+git clone git://git.sv.gnu.org/emacs.git gccemacs
+<span class="org-builtin">cd</span> gccemacs
+git checkout master
+<span class="org-builtin">export</span> <span class="org-variable-name">CC</span>=/usr/bin/gcc-10 <span class="org-variable-name">CXX</span>=/usr/bin/gcc-10
+./autogen.sh
+./configure --with-cairo --with-modules --without-compress-install --with-x-toolkit=no --with-gnutls --without-gconf --without-xwidgets --without-toolkit-scroll-bars --without-xaw3d --without-gsettings --with-mailutils --with-native-compilation --with-json --with-harfbuzz --with-imagemagick --with-jpeg --with-png --with-rsvg --with-tiff --with-wide-int --with-xft --with-xml2 --with-xpm <span class="org-variable-name">CFLAGS</span>=<span class="org-string">"-O3 -mtune=native -march=native -fomit-frame-pointer"</span> <span class="org-variable-name">prefix</span>=~/opt/emacs-native
+make -j2 <span class="org-variable-name">NATIVE_FULL_AOT</span>=1
+make install
+</code></pre>
+
+<h2><a id="using-emacs-profiles" class="anchor" href="#using-emacs-profiles">¶</a>Using emacs-profiles</h2><ul><li>Install <a href="https://github.com/plexus/chemacs2">chemacs2</a> using following script</li>
+</ul>
+<pre><code class="shell">[ -f ~/.emacs ] &amp;&amp; mv ~/.emacs ~/.emacs.bak
+[ -d ~/.emacs.d ] &amp;&amp; mv ~/.emacs.d ~/.emacs.default
+git clone https://github.com/plexus/chemacs2.git ~/.emacs.d
+</code></pre>
+
+<ul><li>save following in <kbd>~/.emacs-profile.el</kbd></li>
+</ul>
+<pre><code class="emacs-lisp">(
+ (<span class="org-string">"default"</span> . ((user-emacs-directory . <span class="org-string">"~/.emacs.default"</span>)
+  (server-name . <span class="org-string">"default-server"</span>)))
+ (<span class="org-string">"gccemacs"</span> . ((user-emacs-directory . <span class="org-string">"~/.gccemacs.d"</span>)
+  (server-name . <span class="org-string">"gccemacs-server"</span>)))
+)
+</code></pre>
+
+<ul><li>copy your default config <kbd>init.el</kbd> to gccemacs folder</li>
+</ul>
+<pre><code class="shell">mkdir -p ~/.gccemacs.d
+cp ~/.emacs.default/init.el ~/.gccemacs.d/init.el
+</code></pre>
+
+<h2><a id="some-changes-in-config-file-for-gccemacs" class="anchor" href="#some-changes-in-config-file-for-gccemacs">¶</a>Some changes in config file for gccemacs</h2><ul><li>You can add following lines in your new <kbd>init.el</kbd>  (in the <kbd>~/.gccemacs.d</kbd> folder)just to check if native-compilation and native json is working</li>
+</ul>
+<pre><code class="emacs-lisp">(<span class="org-keyword">setq</span> comp-deferred-compilation t)
+
+(<span class="org-keyword">if</span> (<span class="org-keyword">and</span> (fboundp 'native-comp-available-p)
+       (native-comp-available-p))
+  (message <span class="org-string">"Native compilation is available"</span>)
+(message <span class="org-string">"Native complation is *not* available"</span>))
+
+(<span class="org-keyword">if</span> (functionp 'json-serialize)
+  (message <span class="org-string">"Native JSON is available"</span>)
+(message <span class="org-string">"Native JSON is *not* available"</span>))
+
+</code></pre>
+
+<ul><li><kbd>straight.el</kbd> uses its own native compilation which can create some problems. You can switch off this using <kbd>:build (:not native-compile)</kbd>, for e.g. in case of <kbd>doom-themes</kbd>, one can use the following</li>
+</ul>
+
+<pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">doom-themes</span>
+  <span class="org-builtin">:straight</span> '(doom-themes <span class="org-builtin">:build</span> (<span class="org-builtin">:not</span> native-compile))
+  <span class="org-builtin">:init</span>
+  (load-theme 'doom-nord t)
+)
+</code></pre>
+
+<h2><a id="running-parallel-emacs" class="anchor" href="#running-parallel-emacs">¶</a>Running parallel emacs</h2><h3><a id="default-emacs" class="anchor" href="#default-emacs">¶</a>default emacs</h3><ul><li>run emacs without daemon (It is better to run this if you are running emacs first time after making all changes using <kbd>chemacs2</kbd>). Try it 2-3 times so that no error/installation is left.</li>
+</ul>
+<pre><code class="emacs-lisp">emacs --with-profile=default
+</code></pre>
+<ul><li>If you are emacs daemon user then following will work</li>
+</ul>
+<pre><code class="shell">emacs --with-profile=default --daemon
+</code></pre>
+<ul><li>run a instance of daemon using (after previous step)</li>
+</ul>
+<pre><code class="shell">emacsclient -c -s /run/user/1000/emacs/default-server
+</code></pre>
+
+<h3><a id="gccemacs" class="anchor" href="#gccemacs">¶</a>gccemacs</h3><ul><li>run emacs without daemon (It is better to run this if you are running emacs first time after making all changes using <kbd>chemacs2</kbd>). Try it 2-3 times so that no error/installtion is left.</li>
+</ul>
+<pre><code class="emacs-lisp">~/opt/emacs-native/bin/emacs --with-profile=gccemacs
+</code></pre>
+<ul><li>If you are emacs daemon user then following will work</li>
+</ul>
+<pre><code class="shell">~/opt/emacs-native/bin/emacs --with-profile=gccemacs --daemon
+</code></pre>
+<ul><li>run a instance of daemon using (after previous step)</li>
+</ul>
+<pre><code class="shell">~/opt/emacs-native/bin/emacsclient -c -s /run/user/1000/emacs/gccemacs-server
+</code></pre>
+
+<h2><a id="issuesbugs-and-the-solutions" class="anchor" href="#issuesbugs-and-the-solutions">¶</a>Issues/Bugs and the solutions</h2><ul><li>Some packages like <kbd>vterm</kbd>, <kbd>pdf-tools</kbd> couldn't compile for first time, but after restarting the computer somehow, they are working fine.</li>
+<li>Many packages show lot of <kbd>warning</kbd> messages. This happens when you are using these packages for first time. Shouldn't be a problem after that.</li>
+<li>Some user reported problem using <kbd>exwm</kbd>, didn't try it yet.</li>
+</ul>
+</div></div></div></div></div><footer class="blog-footer"><div class="container"><div class="row"><div class="col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right"><p>Made with Emacs 27.2 (Org mode 9.4.4)</p><p><a href="https://systemcrafters.net/privacy-policy/">Privacy Policy</a></p></div></div></div></footer><script src="/js/bootstrap.bundle.min.js"/></body></html>
