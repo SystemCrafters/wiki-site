@@ -1,4 +1,4 @@
-;;; publish.el --- Build systemcrafters.cc
+;;; publish.el --- Build wiki.systemcrafters.net
 
 ;; Copyright (C) 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;; Copyright (C) 2021 David Wilson <david@daviwil.com>

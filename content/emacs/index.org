@@ -3,10 +3,10 @@
 Refer to the video series and show notes on Emacs for more thorough "tutorial" style content that David has put together. Here are some quick jumping off points:
 
 * Emacs Essentials
-This is a [[https://systemcrafters.cc/emacs-essentials/][series]] for true beginners and explains the fundamentals of Emacs.
+This is a [[https://systemcrafters.net/emacs-essentials/][series]] for true beginners and explains the fundamentals of Emacs.
 
 * Emacs from scratch
-This is a [[https://systemcrafters.cc/emacs-from-scratch/][series]] geared towards crafting your custom Emacs configuration. Out of the box configurations like [[https://github.com/hlissner/doom-emacs][doom]], [[https://www.spacemacs.org/][spacemacs]], and [[https://github.com/bbatsov/prelude][prelude]] are also good options to see how these "opinionated" setup the emacs environment so you can hack on your own setup more.
+This is a [[https://systemcrafters.net/emacs-from-scratch/][series]] geared towards crafting your custom Emacs configuration. Out of the box configurations like [[https://github.com/hlissner/doom-emacs][doom]], [[https://www.spacemacs.org/][spacemacs]], and [[https://github.com/bbatsov/prelude][prelude]] are also good options to see how these "opinionated" setup the emacs environment so you can hack on your own setup more.
 
 * Emacs's help system
 
@@ -14,7 +14,7 @@ Emacs is a self documented editor, meaning with couple of key presses, you can f
 
 * More Emacs Content
 
-There's a lot more content on the [[https://systemcrafters.cc/videos][Videos]] page.
+There's a lot more content on the [[https://systemcrafters.net/videos][Videos]] page.
 
 * Emacs and org-mode
 org-mode is an outline markup format that helps you take notes, manage and schedule your TODOs, and a lot more.
