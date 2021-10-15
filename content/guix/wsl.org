@@ -266,7 +266,11 @@ mkdir -p $HOME/.config/guix/manifests && mv /mnt/c/Users/<user>/Desktop/guix/wsl
 
 moves the file to =~/.config/guix/manifests=.
 
-=guix-init.sh= can be copied to =/root/boot.sh= and the distribution started by executed =wsl -d guix --exec /bin/busybox sh -c "/root/boot.sh"= .
+=guix-init.sh= can be copied to =/root/boot.sh= and the distribution started by executing
+
+#+begin_src sh :tangle no
+wsl -d guix --exec /bin/busybox sh -c "/root/boot.sh"
+#+end_src
 
 This is really up to the individual setup, both files may very well be incorporated into an already existing configuration. [[https://github.com/minikN/guix/blob/main/Systems.org#wsl][minikN]]'s dotfiles showcase a possible approach to this.
 
@@ -295,7 +299,11 @@ if uname -r | grep -q 'microsoft'; then
 fi
 #+end_src
 
-*Note:* If =WSLg= is the preferred option to run GUI applications, the init script automatically sets up the necessary X socket. One only needs to =export DISPLAY=:0= somewhere in user space (=.profile=, =.bash_profile=, =...=). Do not use the provided wrapper script for this approach as it will set =$DISPLAY= wrong.
+*Note:* If =WSLg= is the preferred option to run GUI applications, the init script automatically sets up the necessary X socket. One only needs to 
+#+begin_src sh
+export DISPLAY=:0
+#+end_src
+somewhere in user space (=.profile=, =.bash_profile=, =...=). Do not use the provided wrapper script for this approach as it will set =$DISPLAY= wrong.
 
 This script has to be available somewhere in the =PATH=. It should also be named appropriately and made executable: =chmod +x run-wsl=.
 
