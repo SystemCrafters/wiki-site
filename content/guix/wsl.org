@@ -1,4 +1,4 @@
-#+TITLE: Installing GuixSD on WSL
+#+TITLE: Installing GuixSD on WSL2
 #+AUTHOR: Demis Balbach
 The Windows Subsystem for Linux enables Windows to run software, including whole distributions, written for Linux. This article goes through the process of installing GuixSD as a WSL distribution.
 
@@ -30,7 +30,7 @@ In any case, with an appropriate =rootfs.tgz= available, open up =PowerShell=, n
 wsl --import guix /guix rootfs.tgz --version 2
 #+end_src
 
-*Note*: The =--version 2= flag is specific to the used rootfs and must not be changed.
+*Note*: The =--version 2= flag specifies the WSL version to use and must not be changed.
 
 * Roll back
 
@@ -180,7 +180,7 @@ wsl-operating-system
 Place the file in the same folder as the script above. Inside =PowerShell=, execute
 
 #+begin_src sh :tangle no
-wsl -d guix /bin/busybox sh -c "/mnt/c/path/to/guix-install.sh /mnt/c/path/to/wsl.scm"
+wsl -d guix --exec /bin/busybox sh -c "/mnt/c/path/to/guix-install.sh /mnt/c/path/to/wsl.scm"
 #+end_src
 
 The path is relative to the root folder of the WSL distribution. If the two files are located at =C:\Users\<user>\Desktop\guix= the path would then be =/mnt/c/Users/<user>/Desktop/guix=.
@@ -198,31 +198,39 @@ guix system: warning: while talking to shepherd: No such file or directory
 This is to be expected. Because WSL distributions don't boot the same way a normal distribution would, Guix could not populate =/run=. More information about this can be found [[https://gist.github.com/giuliano108/49ec5bd0a9339db98535bc793ceb5ab4#booting-the-guix-wsl-distro-as-if-it-were-a-guixsd-system][here]]. This has to be done manually or rather automated via a shell script:
 
 #+begin_src sh :tangle no
-#!/bin/sh
-DIR="/run/current-system"
-if [ ! -d "$DIR" ]; then
+#!/bin/busybox sh
 
-ln -s none /run/current-system &>/dev/null
-export GUIX_NEW_SYSTEM=$(readlink -f /var/guix/profiles/system)
-setsid /var/guix/profiles/system/profile/bin/guile  --no-auto-compile  $GUIX_NEW_SYSTEM/boot &>/dev/null &
-sleep 1
-fi
+export GUIX_NEW_SYSTEM=$(/bin/busybox readlink -f /var/guix/profiles/system)
+# $GUIX_NEW_SYSTEM/boot needs this to exist even though /run is expected to be empty.
+# I installed GuixSD in a proper VM and /run is not on tmpfs, so I'm not sure.
+/bin/busybox ln -s none /run/current-system
+setsid /var/guix/profiles/system/profile/bin/guile --no-auto-compile $GUIX_NEW_SYSTEM/boot >/dev/null &
 
-export GUIX_PROFILE=/run/current-system
-source "$GUIX_PROFILE/etc/profile"
+/bin/busybox sleep 3
+source /etc/profile
 
+# why are these permissions not there in the first place?
 for f in ping su sudo; do
         chmod 4755 $(readlink -f $(which $f))
 done
+
+# Setting up WSLg
+if [ -d "/mnt/wslg" ]; then
+        rm -r /tmp/.X11-unix
+        ln -s /mnt/wslg/.X11-unix /tmp/.X11-unix
+        # Add "export DISPLAY=:0" in your .bashrc!
+fi
+
+su -l <user>
 #+end_src
 
-Copy the script to the same folder like the other scripts and execute it with
+Change the last line to your user name and copy the script to the same folder like the other scripts and execute it with
 
 #+begin_src sh :tangle no
-wsl -d guix /bin/busybox sh -c "/mnt/c/path/to/guix-init.sh"
+wsl -d guix --exec /bin/busybox sh -c "/mnt/c/path/to/guix-init.sh"
 #+end_src
 
-The command should not produce any output. This script /can/ be safely run every time one logs into the distribution (See [[#tidying-up][Tidying up]]), however, it /needs/ to be run after rebooting the host system or executing =wsl -t guix=. After it's done, run =wsl -d guix= to log into the distribution.
+This script /can/ be safely run every time one logs into the distribution (See [[#tidying-up][Tidying up]]), however, it /needs/ to be run after rebooting the host system or executing =wsl -t guix= or =wsl --shutdown=. The script will automatically log your user in after setting up the system.
 
 A bash prompt should be waiting for input. Congratulations.
 
@@ -258,7 +266,7 @@ mkdir -p $HOME/.config/guix/manifests && mv /mnt/c/Users/<user>/Desktop/guix/wsl
 
 moves the file to =~/.config/guix/manifests=.
 
-=guix-init.sh= can be copied to =/root/boot.sh= and the distribution started by executed =wsl -d guix /bin/busybox sh -c "/root/boot.sh"=. =su -l <user>= may be appended to the script to automatically switch to the main user.
+=guix-init.sh= can be copied to =/root/boot.sh= and the distribution started by executed =wsl -d guix --exec /bin/busybox sh -c "/root/boot.sh"= .
 
 This is really up to the individual setup, both files may very well be incorporated into an already existing configuration. [[https://github.com/minikN/guix/blob/main/Systems.org#wsl][minikN]]'s dotfiles showcase a possible approach to this.
 
@@ -280,13 +288,14 @@ Once The X server is up and running, the =DISPLAY= variable has to be populated 
 
 #+begin_src sh
 if uname -r | grep -q 'microsoft'; then
-    . $HOME/.profile # Change this path accordingly
     export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}'):0.0
     export LIBGL_ALWAYS_INDIRECT=1
     export XCURSOR_SIZE=16
     setsid $1
 fi
 #+end_src
+
+*Note:* If =WSLg= is the preferred option to run GUI applications, the init script automatically sets up the necessary X socket. One only needs to =export DISPLAY=:0= somewhere in user space (=.profile=, =.bash_profile=, =...=). Do not use the provided wrapper script for this approach as it will set =$DISPLAY= wrong.
 
 This script has to be available somewhere in the =PATH=. It should also be named appropriately and made executable: =chmod +x run-wsl=.
 
