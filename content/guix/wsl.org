@@ -1,0 +1,332 @@
+#+TITLE: Installing GuixSD on WSL2
+#+AUTHOR: Demis Balbach
+The Windows Subsystem for Linux enables Windows to run software, including whole distributions, written for Linux. This article goes through the process of installing GuixSD as a WSL distribution.
+
+*Note*: GuixSD refers to the Guix System Distribution. Not Guix the package manager. This article won't cover how to install the package manager into an existing distribution (like Ubuntu or Debian), but rather how to create a custom distribution containing the full Guix system.
+
+* Table Of Contents :TOC:
+- [[#prerequisites][Prerequisites]]
+- [[#base-distribution][Base Distribution]]
+- [[#roll-back][Roll back]]
+- [[#installation][Installation]]
+  - [[#manifest][Manifest]]
+- [[#initialization][Initialization]]
+- [[#updating-the-system][Updating the system]]
+- [[#tidying-up][Tidying up]]
+- [[#gui-applications][GUI applications]]
+- [[#desktop-shortcuts][Desktop shortcuts]]
+- [[#sources][Sources]]
+
+* Prerequisites
+
+- Windows 10 with a properly [[https://docs.microsoft.com/en-us/windows/wsl/install-win10][configured]] WSL2
+
+* Base Distribution
+
+Guix will use a minimal WSL distribution based on [[https://busybox.net/][busybox]] by 0xbadfca11. Download the =rootfs.tgz= of the latest release [[https://github.com/0xbadfca11/miniwsl/releases/download/release3041562/rootfs.tgz][here]]. However, one could also [[https://github.com/giuliano108/guix-packages/blob/master/notes/Guix-on-WSL2.md#minimal-rootfs-archive][create]] a rootfs from scratch.
+In any case, with an appropriate =rootfs.tgz= available, open up =PowerShell=, navigate to the folder with the file and execute
+
+#+begin_src sh :tangle no
+wsl --import guix /guix rootfs.tgz --version 2
+#+end_src
+
+*Note*: The =--version 2= flag specifies the WSL version to use and must not be changed.
+
+* Roll back
+
+The current distribution can erased by executing
+
+#+begin_src sh :tangle no
+wsl --unregister guix
+#+end_src
+
+Windows will delete any files associated with the given distribution. One may then start from scratch again.
+
+* Installation
+
+The following script adds the folder and files required by Guix so that a full system can be built.
+
+#+begin_src sh :tangle no
+#!/bin/sh
+
+# Creating necessary folders
+mkdir -p /root /etc/guix /tmp /var/run /run /home
+chmod 1777 /tmp
+
+# Adding guix workers
+rm /etc/passwd
+cat <<EOM >> /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+guixbuilder01:x:999:999:Guix build user 01:/var/empty:/usr/sbin/nologin
+guixbuilder02:x:998:999:Guix build user 02:/var/empty:/usr/sbin/nologin
+guixbuilder03:x:997:999:Guix build user 03:/var/empty:/usr/sbin/nologin
+guixbuilder04:x:996:999:Guix build user 04:/var/empty:/usr/sbin/nologin
+guixbuilder05:x:995:999:Guix build user 05:/var/empty:/usr/sbin/nologin
+guixbuilder06:x:994:999:Guix build user 06:/var/empty:/usr/sbin/nologin
+guixbuilder07:x:993:999:Guix build user 07:/var/empty:/usr/sbin/nologin
+guixbuilder08:x:992:999:Guix build user 08:/var/empty:/usr/sbin/nologin
+guixbuilder09:x:991:999:Guix build user 09:/var/empty:/usr/sbin/nologin
+guixbuilder10:x:990:999:Guix build user 10:/var/empty:/usr/sbin/nologin
+EOM
+
+rm /etc/group
+cat <<EOM >> /etc/group
+root:x:0:
+guixbuild:x:999:guixbuilder01,guixbuilder02,guixbuilder03,guixbuilder04,guixbuilder05,guixbuilder06,guixbuilder07,guixbuilder08,guixbuilder09,guixbuilder10
+EOM
+
+# Adding services
+cat <<EOM >> /etc/services
+ftp-data        20/tcp
+ftp             21/tcp
+ssh             22/tcp                          # SSH Remote Login Protocol
+domain          53/tcp                          # Domain Name Server
+domain          53/udp
+http            80/tcp          www             # WorldWideWeb HTTP
+https           443/tcp                         # http protocol over TLS/SSL
+ftps-data       989/tcp                         # FTP over SSL (data)
+ftps            990/tcp
+http-alt        8080/tcp        webcache        # WWW caching service
+http-alt        8080/udp
+EOM
+
+# Adding Guix channels
+cat <<EOM >> /etc/guix/channels.scm
+    ;; Your guix channels here
+EOM
+
+# Preparing environment
+cd /tmp
+wget http://ftp.gnu.org/gnu/guix/guix-binary-1.3.0.x86_64-linux.tar.xz
+tar -C / -xvJf /tmp/guix-binary-1.3.0.x86_64-linux.tar.xz
+mkdir -p ~root/.config/guix
+ln -sf /var/guix/profiles/per-user/root/current-guix ~root/.config/guix/current
+GUIX_PROFILE="`echo ~root`/.config/guix/current"
+source $GUIX_PROFILE/etc/profile
+guix-daemon --build-users-group=guixbuild &
+guix archive --authorize < /var/guix/profiles/per-user/root/current-guix/share/guix/ci.guix.gnu.org.pub
+
+# Reconfiguring the system
+guix system reconfigure --no-bootloader --no-grafts -L $(dirname $(readlink -f $1)) $1
+#+end_src
+
+Custom Guix channels can be added here
+
+#+begin_src sh
+# Adding Guix channels
+cat <<EOM >> /etc/guix/channels.scm
+    ;; Your guix channels here
+EOM
+#+end_src
+
+If this is not required, the lines can be safely deleted. In any case, this script should copied to a location accessible by both Windows and the WSL distribution (E.g. =C:\Users\<user>\Desktop\guix\guix-install.sh=).
+
+** Manifest
+
+Guix needs a manifest file as a blueprint to build the system. This minimal scheme file contains everything needed for a successful installation:
+
+#+begin_src scheme :tangle no
+(define-module (wsl)
+  #:use-module (gnu)
+  #:use-module (gnu services ssh)
+  #:use-module (gnu services networking)
+  #:use-module (gnu packages version-control)
+  #:use-module (guix channels)
+  #:use-module (guix packages)
+  #:use-module (guix profiles)
+  #:use-module (ice-9 pretty-print)
+  #:use-module (srfi srfi-1))
+
+(define-public wsl-operating-system
+  (operating-system
+   (host-name "guix")
+   (keyboard-layout (keyboard-layout "us" "altgr-intl"))
+
+   ;; User account
+   (users (cons (user-account
+                 (name "wsl")
+                 (group "users")
+                 (home-directory "/home/wsl")
+                 (supplementary-groups '("wheel")))
+                %base-user-accounts))
+
+   (kernel hello)
+   (initrd (lambda* (. rest) (plain-file "dummyinitrd" "dummyinitrd")))
+   (initrd-modules '())
+   (firmware '())
+
+   (bootloader
+    (bootloader-configuration
+     (bootloader
+      (bootloader
+       (name 'dummybootloader)
+       (package hello)
+       (configuration-file "/dev/null")
+       (configuration-file-generator (lambda* (. rest) (computed-file "dummybootloader" #~(mkdir #$output))))
+       (installer #~(const #t))))))
+
+   (file-systems (list (file-system
+                        (device "/dev/sdb")
+                        (mount-point "/")
+                        (type "ext4")
+                        (mount? #t))))
+
+   (services (list (service guix-service-type)
+                   (service special-files-service-type
+                            `(("/usr/bin/env" ,(file-append coreutils "/bin/env"))))))))
+wsl-operating-system
+#+end_src
+
+Place the file in the same folder as the script above. Inside =PowerShell=, execute
+
+#+begin_src sh :tangle no
+wsl -d guix --exec /bin/busybox sh -c "/mnt/c/path/to/guix-install.sh /mnt/c/path/to/wsl.scm"
+#+end_src
+
+The path is relative to the root folder of the WSL distribution. If the two files are located at =C:\Users\<user>\Desktop\guix= the path would then be =/mnt/c/Users/<user>/Desktop/guix=.
+
+ *Note*: The install script and the manifest file don't have to be in the same folder. The script also sets the load path to the folder containing the manifest file, this means =wsl.scm= may inherit from other modules located in the same load path (like a =base-system.scm= for example).
+
+* Initialization
+
+After the installation is finished, it will most likely output a warning along the lines of
+
+#+begin_src sh :tangle no
+guix system: warning: while talking to shepherd: No such file or directory
+#+end_src
+
+This is to be expected. Because WSL distributions don't boot the same way a normal distribution would, Guix could not populate =/run=. More information about this can be found [[https://gist.github.com/giuliano108/49ec5bd0a9339db98535bc793ceb5ab4#booting-the-guix-wsl-distro-as-if-it-were-a-guixsd-system][here]]. This has to be done manually or rather automated via a shell script:
+
+#+begin_src sh :tangle no
+#!/bin/busybox sh
+
+export GUIX_NEW_SYSTEM=$(/bin/busybox readlink -f /var/guix/profiles/system)
+# $GUIX_NEW_SYSTEM/boot needs this to exist even though /run is expected to be empty.
+# I installed GuixSD in a proper VM and /run is not on tmpfs, so I'm not sure.
+/bin/busybox ln -s none /run/current-system
+setsid /var/guix/profiles/system/profile/bin/guile --no-auto-compile $GUIX_NEW_SYSTEM/boot >/dev/null &
+
+/bin/busybox sleep 3
+source /etc/profile
+
+# why are these permissions not there in the first place?
+for f in ping su sudo; do
+        chmod 4755 $(readlink -f $(which $f))
+done
+
+# Setting up WSLg
+if [ -d "/mnt/wslg" ]; then
+        rm -r /tmp/.X11-unix
+        ln -s /mnt/wslg/.X11-unix /tmp/.X11-unix
+        # Add "export DISPLAY=:0" in your .bashrc!
+fi
+
+su -l <user>
+#+end_src
+
+Change the last line to your user name and copy the script to the same folder like the other scripts and execute it with
+
+#+begin_src sh :tangle no
+wsl -d guix --exec /bin/busybox sh -c "/mnt/c/path/to/guix-init.sh"
+#+end_src
+
+This script /can/ be safely run every time one logs into the distribution (See [[#tidying-up][Tidying up]]), however, it /needs/ to be run after rebooting the host system or executing =wsl -t guix= or =wsl --shutdown=. The script will automatically log your user in after setting up the system.
+
+A bash prompt should be waiting for input. Congratulations.
+
+Now is a good time to set some passwords
+
+#+begin_src sh :tangle no
+passwd
+passwd <user>
+#+end_src
+
+One can either switch to the user with =su -l <user>= or log the user in directly by executing =wsl -u <user> -d guix=.
+
+* Updating the system
+
+The system can be updated like one would expect:
+
+#+begin_src sh :tangle no
+guix pull
+sudo guix system reconfigure /mnt/c/path/to/wsl.scm
+#+end_src
+
+This creates a new system generation and switches to it.
+
+* Tidying up
+
+At this point the installation is complete. However there are a couple of things that can be done to make interacting with the distribution easier. At the moment, there are three files on the host file system. The installation script (=guix-install.sh=) can be deleted as it is not needed anymore.
+
+=wsl.scm= is only really needed inside the distribution. One can save it in the user space, for example
+
+#+begin_src sh :tangle no
+mkdir -p $HOME/.config/guix/manifests && mv /mnt/c/Users/<user>/Desktop/guix/wsl.scm $HOME/.config/guix/manifests
+#+end_src
+
+moves the file to =~/.config/guix/manifests=.
+
+=guix-init.sh= can be copied to =/root/boot.sh= and the distribution started by executing
+
+#+begin_src sh :tangle no
+wsl -d guix --exec /bin/busybox sh -c "/root/boot.sh"
+#+end_src
+
+This is really up to the individual setup, both files may very well be incorporated into an already existing configuration. [[https://github.com/minikN/guix/blob/main/Systems.org#wsl][minikN]]'s dotfiles showcase a possible approach to this.
+
+* GUI applications
+
+Launching GUI applications from within WSL assumes a working X server running on the host. There a couple of alternatives to consider:
+
+- [[https://sourceforge.net/projects/xming/][Xming]]
+- [[https://sourceforge.net/projects/vcxsrv/][VcXsrv]]
+- [[https://x410.dev/][X410]]
+- [[https://mobaxterm.mobatek.net/][MobaXTerm]]
+- [[https://github.com/microsoft/wslg][WSLG]]
+
+*Note*: Both Xming and VcXsrv may suffer from display [[https://github.com/sebastiencs/company-box/issues/76][glitches]] when using Emacs' child frames due to an error in their GLX [[https://sourceforge.net/p/vcxsrv/bugs/102/][implementation]].
+
+This guide will not focus on how to configure each X server, because there are already plenty of resources available on the subject.
+
+Once The X server is up and running, the =DISPLAY= variable has to be populated properly. A wrapper script can be used for this purpose (although, as always, there are other ways to achieve the same thing):
+
+#+begin_src sh
+if uname -r | grep -q 'microsoft'; then
+    export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}'):0.0
+    export LIBGL_ALWAYS_INDIRECT=1
+    export XCURSOR_SIZE=16
+    setsid $1
+fi
+#+end_src
+
+*Note:* If =WSLg= is the preferred option to run GUI applications, the init script automatically sets up the necessary X socket. One only needs to 
+#+begin_src sh
+export DISPLAY=:0
+#+end_src
+somewhere in user space (=.profile=, =.bash_profile=, =...=). Do not use the provided wrapper script for this approach as it will set =$DISPLAY= wrong.
+
+This script has to be available somewhere in the =PATH=. It should also be named appropriately and made executable: =chmod +x run-wsl=.
+
+GUI applications can now be started with
+
+#+begin_src sh
+run-wsl emacs
+#+end_src
+
+from within the distribution itself. However, it's more convenient to launch them from Windows directly via desktop shortcuts. In order to do that a minimal generic launcher can be written in =vbs= like so:
+
+#+begin_src vbs
+WScript.CreateObject("WScript.Shell").Run "wsl ~ -u <user> -d guix /path/to/run-wsl " & WScript.Arguments(0), 0, false
+#+end_src
+
+*Note*: Adjust the =<user>= and the path to the script accordingly.
+
+* Desktop shortcuts
+
+This launcher will run the =run-wsl= script with its first argument. Now shortcuts for applications can be added by creating a shortcut to the launcher itself (=Right click -> Send to -> Desktop (create shortcut)=). After that edit the shortcuts target like so: =C:\Users\<user>\Desktop\guix-launcher.vbs emacs= where =emacs= is the application to launch.
+
+The launcher can obviously reside anywhere on the file system, doesn't have to be the desktop. One may also change the shortcuts icon to something more appropriate like the emacs icon.
+
+* Sources
+- [[https://gist.github.com/giuliano108/49ec5bd0a9339db98535bc793ceb5ab4][giuliano108/Guix-on-WSL2.md]]
+- [[https://gist.github.com/vldn-dev/de379bf81a80ff0a53cd851bcc3bbff2][vldn-dev/guix-infect.sh]]
