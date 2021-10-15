@@ -1,0 +1,336 @@
+<!DOCTYPE html><html lang="en"><head><!--  --><meta charset="utf-8"/><meta author="David Wilson"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/fonts/iosevka-aile/iosevka-aile.css"/><link rel="stylesheet" href="/fonts/jetbrains-mono/jetbrains-mono.css"/><link rel="stylesheet" href="/css/code.css"/><link rel="stylesheet" href="/css/site.css"/><script defer="defer" data-domain="wiki.systemcrafters.net" src="https://plausible.io/js/plausible.js"></script><title>Installing GuixSD on WSL2 - System Crafters</title></head><body><div><div class="blog-header"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-8"><div class="blog-title">System Crafters</div></div><div class="col-sm col-md"><div class="blog-description text-sm-left text-md-right text-lg-right text-xl-right"></div></div></div></div></div><div class="blog-masthead"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-12"><nav class="nav"><a class="nav-link" href="/">Main Page</a> <a class="nav-link" href="/emacs">GNU Emacs</a> <a class="nav-link" href="/guix">GNU Guix</a><a class="nav-link" href="https://systemcrafters.net">System Crafters Home</a><form class="navbar-form navbar-right" role="search" action="https://duckduckgo.com/"><div class="form-group"><input type="text" name="q" class="form-control" placeholder="Search Wiki" style="overflow: hidden;margin-top: 3%;margin-bottom: 2%;"/><input type="hidden" name="sites" value="wiki.systemcrafters.net"/></div></form> </nav></div></div></div></div></div><div class="container"><div class="row"><div class="col-sm-12 blog-main"><div class="blog-post"><h1 class="blog-post-title">Installing GuixSD on WSL2</h1><p class="blog-post-meta"></p><div><p>The Windows Subsystem for Linux enables Windows to run software, including whole distributions, written for Linux. This article goes through the process of installing GuixSD as a WSL distribution.
+</p>
+
+<p><strong>Note</strong>: GuixSD refers to the Guix System Distribution. Not Guix the package manager. This article won't cover how to install the package manager into an existing distribution (like Ubuntu or Debian), but rather how to create a custom distribution containing the full Guix system.
+</p>
+
+<h2><a id="table-of-contents" class="anchor" href="#table-of-contents">¶</a>Table Of Contents</h2><ul><li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#base-distribution">Base Distribution</a></li>
+<li><a href="#roll-back">Roll back</a></li>
+<li><a href="#installation">Installation</a>
+<ul><li><a href="#manifest">Manifest</a></li>
+</ul></li>
+<li><a href="#initialization">Initialization</a></li>
+<li><a href="#updating-the-system">Updating the system</a></li>
+<li><a href="#tidying-up">Tidying up</a></li>
+<li><a href="#gui-applications">GUI applications</a></li>
+<li><a href="#desktop-shortcuts">Desktop shortcuts</a></li>
+<li><a href="#sources">Sources</a></li>
+</ul>
+
+<h2><a id="prerequisites" class="anchor" href="#prerequisites">¶</a>Prerequisites</h2><ul><li>Windows 10 with a properly <a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">configured</a> WSL2</li>
+</ul>
+
+<h2><a id="base-distribution" class="anchor" href="#base-distribution">¶</a>Base Distribution</h2><p>Guix will use a minimal WSL distribution based on <a href="https://busybox.net/">busybox</a> by 0xbadfca11. Download the <kbd>rootfs.tgz</kbd> of the latest release <a href="https://github.com/0xbadfca11/miniwsl/releases/download/release3041562/rootfs.tgz">here</a>. However, one could also <a href="https://github.com/giuliano108/guix-packages/blob/master/notes/Guix-on-WSL2.md#minimal-rootfs-archive">create</a> a rootfs from scratch.
+In any case, with an appropriate <kbd>rootfs.tgz</kbd> available, open up <kbd>PowerShell</kbd>, navigate to the folder with the file and execute
+</p>
+
+<pre><code class="sh">wsl --import guix /guix rootfs.tgz --version 2
+</code></pre>
+
+<p><strong>Note</strong>: The <kbd>--version 2</kbd> flag specifies the WSL version to use and must not be changed.
+</p>
+
+<h2><a id="roll-back" class="anchor" href="#roll-back">¶</a>Roll back</h2><p>The current distribution can erased by executing
+</p>
+
+<pre><code class="sh">wsl --unregister guix
+</code></pre>
+
+<p>Windows will delete any files associated with the given distribution. One may then start from scratch again.
+</p>
+
+<h2><a id="installation" class="anchor" href="#installation">¶</a>Installation</h2><p>The following script adds the folder and files required by Guix so that a full system can be built.
+</p>
+
+<pre><code class="sh"><span class="org-comment-delimiter">#</span><span class="org-comment">!/bin/</span><span class="org-keyword">sh</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Creating necessary folders</span>
+mkdir -p /root /etc/guix /tmp /var/run /run /home
+chmod 1777 /tmp
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Adding guix workers</span>
+rm /etc/passwd
+cat &lt;&lt;EOM &gt;&gt; /etc/passwd
+<span class="org-sh-heredoc">root:x:0:0:root:/root:/bin/bash</span>
+<span class="org-sh-heredoc">guixbuilder01:x:999:999:Guix build user 01:/var/empty:/usr/sbin/nologin</span>
+<span class="org-sh-heredoc">guixbuilder02:x:998:999:Guix build user 02:/var/empty:/usr/sbin/nologin</span>
+<span class="org-sh-heredoc">guixbuilder03:x:997:999:Guix build user 03:/var/empty:/usr/sbin/nologin</span>
+<span class="org-sh-heredoc">guixbuilder04:x:996:999:Guix build user 04:/var/empty:/usr/sbin/nologin</span>
+<span class="org-sh-heredoc">guixbuilder05:x:995:999:Guix build user 05:/var/empty:/usr/sbin/nologin</span>
+<span class="org-sh-heredoc">guixbuilder06:x:994:999:Guix build user 06:/var/empty:/usr/sbin/nologin</span>
+<span class="org-sh-heredoc">guixbuilder07:x:993:999:Guix build user 07:/var/empty:/usr/sbin/nologin</span>
+<span class="org-sh-heredoc">guixbuilder08:x:992:999:Guix build user 08:/var/empty:/usr/sbin/nologin</span>
+<span class="org-sh-heredoc">guixbuilder09:x:991:999:Guix build user 09:/var/empty:/usr/sbin/nologin</span>
+<span class="org-sh-heredoc">guixbuilder10:x:990:999:Guix build user 10:/var/empty:/usr/sbin/nologin</span>
+<span class="org-sh-heredoc">EOM</span>
+
+rm /etc/group
+cat &lt;&lt;EOM &gt;&gt; /etc/group
+<span class="org-sh-heredoc">root:x:0:</span>
+<span class="org-sh-heredoc">guixbuild:x:999:guixbuilder01,guixbuilder02,guixbuilder03,guixbuilder04,guixbuilder05,guixbuilder06,guixbuilder07,guixbuilder08,guixbuilder09,guixbuilder10</span>
+<span class="org-sh-heredoc">EOM</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Adding services</span>
+cat &lt;&lt;EOM &gt;&gt; /etc/services
+<span class="org-sh-heredoc">ftp-data        20/tcp</span>
+<span class="org-sh-heredoc">ftp             21/tcp</span>
+<span class="org-sh-heredoc">ssh             22/tcp                          # SSH Remote Login Protocol</span>
+<span class="org-sh-heredoc">domain          53/tcp                          # Domain Name Server</span>
+<span class="org-sh-heredoc">domain          53/udp</span>
+<span class="org-sh-heredoc">http            80/tcp          www             # WorldWideWeb HTTP</span>
+<span class="org-sh-heredoc">https           443/tcp                         # http protocol over TLS/SSL</span>
+<span class="org-sh-heredoc">ftps-data       989/tcp                         # FTP over SSL (data)</span>
+<span class="org-sh-heredoc">ftps            990/tcp</span>
+<span class="org-sh-heredoc">http-alt        8080/tcp        webcache        # WWW caching service</span>
+<span class="org-sh-heredoc">http-alt        8080/udp</span>
+<span class="org-sh-heredoc">EOM</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Adding Guix channels</span>
+cat &lt;&lt;EOM &gt;&gt; /etc/guix/channels.scm
+<span class="org-sh-heredoc">    ;; Your guix channels here</span>
+<span class="org-sh-heredoc">EOM</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Preparing environment</span>
+<span class="org-builtin">cd</span> /tmp
+wget http://ftp.gnu.org/gnu/guix/guix-binary-1.3.0.x86_64-linux.tar.xz
+tar -C / -xvJf /tmp/guix-binary-1.3.0.x86_64-linux.tar.xz
+mkdir -p ~root/.config/guix
+ln -sf /var/guix/profiles/per-user/root/current-guix ~root/.config/guix/current
+<span class="org-variable-name">GUIX_PROFILE</span>=<span class="org-string">"`echo ~root`/.config/guix/current"</span>
+source $<span class="org-variable-name">GUIX_PROFILE</span>/etc/profile
+guix-daemon --build-users-group=guixbuild &amp;
+guix archive --authorize &lt; /var/guix/profiles/per-user/root/current-guix/share/guix/ci.guix.gnu.org.pub
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Reconfiguring the system</span>
+guix system reconfigure --no-bootloader --no-grafts -L $(dirname $(readlink -f $<span class="org-variable-name">1</span>)) $<span class="org-variable-name">1</span>
+</code></pre>
+
+<p>Custom Guix channels can be added here
+</p>
+
+<pre><code class="sh"><span class="org-comment-delimiter"># </span><span class="org-comment">Adding Guix channels</span>
+cat &lt;&lt;EOM &gt;&gt; /etc/guix/channels.scm
+<span class="org-sh-heredoc">    ;; Your guix channels here</span>
+<span class="org-sh-heredoc">EOM</span>
+</code></pre>
+
+<p>If this is not required, the lines can be safely deleted. In any case, this script should copied to a location accessible by both Windows and the WSL distribution (E.g. <kbd>C:\Users\&lt;user&gt;\Desktop\guix\guix-install.sh</kbd>).
+</p>
+
+<h3><a id="manifest" class="anchor" href="#manifest">¶</a>Manifest</h3><p>Guix needs a manifest file as a blueprint to build the system. This minimal scheme file contains everything needed for a successful installation:
+</p>
+
+<pre><code class="scheme">(<span class="org-keyword">define-module</span> (<span class="org-type">wsl</span>)
+  <span class="org-builtin">#:use-module</span> (gnu)
+  <span class="org-builtin">#:use-module</span> (gnu services ssh)
+  <span class="org-builtin">#:use-module</span> (gnu services networking)
+  <span class="org-builtin">#:use-module</span> (gnu packages version-control)
+  <span class="org-builtin">#:use-module</span> (guix channels)
+  <span class="org-builtin">#:use-module</span> (guix packages)
+  <span class="org-builtin">#:use-module</span> (guix profiles)
+  <span class="org-builtin">#:use-module</span> (ice-9 pretty-print)
+  <span class="org-builtin">#:use-module</span> (srfi srfi-1))
+
+(<span class="org-keyword">define-public</span> <span class="org-function-name">wsl-operating-system</span>
+  (operating-system
+   (host-name <span class="org-string">"guix"</span>)
+   (keyboard-layout (keyboard-layout <span class="org-string">"us"</span> <span class="org-string">"altgr-intl"</span>))
+
+   <span class="org-comment-delimiter">;; </span><span class="org-comment">User account</span>
+   (users (cons (user-account
+                 (name <span class="org-string">"wsl"</span>)
+                 (group <span class="org-string">"users"</span>)
+                 (home-directory <span class="org-string">"/home/wsl"</span>)
+                 (supplementary-groups '(<span class="org-string">"wheel"</span>)))
+                %base-user-accounts))
+
+   (kernel hello)
+   (initrd (lambda* (. rest) (plain-file <span class="org-string">"dummyinitrd"</span> <span class="org-string">"dummyinitrd"</span>)))
+   (initrd-modules '())
+   (firmware '())
+
+   (bootloader
+    (bootloader-configuration
+     (bootloader
+      (bootloader
+       (name 'dummybootloader)
+       (package hello)
+       (configuration-file <span class="org-string">"/dev/null"</span>)
+       (configuration-file-generator (lambda* (. rest) (computed-file <span class="org-string">"dummybootloader"</span> #~(mkdir #$output))))
+       (installer #~(const #t))))))
+
+   (file-systems (list (file-system
+                        (device <span class="org-string">"/dev/sdb"</span>)
+                        (mount-point <span class="org-string">"/"</span>)
+                        (type <span class="org-string">"ext4"</span>)
+                        (mount? #t))))
+
+   (services (list (service guix-service-type)
+                   (service special-files-service-type
+                            `((<span class="org-string">"/usr/bin/env"</span> ,(file-append coreutils <span class="org-string">"/bin/env"</span>))))))))
+wsl-operating-system
+</code></pre>
+
+<p>Place the file in the same folder as the script above. Inside <kbd>PowerShell</kbd>, execute
+</p>
+
+<pre><code class="sh">wsl -d guix --exec /bin/busybox sh -c <span class="org-string">"/mnt/c/path/to/guix-install.sh /mnt/c/path/to/wsl.scm"</span>
+</code></pre>
+
+<p>The path is relative to the root folder of the WSL distribution. If the two files are located at <kbd>C:\Users\&lt;user&gt;\Desktop\guix</kbd> the path would then be <kbd>/mnt/c/Users/&lt;user&gt;/Desktop/guix</kbd>.
+</p>
+
+<p><strong>Note</strong>: The install script and the manifest file don't have to be in the same folder. The script also sets the load path to the folder containing the manifest file, this means <kbd>wsl.scm</kbd> may inherit from other modules located in the same load path (like a <kbd>base-system.scm</kbd> for example).
+</p>
+
+<h2><a id="initialization" class="anchor" href="#initialization">¶</a>Initialization</h2><p>After the installation is finished, it will most likely output a warning along the lines of
+</p>
+
+<pre><code class="sh">guix system: warning: while talking to shepherd: No such file or directory
+</code></pre>
+
+<p>This is to be expected. Because WSL distributions don't boot the same way a normal distribution would, Guix could not populate <kbd>/run</kbd>. More information about this can be found <a href="https://gist.github.com/giuliano108/49ec5bd0a9339db98535bc793ceb5ab4#booting-the-guix-wsl-distro-as-if-it-were-a-guixsd-system">here</a>. This has to be done manually or rather automated via a shell script:
+</p>
+
+<pre><code class="sh"><span class="org-comment-delimiter">#</span><span class="org-comment">!/bin/</span><span class="org-keyword">busybox</span><span class="org-comment"> sh</span>
+
+<span class="org-builtin">export</span> <span class="org-variable-name">GUIX_NEW_SYSTEM</span>=$(/bin/busybox readlink -f /var/guix/profiles/system)
+<span class="org-comment-delimiter"># </span><span class="org-comment">$GUIX_NEW_SYSTEM/boot needs this to exist even though /run is expected to be empty.</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">I installed GuixSD in a proper VM and /run is not on tmpfs, so I'm not sure.</span>
+/bin/busybox ln -s none /run/current-system
+setsid /var/guix/profiles/system/profile/bin/guile --no-auto-compile $<span class="org-variable-name">GUIX_NEW_SYSTEM</span>/boot &gt;/dev/null &amp;
+
+/bin/busybox sleep 3
+source /etc/profile
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">why are these permissions not there in the first place?</span>
+<span class="org-keyword">for</span> f<span class="org-keyword"> in</span> ping su sudo; <span class="org-keyword">do</span>
+        chmod 4755 $(readlink -f $(which $<span class="org-variable-name">f</span>))
+<span class="org-keyword">done</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Setting up WSLg</span>
+<span class="org-keyword">if</span> [ -d <span class="org-string">"/mnt/wslg"</span> ]; <span class="org-keyword">then</span>
+        rm -r /tmp/.X11-unix
+        ln -s /mnt/wslg/.X11-unix /tmp/.X11-unix
+        <span class="org-comment-delimiter"># </span><span class="org-comment">Add "export DISPLAY=:0" in your .bashrc!</span>
+<span class="org-keyword">fi</span>
+
+su -l &lt;user&gt;
+</code></pre>
+
+<p>Change the last line to your user name and copy the script to the same folder like the other scripts and execute it with
+</p>
+
+<pre><code class="sh">wsl -d guix --exec /bin/busybox sh -c <span class="org-string">"/mnt/c/path/to/guix-init.sh"</span>
+</code></pre>
+
+<p>This script <em>can</em> be safely run every time one logs into the distribution (See <a href="#tidying-up">Tidying up</a>), however, it <em>needs</em> to be run after rebooting the host system or executing <kbd>wsl -t guix</kbd> or <kbd>wsl --shutdown</kbd>. The script will automatically log your user in after setting up the system.
+</p>
+
+<p>A bash prompt should be waiting for input. Congratulations.
+</p>
+
+<p>Now is a good time to set some passwords
+</p>
+
+<pre><code class="sh">passwd
+passwd &lt;user&gt;
+</code></pre>
+
+<p>One can either switch to the user with <kbd>su -l &lt;user&gt;</kbd> or log the user in directly by executing <kbd>wsl -u &lt;user&gt; -d guix</kbd>.
+</p>
+
+<h2><a id="updating-the-system" class="anchor" href="#updating-the-system">¶</a>Updating the system</h2><p>The system can be updated like one would expect:
+</p>
+
+<pre><code class="sh">guix pull
+sudo guix system reconfigure /mnt/c/path/to/wsl.scm
+</code></pre>
+
+<p>This creates a new system generation and switches to it.
+</p>
+
+<h2><a id="tidying-up" class="anchor" href="#tidying-up">¶</a>Tidying up</h2><p>At this point the installation is complete. However there are a couple of things that can be done to make interacting with the distribution easier. At the moment, there are three files on the host file system. The installation script (<kbd>guix-install.sh</kbd>) can be deleted as it is not needed anymore.
+</p>
+
+<p><kbd>wsl.scm</kbd> is only really needed inside the distribution. One can save it in the user space, for example
+</p>
+
+<pre><code class="sh">mkdir -p $<span class="org-variable-name">HOME</span>/.config/guix/manifests &amp;&amp; mv /mnt/c/Users/&lt;user&gt;/Desktop/guix/wsl.scm $<span class="org-variable-name">HOME</span>/.config/guix/manifests
+</code></pre>
+
+<p>moves the file to <kbd>~/.config/guix/manifests</kbd>.
+</p>
+
+<p><kbd>guix-init.sh</kbd> can be copied to <kbd>/root/boot.sh</kbd> and the distribution started by executing
+</p>
+
+<pre><code class="sh">wsl -d guix --exec /bin/busybox sh -c <span class="org-string">"/root/boot.sh"</span>
+</code></pre>
+
+<p>This is really up to the individual setup, both files may very well be incorporated into an already existing configuration. <a href="https://github.com/minikN/guix/blob/main/Systems.org#wsl">minikN</a>'s dotfiles showcase a possible approach to this.
+</p>
+
+<h2><a id="gui-applications" class="anchor" href="#gui-applications">¶</a>GUI applications</h2><p>Launching GUI applications from within WSL assumes a working X server running on the host. There a couple of alternatives to consider:
+</p>
+
+<ul><li><a href="https://sourceforge.net/projects/xming/">Xming</a></li>
+<li><a href="https://sourceforge.net/projects/vcxsrv/">VcXsrv</a></li>
+<li><a href="https://x410.dev/">X410</a></li>
+<li><a href="https://mobaxterm.mobatek.net/">MobaXTerm</a></li>
+<li><a href="https://github.com/microsoft/wslg">WSLG</a></li>
+</ul>
+
+<p><strong>Note</strong>: Both Xming and VcXsrv may suffer from display <a href="https://github.com/sebastiencs/company-box/issues/76">glitches</a> when using Emacs' child frames due to an error in their GLX <a href="https://sourceforge.net/p/vcxsrv/bugs/102/">implementation</a>.
+</p>
+
+<p>This guide will not focus on how to configure each X server, because there are already plenty of resources available on the subject.
+</p>
+
+<p>Once The X server is up and running, the <kbd>DISPLAY</kbd> variable has to be populated properly. A wrapper script can be used for this purpose (although, as always, there are other ways to achieve the same thing):
+</p>
+
+<pre><code class="sh"><span class="org-keyword">if</span> uname -r | grep -q <span class="org-string">'microsoft'</span>; <span class="org-keyword">then</span>
+    <span class="org-builtin">export</span> <span class="org-variable-name">DISPLAY</span>=$(cat /etc/resolv.conf | grep nameserver | awk <span class="org-string">'{print $2; exit;}'</span>):0.0
+    <span class="org-builtin">export</span> <span class="org-variable-name">LIBGL_ALWAYS_INDIRECT</span>=1
+    <span class="org-builtin">export</span> <span class="org-variable-name">XCURSOR_SIZE</span>=16
+    setsid $<span class="org-variable-name">1</span>
+<span class="org-keyword">fi</span>
+</code></pre>
+
+<p><strong>Note:</strong> If <kbd>WSLg</kbd> is the preferred option to run GUI applications, the init script automatically sets up the necessary X socket. One only needs to 
+</p>
+<pre><code class="sh"><span class="org-builtin">export</span> <span class="org-variable-name">DISPLAY</span>=:0
+</code></pre>
+<p>somewhere in user space (<kbd>.profile</kbd>, <kbd>.bash_profile</kbd>, <kbd>...</kbd>). Do not use the provided wrapper script for this approach as it will set <kbd>$DISPLAY</kbd> wrong.
+</p>
+
+<p>This script has to be available somewhere in the <kbd>PATH</kbd>. It should also be named appropriately and made executable: <kbd>chmod +x run-wsl</kbd>.
+</p>
+
+<p>GUI applications can now be started with
+</p>
+
+<pre><code class="sh">run-wsl emacs
+</code></pre>
+
+<p>from within the distribution itself. However, it's more convenient to launch them from Windows directly via desktop shortcuts. In order to do that a minimal generic launcher can be written in <kbd>vbs</kbd> like so:
+</p>
+
+<pre><code class="vbs">WScript.CreateObject("WScript.Shell").Run "wsl ~ -u &lt;user&gt; -d guix /path/to/run-wsl " &amp; WScript.Arguments(0), 0, false
+</code></pre>
+
+<p><strong>Note</strong>: Adjust the <kbd>&lt;user&gt;</kbd> and the path to the script accordingly.
+</p>
+
+<h2><a id="desktop-shortcuts" class="anchor" href="#desktop-shortcuts">¶</a>Desktop shortcuts</h2><p>This launcher will run the <kbd>run-wsl</kbd> script with its first argument. Now shortcuts for applications can be added by creating a shortcut to the launcher itself (<kbd>Right click -&gt; Send to -&gt; Desktop (create shortcut)</kbd>). After that edit the shortcuts target like so: <kbd>C:\Users\&lt;user&gt;\Desktop\guix-launcher.vbs emacs</kbd> where <kbd>emacs</kbd> is the application to launch.
+</p>
+
+<p>The launcher can obviously reside anywhere on the file system, doesn't have to be the desktop. One may also change the shortcuts icon to something more appropriate like the emacs icon.
+</p>
+
+<h2><a id="sources" class="anchor" href="#sources">¶</a>Sources</h2><ul><li><a href="https://gist.github.com/giuliano108/49ec5bd0a9339db98535bc793ceb5ab4">giuliano108/Guix-on-WSL2.md</a></li>
+<li><a href="https://gist.github.com/vldn-dev/de379bf81a80ff0a53cd851bcc3bbff2">vldn-dev/guix-infect.sh</a></li>
+</ul>
+</div></div></div></div></div><footer class="blog-footer"><div class="container"><div class="row"><div class="col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right"><p>Made with Emacs 27.2 (Org mode 9.4.4)</p><p><a href="https://systemcrafters.net/privacy-policy/">Privacy Policy</a></p></div></div></div></footer><script src="/js/bootstrap.bundle.min.js"/></body></html>
