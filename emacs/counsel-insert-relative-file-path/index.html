@@ -1,48 +1,48 @@
-<!DOCTYPE html><html lang="en"><head><!--  --><meta charset="utf-8"/><meta author="David Wilson"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/fonts/iosevka-aile/iosevka-aile.css"/><link rel="stylesheet" href="/fonts/jetbrains-mono/jetbrains-mono.css"/><link rel="stylesheet" href="/css/code.css"/><link rel="stylesheet" href="/css/site.css"/><script defer="defer" data-domain="wiki.systemcrafters.net" src="https://plausible.io/js/plausible.js"></script><title> - System Crafters</title></head><body><div><div class="blog-header"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-8"><div class="blog-title">System Crafters</div></div><div class="col-sm col-md"><div class="blog-description text-sm-left text-md-right text-lg-right text-xl-right"></div></div></div></div></div><div class="blog-masthead"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-12"><nav class="nav"><a class="nav-link" href="/">Main Page</a> <a class="nav-link" href="/emacs">GNU Emacs</a> <a class="nav-link" href="/guix">GNU Guix</a><a class="nav-link" href="https://systemcrafters.net">System Crafters Home</a><form class="navbar-form navbar-right" role="search" action="https://duckduckgo.com/"><div class="form-group"><input type="text" name="q" class="form-control" placeholder="Search Wiki" style="overflow: hidden;margin-top: 3%;margin-bottom: 2%;"/><input type="hidden" name="sites" value="wiki.systemcrafters.net"/></div></form> </nav></div></div></div></div></div><div class="container"><div class="row"><div class="col-sm-12 blog-main"><div class="blog-post"><h1 class="blog-post-title"></h1><p class="blog-post-meta"></p><div><h2><a id="insert-relative-file-path-in-current-buffer-using-counsel" class="anchor" href="#insert-relative-file-path-in-current-buffer-using-counsel">¶</a>Insert relative file path in current buffer using counsel</h2><h3><a id="" class="anchor" href="#">¶</a></h3><p>Useful while inserting figures path/name in <kbd>latex</kbd>. Similar to <kbd>C-x C-f</kbd>  in  <kbd>vim</kbd>.
-</p>
+<!DOCTYPE html><html lang="en"><head>&lt;!--  --&gt;<meta charset="utf-8"/><meta author="David Wilson"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/fonts/iosevka-aile/iosevka-aile.css"/><link rel="stylesheet" href="/fonts/jetbrains-mono/jetbrains-mono.css"/><link rel="stylesheet" href="/css/code.css"/><link rel="stylesheet" href="/css/site.css"/><script defer="defer" data-domain="wiki.systemcrafters.net" src="https://plausible.io/js/plausible.js"></script><title> - System Crafters</title></head><body>&lt;div&gt;&lt;div class=&quot;blog-header&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;row align-items-center justify-content-between&quot;&gt;&lt;div class=&quot;col-sm-12 col-md-8&quot;&gt;&lt;div class=&quot;blog-title&quot;&gt;System Crafters&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;col-sm col-md&quot;&gt;&lt;div class=&quot;blog-description text-sm-left text-md-right text-lg-right text-xl-right&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;blog-masthead&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;row align-items-center justify-content-between&quot;&gt;&lt;div class=&quot;col-sm-12 col-md-12&quot;&gt;&lt;nav class=&quot;nav&quot;&gt;&lt;a class=&quot;nav-link&quot; href=&quot;/&quot;&gt;Main Page&lt;/a&gt; &lt;a class=&quot;nav-link&quot; href=&quot;/emacs&quot;&gt;GNU Emacs&lt;/a&gt; &lt;a class=&quot;nav-link&quot; href=&quot;/guix&quot;&gt;GNU Guix&lt;/a&gt;&lt;a class=&quot;nav-link&quot; href=&quot;https://systemcrafters.net&quot;&gt;System Crafters Home&lt;/a&gt;&lt;form class=&quot;navbar-form navbar-right&quot; role=&quot;search&quot; action=&quot;https://duckduckgo.com/&quot;&gt;&lt;div class=&quot;form-group&quot;&gt;&lt;input type=&quot;text&quot; name=&quot;q&quot; class=&quot;form-control&quot; placeholder=&quot;Search Wiki&quot; style=&quot;overflow: hidden;margin-top: 3%;margin-bottom: 2%;&quot;/&gt;&lt;input type=&quot;hidden&quot; name=&quot;sites&quot; value=&quot;wiki.systemcrafters.net&quot;/&gt;&lt;/div&gt;&lt;/form&gt; &lt;/nav&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;<div class="container"><div class="row"><div class="col-sm-12 blog-main"><div class="blog-post"><h1 class="blog-post-title"></h1><p class="blog-post-meta"></p>&lt;div&gt;&lt;h2&gt;&lt;a id=&quot;insert-relative-file-path-in-current-buffer-using-counsel&quot; class=&quot;anchor&quot; href=&quot;#insert-relative-file-path-in-current-buffer-using-counsel&quot;&gt;¶&lt;/a&gt;Insert relative file path in current buffer using counsel&lt;/h2&gt;&lt;h3&gt;&lt;a id=&quot;&quot; class=&quot;anchor&quot; href=&quot;#&quot;&gt;¶&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Useful while inserting figures path/name in &lt;kbd&gt;latex&lt;/kbd&gt;. Similar to &lt;kbd&gt;C-x C-f&lt;/kbd&gt;  in  &lt;kbd&gt;vim&lt;/kbd&gt;.
+&lt;/p&gt;
 
-<p>source: <a href="https://emacs.stackexchange.com/questions/39105/insert-file-path-via-counsel">stack answer</a>
-</p>
+&lt;p&gt;source: &lt;a href=&quot;https://emacs.stackexchange.com/questions/39105/insert-file-path-via-counsel&quot;&gt;stack answer&lt;/a&gt;
+&lt;/p&gt;
 
-<pre><code class="emacs-lisp">(<span class="org-keyword">defun</span> <span class="org-function-name">try-counsel-insert-file-path</span> ()
-  <span class="org-doc">"Insert relative file path in current buffer using counsel in minibuffer"</span>
-  (<span class="org-keyword">interactive</span>)
-  (<span class="org-keyword">unless</span> (<span class="org-keyword">featurep</span> '<span class="org-constant">counsel</span>) (<span class="org-keyword">require</span> '<span class="org-constant">counsel</span>))
-  (ivy-read <span class="org-string">"Insert filename: "</span> 'read-file-name-internal
-            <span class="org-builtin">:matcher</span> #'counsel--find-file-matcher
-            <span class="org-builtin">:action</span>
-            (<span class="org-keyword">lambda</span> (x)
+&lt;pre&gt;&lt;code class=&quot;emacs-lisp&quot;&gt;(&lt;span class=&quot;org-keyword&quot;&gt;defun&lt;/span&gt; &lt;span class=&quot;org-function-name&quot;&gt;try-counsel-insert-file-path&lt;/span&gt; ()
+  &lt;span class=&quot;org-doc&quot;&gt;&quot;Insert relative file path in current buffer using counsel in minibuffer&quot;&lt;/span&gt;
+  (&lt;span class=&quot;org-keyword&quot;&gt;interactive&lt;/span&gt;)
+  (&lt;span class=&quot;org-keyword&quot;&gt;unless&lt;/span&gt; (&lt;span class=&quot;org-keyword&quot;&gt;featurep&lt;/span&gt; &apos;&lt;span class=&quot;org-constant&quot;&gt;counsel&lt;/span&gt;) (&lt;span class=&quot;org-keyword&quot;&gt;require&lt;/span&gt; &apos;&lt;span class=&quot;org-constant&quot;&gt;counsel&lt;/span&gt;))
+  (ivy-read &lt;span class=&quot;org-string&quot;&gt;&quot;Insert filename: &quot;&lt;/span&gt; &apos;read-file-name-internal
+            &lt;span class=&quot;org-builtin&quot;&gt;:matcher&lt;/span&gt; #&apos;counsel--find-file-matcher
+            &lt;span class=&quot;org-builtin&quot;&gt;:action&lt;/span&gt;
+            (&lt;span class=&quot;org-keyword&quot;&gt;lambda&lt;/span&gt; (x)
                  (insert (file-relative-name x)))))
-</code></pre>
+&lt;/code&gt;&lt;/pre&gt;
 
 
 
-<h3><a id="" class="anchor" href="#">¶</a></h3><p>Recommended keybinding and counsel setting
-</p>
+&lt;h3&gt;&lt;a id=&quot;&quot; class=&quot;anchor&quot; href=&quot;#&quot;&gt;¶&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Recommended keybinding and counsel setting
+&lt;/p&gt;
 
-<pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">general</span>
-  <span class="org-builtin">:config</span>
+&lt;pre&gt;&lt;code class=&quot;emacs-lisp&quot;&gt;(&lt;span class=&quot;org-keyword&quot;&gt;use-package&lt;/span&gt; &lt;span class=&quot;org-constant&quot;&gt;general&lt;/span&gt;
+  &lt;span class=&quot;org-builtin&quot;&gt;:config&lt;/span&gt;
   (general-evil-setup t)
 
   (general-create-definer try/ctrl-c-keys
-    <span class="org-builtin">:prefix</span> <span class="org-string">"C-c"</span>))
+    &lt;span class=&quot;org-builtin&quot;&gt;:prefix&lt;/span&gt; &lt;span class=&quot;org-string&quot;&gt;&quot;C-c&quot;&lt;/span&gt;))
 
   (try/ctrl-c-keys
-    <span class="org-string">"i"</span>   '(try-counsel-insert-file-path <span class="org-builtin">:which-key</span> <span class="org-string">"insert relative filepath"</span>)
+    &lt;span class=&quot;org-string&quot;&gt;&quot;i&quot;&lt;/span&gt;   &apos;(try-counsel-insert-file-path &lt;span class=&quot;org-builtin&quot;&gt;:which-key&lt;/span&gt; &lt;span class=&quot;org-string&quot;&gt;&quot;insert relative filepath&quot;&lt;/span&gt;)
   )
-</code></pre>
+&lt;/code&gt;&lt;/pre&gt;
 
-<pre><code class="emacs-lisp">(<span class="org-keyword">use-package</span> <span class="org-constant">counsel</span>
-  <span class="org-builtin">:diminish</span> ivy-mode
-  <span class="org-builtin">:diminish</span> counsel-mode
-  <span class="org-builtin">:bind</span> ((<span class="org-string">"C-s"</span> . swiper)
-       <span class="org-builtin">:map</span> ivy-minibuffer-map
-       (<span class="org-string">"TAB"</span> . ivy-alt-done))
-  <span class="org-builtin">:init</span>
+&lt;pre&gt;&lt;code class=&quot;emacs-lisp&quot;&gt;(&lt;span class=&quot;org-keyword&quot;&gt;use-package&lt;/span&gt; &lt;span class=&quot;org-constant&quot;&gt;counsel&lt;/span&gt;
+  &lt;span class=&quot;org-builtin&quot;&gt;:diminish&lt;/span&gt; ivy-mode
+  &lt;span class=&quot;org-builtin&quot;&gt;:diminish&lt;/span&gt; counsel-mode
+  &lt;span class=&quot;org-builtin&quot;&gt;:bind&lt;/span&gt; ((&lt;span class=&quot;org-string&quot;&gt;&quot;C-s&quot;&lt;/span&gt; . swiper)
+       &lt;span class=&quot;org-builtin&quot;&gt;:map&lt;/span&gt; ivy-minibuffer-map
+       (&lt;span class=&quot;org-string&quot;&gt;&quot;TAB&quot;&lt;/span&gt; . ivy-alt-done))
+  &lt;span class=&quot;org-builtin&quot;&gt;:init&lt;/span&gt;
   (ivy-mode 1)
   (counsel-mode 1)
-  <span class="org-builtin">:config</span>
-  (<span class="org-keyword">setq</span> ivy-use-virtual-buffers t)
-  (<span class="org-keyword">setq</span> enable-recursive-minibuffers t))
-</code></pre>
-</div></div></div></div></div><footer class="blog-footer"><div class="container"><div class="row"><div class="col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right"><p>Made with Emacs 27.2 (Org mode 9.4.4)</p><p><a href="https://systemcrafters.net/privacy-policy/">Privacy Policy</a></p></div></div></div></footer><script src="/js/bootstrap.bundle.min.js"/></body></html>
+  &lt;span class=&quot;org-builtin&quot;&gt;:config&lt;/span&gt;
+  (&lt;span class=&quot;org-keyword&quot;&gt;setq&lt;/span&gt; ivy-use-virtual-buffers t)
+  (&lt;span class=&quot;org-keyword&quot;&gt;setq&lt;/span&gt; enable-recursive-minibuffers t))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;</div></div></div></div>&lt;footer class=&quot;blog-footer&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;row&quot;&gt;&lt;div class=&quot;col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right&quot;&gt;&lt;p&gt;Made with Emacs 27.2 (Org mode 9.4.4)&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://systemcrafters.net/privacy-policy/&quot;&gt;Privacy Policy&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/footer&gt;&lt;script src=&quot;/js/bootstrap.bundle.min.js&quot;/&gt;</body></html>
