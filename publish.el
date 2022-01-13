@@ -43,6 +43,7 @@
 (setq package-user-dir (expand-file-name "./.packages"))
 
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("melpa-stable" . "https://stable.melpa.org/packages/")
                          ("elpa" . "https://elpa.gnu.org/packages/")))
 
 ;; Initialize the package system
@@ -55,12 +56,13 @@
   (package-install 'use-package))
 (require 'use-package)
 
-;; Install other dependencies
-(use-package esxml
-  :ensure t)
-
 ;; Unfortunately this is necessary for now...
 (load-file "./ox-slimhtml.el")
+
+;; Install other dependencies
+(use-package esxml
+  :pin melpa-stable
+  :ensure t)
 
 (use-package ox-gemini
   :ensure t)
@@ -72,6 +74,27 @@
   :ensure t)
 
 (require 'ox-publish)
+
+(defvar yt-iframe-format
+  ;; TODO: Change this after switching from Bootstrap
+  (concat "<div class=\"embed-responsive embed-responsive-16by9\">"
+          " <iframe class=\"embed-responsive-item\" src=\"https://www.youtube.com/embed/%s\" allowfullscreen></iframe>"
+          " </div>"))
+
+(setq dw/site-url "https://systemcrafters.net")
+
+(org-link-set-parameters
+ "yt"
+ :follow
+ (lambda (handle)
+   (browse-url
+    (concat "https://www.youtube.com/watch?v="
+            handle)))
+ :export
+ (lambda (path desc backend channel)
+   (when (eq backend 'html)
+     (format yt-iframe-format
+             path (or desc "")))))
 
 (setq dw/site-title   "System Crafters")
 (setq dw/site-tagline "")
@@ -90,45 +113,40 @@
 
 (defun dw/site-header (info)
   (let* ((file (plist-get info :output-file)))
-    (concat
-     (sxml-to-xml
-      `(div (div (@ (class "blog-header"))
-                 (div (@ (class "container"))
-                      (div (@ (class "row align-items-center justify-content-between"))
-                           (div (@ (class "col-sm-12 col-md-8"))
-                                (div (@ (class "blog-title"))
-                                     ,dw/site-title))
-                           (div (@ (class "col-sm col-md"))
-                                (div (@ (class "blog-description text-sm-left text-md-right text-lg-right text-xl-right"))
-                                     ,dw/site-tagline)))))
+    `(div (div (@ (class "blog-header"))
+               (div (@ (class "container"))
+                    (div (@ (class "row align-items-center justify-content-between"))
+                         (div (@ (class "col-sm-12 col-md-8"))
+                              (div (@ (class "blog-title"))
+                                   ,dw/site-title))
+                         (div (@ (class "col-sm col-md"))
+                              (div (@ (class "blog-description text-sm-left text-md-right text-lg-right text-xl-right"))
+                                   ,dw/site-tagline)))))
 
-            (div (@ (class "blog-masthead"))
-                 (div (@ (class "container"))
-                      (div (@ (class "row align-items-center justify-content-between"))
-                           (div (@ (class "col-sm-12 col-md-12"))
-                                (nav (@ (class "nav"))
-                                     (a (@ (class "nav-link") (href "/")) "Main Page") " "
-                                     (a (@ (class "nav-link") (href "/emacs")) "GNU Emacs") " "
-                                     (a (@ (class "nav-link") (href "/guix")) "GNU Guix")
-                                     (a (@ (class "nav-link") (href "https://systemcrafters.net")) "System Crafters Home")
-                                     (form (@ (class "navbar-form navbar-right") (role "search") (action "https://duckduckgo.com/"))
-                                           (div (@ (class "form-group"))
-                                                (input (@ (type "text") (name "q") (class "form-control") (placeholder "Search Wiki") (style "overflow: hidden;margin-top: 3%;margin-bottom: 2%;")))
-                                                (input (@ (type "hidden") (name "sites") (value "wiki.systemcrafters.net")))))
-                                     " "))))))))))
+          (div (@ (class "blog-masthead"))
+               (div (@ (class "container"))
+                    (div (@ (class "row align-items-center justify-content-between"))
+                         (div (@ (class "col-sm-12 col-md-12"))
+                              (nav (@ (class "nav"))
+                                   (a (@ (class "nav-link") (href "/")) "Main Page") " "
+                                   (a (@ (class "nav-link") (href "/emacs")) "GNU Emacs") " "
+                                   (a (@ (class "nav-link") (href "/guix")) "GNU Guix")
+                                   (a (@ (class "nav-link") (href "https://systemcrafters.net")) "System Crafters Home")
+                                   (form (@ (class "navbar-form navbar-right") (role "search") (action "https://duckduckgo.com/"))
+                                         (div (@ (class "form-group"))
+                                              (input (@ (type "text") (name "q") (class "form-control") (placeholder "Search Wiki") (style "overflow: hidden;margin-top: 3%;margin-bottom: 2%;")))
+                                              (input (@ (type "hidden") (name "sites") (value "wiki.systemcrafters.net")))))
+                                   " "))))))))
 
 (defun dw/site-footer (info)
-  (concat
-   ;; "</div></div>"
-   (sxml-to-xml
-    `(footer (@ (class "blog-footer"))
-             (div (@ (class "container"))
-                  (div (@ (class "row"))
-                       (div (@ (class "col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right"))
-                            (p "Made with " ,(plist-get info :creator))
-                            (p (a (@ (href "https://systemcrafters.net/privacy-policy/")) "Privacy Policy")))))))
-   (sxml-to-xml
-    `(script (@ (src "/js/bootstrap.bundle.min.js"))))))
+  (list
+   `(footer (@ (class "blog-footer"))
+            (div (@ (class "container"))
+                 (div (@ (class "row"))
+                      (div (@ (class "col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right"))
+                           (p "Made with " ,(plist-get info :creator))
+                           (p (a (@ (href "https://systemcrafters.net/privacy-policy/")) "Privacy Policy"))))))
+   `(script (@ (src "/js/bootstrap.bundle.min.js")))))
 
 (defun get-article-output-path (org-file pub-dir)
   (let ((article-dir (concat pub-dir
@@ -139,18 +157,18 @@
 
     (if (string-match "\\/index.org$" org-file)
         pub-dir
-      (progn
-        (unless (file-directory-p article-dir)
-          (make-directory article-dir t))
-        article-dir))))
+        (progn
+          (unless (file-directory-p article-dir)
+            (make-directory article-dir t))
+          article-dir))))
 
 (defun dw/org-html-template (contents info)
   (concat
+   "<!-- " (org-export-data (org-export-get-date info "%Y-%m-%d") info) " -->\n"
    "<!DOCTYPE html>"
    (sxml-to-xml
     `(html (@ (lang "en"))
            (head
-            "<!-- " ,(org-export-data (org-export-get-date info "%Y-%m-%d") info) " -->"
             (meta (@ (charset "utf-8")))
             (meta (@ (author "David Wilson")))
             (meta (@ (name "viewport")
@@ -172,7 +190,7 @@
                     "")
             (title ,(concat (org-export-data (plist-get info :title) info) " - System Crafters")))
            (body
-            ,(dw/site-header info)
+            ,@(dw/site-header info)
             (div (@ (class "container"))
                  (div (@ (class "row"))
                       (div (@ (class "col-sm-12 blog-main"))
@@ -187,8 +205,8 @@
                                      `(p (@ (class "blog-post-tags"))
                                          "Tags: "
                                          ,(mapconcat (lambda (tag) tag)
-                                                    ;; TODO: We don't have tag pages yet
-                                                    ;; (format "<a href=\"/tags/%s/\">%s</a>" tag tag))
+                                                     ;; TODO: We don't have tag pages yet
+                                                     ;; (format "<a href=\"/tags/%s/\">%s</a>" tag tag))
                                                      (plist-get info :filetags)
                                                      ", "))))
                                 ,(when (equal "article" (plist-get info :page-type))
@@ -202,7 +220,7 @@
                                               async>
                                      </script>")))))
 
-            ,(dw/site-footer info))))))
+            ,@(dw/site-footer info))))))
 
 ;; Thanks Ashraz!
 (defun dw/org-html-link (link contents info)
@@ -213,11 +231,14 @@
                                (file-name-sans-extension
                                 (org-element-property :path link)))))
 
-  (if (equal contents nil)
+  (let ((exported-link (org-export-custom-protocol-maybe link contents 'html info)))
+    (cond
+     (exported-link exported-link)
+     ((equal contents nil)
       (format "<a href=\"%s\">%s</a>"
               (org-element-property :raw-link link)
-              (org-element-property :raw-link link))
-    (org-export-with-backend 'slimhtml link contents info)))
+              (org-element-property :raw-link link)))
+     (t (org-export-with-backend 'slimhtml link contents info)))))
 
 ;; Make sure we have thread-last
 (require 'subr-x)
@@ -346,7 +367,6 @@ Note that any hline TABLE-ROW will be removed."
   (let ((article-path (get-article-output-path filename pub-dir)))
     (cl-letf (((symbol-function 'org-export-output-file-name)
                (lambda (extension &optional subtreep pub-dir)
-                 (message "ARTICLE PATH: %s" article-path)
                  (concat article-path "index" extension))))
       (org-publish-org-to
        'gemini filename ".gmi" plist pub-dir))))
