@@ -1,387 +1,388 @@
-<!DOCTYPE html><html lang="en"><head>&lt;!--  --&gt;<meta charset="utf-8"/><meta author="David Wilson"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/fonts/iosevka-aile/iosevka-aile.css"/><link rel="stylesheet" href="/fonts/jetbrains-mono/jetbrains-mono.css"/><link rel="stylesheet" href="/css/code.css"/><link rel="stylesheet" href="/css/site.css"/><script defer="defer" data-domain="wiki.systemcrafters.net" src="https://plausible.io/js/plausible.js"></script><title>Nonguix Installation Guide - System Crafters</title></head><body>&lt;div&gt;&lt;div class=&quot;blog-header&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;row align-items-center justify-content-between&quot;&gt;&lt;div class=&quot;col-sm-12 col-md-8&quot;&gt;&lt;div class=&quot;blog-title&quot;&gt;System Crafters&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;col-sm col-md&quot;&gt;&lt;div class=&quot;blog-description text-sm-left text-md-right text-lg-right text-xl-right&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;blog-masthead&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;row align-items-center justify-content-between&quot;&gt;&lt;div class=&quot;col-sm-12 col-md-12&quot;&gt;&lt;nav class=&quot;nav&quot;&gt;&lt;a class=&quot;nav-link&quot; href=&quot;/&quot;&gt;Main Page&lt;/a&gt; &lt;a class=&quot;nav-link&quot; href=&quot;/emacs&quot;&gt;GNU Emacs&lt;/a&gt; &lt;a class=&quot;nav-link&quot; href=&quot;/guix&quot;&gt;GNU Guix&lt;/a&gt;&lt;a class=&quot;nav-link&quot; href=&quot;https://systemcrafters.net&quot;&gt;System Crafters Home&lt;/a&gt;&lt;form class=&quot;navbar-form navbar-right&quot; role=&quot;search&quot; action=&quot;https://duckduckgo.com/&quot;&gt;&lt;div class=&quot;form-group&quot;&gt;&lt;input type=&quot;text&quot; name=&quot;q&quot; class=&quot;form-control&quot; placeholder=&quot;Search Wiki&quot; style=&quot;overflow: hidden;margin-top: 3%;margin-bottom: 2%;&quot;/&gt;&lt;input type=&quot;hidden&quot; name=&quot;sites&quot; value=&quot;wiki.systemcrafters.net&quot;/&gt;&lt;/div&gt;&lt;/form&gt; &lt;/nav&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;<div class="container"><div class="row"><div class="col-sm-12 blog-main"><div class="blog-post"><h1 class="blog-post-title">Nonguix Installation Guide</h1><p class="blog-post-meta"></p>&lt;div&gt;&lt;p&gt;This document is a guide for installing GNU Guix using the live system
-booted from a &lt;kbd&gt;nonguix&lt;/kbd&gt; installation medium. The installation medium
+<!--  -->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta author="David Wilson"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/fonts/iosevka-aile/iosevka-aile.css"/><link rel="stylesheet" href="/fonts/jetbrains-mono/jetbrains-mono.css"/><link rel="stylesheet" href="/css/code.css"/><link rel="stylesheet" href="/css/site.css"/><script defer="defer" data-domain="wiki.systemcrafters.net" src="https://plausible.io/js/plausible.js"></script><title>Nonguix Installation Guide - System Crafters</title></head><body><div class="blog-header"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-8"><div class="blog-title">System Crafters</div></div><div class="col-sm col-md"><div class="blog-description text-sm-left text-md-right text-lg-right text-xl-right"></div></div></div></div></div><div class="blog-masthead"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-12"><nav class="nav"><a class="nav-link" href="/">Main Page</a> <a class="nav-link" href="/emacs">GNU Emacs</a> <a class="nav-link" href="/guix">GNU Guix</a><a class="nav-link" href="https://systemcrafters.net">System Crafters Home</a><form class="navbar-form navbar-right" role="search" action="https://duckduckgo.com/"><div class="form-group"><input type="text" name="q" class="form-control" placeholder="Search Wiki" style="overflow: hidden;margin-top: 3%;margin-bottom: 2%;"/><input type="hidden" name="sites" value="wiki.systemcrafters.net"/></div></form> </nav></div></div></div></div><div class="container"><div class="row"><div class="col-sm-12 blog-main"><div class="blog-post"><h1 class="blog-post-title">Nonguix Installation Guide</h1><p class="blog-post-meta"></p><div><p>This document is a guide for installing GNU Guix using the live system
+booted from a <kbd>nonguix</kbd> installation medium. The installation medium
 is provided by a GitHub Action from System Crafters, and uses the full
 Linux kernel, as opposed to the libre one. This allows for more driver
 support, such as WiFi on many modern laptops, and makes the
 installation process much easier.
-&lt;/p&gt;
+</p>
 
-&lt;p&gt;Before installing, it would be advised to view the &lt;a href=&quot;/guix/faqs&quot;&gt;FAQs&lt;/a&gt;.
-&lt;/p&gt;
+<p>Before installing, it would be advised to view the <a href="/guix/faqs">FAQs</a>.
+</p>
 
-&lt;p&gt;For installations of software and specific issues, please search for
+<p>For installations of software and specific issues, please search for
 your topic or look in the categories.
-&lt;/p&gt;
+</p>
 
-&lt;p&gt;GNU Guix should run on most x86-64 compatible PCs. As the installation
+<p>GNU Guix should run on most x86-64 compatible PCs. As the installation
 process needs to retrieve packages from a remote repository, this
 guide assumes a working internet connection is available. The Nonguix
 installation medium should cover WiFi issues normally present in the
 Guix installer.
-&lt;/p&gt;
+</p>
 
-&lt;h2&gt;&lt;a id=&quot;table-of-contents&quot; class=&quot;anchor&quot; href=&quot;#table-of-contents&quot;&gt;¶&lt;/a&gt;Table of Contents&lt;/h2&gt;&lt;ul&gt;&lt;li&gt;&lt;a href=&quot;#pre-installation&quot;&gt;Pre-installation&lt;/a&gt;
-&lt;ul&gt;&lt;li&gt;&lt;a href=&quot;#download-the-installation-image&quot;&gt;Download the installation image&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;#booting&quot;&gt;Booting&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;#connecting-to-the-internet&quot;&gt;Connecting to the internet&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;#partition-the-disks&quot;&gt;Partition the disks&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;#installation&quot;&gt;Installation&lt;/a&gt;
-&lt;ul&gt;&lt;li&gt;&lt;a href=&quot;#herd-store&quot;&gt;Herd store&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;#system-configuration&quot;&gt;System configuration&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;#channels&quot;&gt;Channels&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;#update-system-configuration&quot;&gt;Update system configuration&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;#initialize-system&quot;&gt;Initialize system&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;#post-installation&quot;&gt;Post-installation&lt;/a&gt;
-&lt;ul&gt;&lt;li&gt;&lt;a href=&quot;#user-accounts&quot;&gt;User accounts&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;#dotfiles&quot;&gt;Dotfiles&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;#channels-1&quot;&gt;Channels&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;#general-recommendations&quot;&gt;General recommendations&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;#further-reading&quot;&gt;Further Reading&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<h2><a id="table-of-contents" class="anchor" href="#table-of-contents">¶</a>Table of Contents</h2><ul><li><a href="#pre-installation">Pre-installation</a>
+<ul><li><a href="#download-the-installation-image">Download the installation image</a></li>
+<li><a href="#booting">Booting</a></li>
+<li><a href="#connecting-to-the-internet">Connecting to the internet</a></li>
+<li><a href="#partition-the-disks">Partition the disks</a></li>
+</ul></li>
+<li><a href="#installation">Installation</a>
+<ul><li><a href="#herd-store">Herd store</a></li>
+<li><a href="#system-configuration">System configuration</a></li>
+<li><a href="#channels">Channels</a></li>
+<li><a href="#update-system-configuration">Update system configuration</a></li>
+<li><a href="#initialize-system">Initialize system</a></li>
+</ul></li>
+<li><a href="#post-installation">Post-installation</a>
+<ul><li><a href="#user-accounts">User accounts</a></li>
+<li><a href="#dotfiles">Dotfiles</a></li>
+<li><a href="#channels-1">Channels</a></li>
+<li><a href="#general-recommendations">General recommendations</a></li>
+</ul></li>
+<li><a href="#further-reading">Further Reading</a></li>
+</ul>
 
-&lt;h2&gt;&lt;a id=&quot;pre-installation&quot; class=&quot;anchor&quot; href=&quot;#pre-installation&quot;&gt;¶&lt;/a&gt;Pre-installation&lt;/h2&gt;&lt;h3&gt;&lt;a id=&quot;download-the-installation-image&quot; class=&quot;anchor&quot; href=&quot;#download-the-installation-image&quot;&gt;¶&lt;/a&gt;Download the installation image&lt;/h3&gt;&lt;p&gt;The installation image is kept at a repo in the System Crafters
-organization. Click &lt;a href=&quot;https://github.com/SystemCrafters/guix-installer/releases/latest&quot;&gt;here&lt;/a&gt; to download the latest ISO. Burn this ISO to
+<h2><a id="pre-installation" class="anchor" href="#pre-installation">¶</a>Pre-installation</h2><h3><a id="download-the-installation-image" class="anchor" href="#download-the-installation-image">¶</a>Download the installation image</h3><p>The installation image is kept at a repo in the System Crafters
+organization. Click <a href="https://github.com/SystemCrafters/guix-installer/releases/latest">here</a> to download the latest ISO. Burn this ISO to
 an installation medium (flash drive or DVD), and boot from it. For
-example, to burn it to a USB flash drive at &lt;kbd&gt;/dev/sdX&lt;/kbd&gt;, run the
+example, to burn it to a USB flash drive at <kbd>/dev/sdX</kbd>, run the
 following command:
-&lt;/p&gt;
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;dd &lt;span class=&quot;org-variable-name&quot;&gt;if&lt;/span&gt;=guix-installer.iso &lt;span class=&quot;org-variable-name&quot;&gt;of&lt;/span&gt;=/dev/sdX &lt;span class=&quot;org-variable-name&quot;&gt;status&lt;/span&gt;=progress &lt;span class=&quot;org-variable-name&quot;&gt;bs&lt;/span&gt;=4M
-&lt;/code&gt;&lt;/pre&gt;
+<pre><code class="sh">dd <span class="org-variable-name">if</span>=guix-installer.iso <span class="org-variable-name">of</span>=/dev/sdX <span class="org-variable-name">status</span>=progress <span class="org-variable-name">bs</span>=4M
+</code></pre>
 
-&lt;h3&gt;&lt;a id=&quot;booting&quot; class=&quot;anchor&quot; href=&quot;#booting&quot;&gt;¶&lt;/a&gt;Booting&lt;/h3&gt;&lt;p&gt;Boot from the installation medium, select your language and country,
-and select &quot;Install using the shell based process&quot; when
+<h3><a id="booting" class="anchor" href="#booting">¶</a>Booting</h3><p>Boot from the installation medium, select your language and country,
+and select "Install using the shell based process" when
 prompted. Although this makes the installation slightly more
 difficult, it allows for setting up your new installation with the
 full Linux kernel (necessary for the nonfree installation.)
-&lt;/p&gt;
+</p>
 
-&lt;h3&gt;&lt;a id=&quot;connecting-to-the-internet&quot; class=&quot;anchor&quot; href=&quot;#connecting-to-the-internet&quot;&gt;¶&lt;/a&gt;Connecting to the internet&lt;/h3&gt;&lt;p&gt;If you have ethernet, simply plug in your cable and continue to the
-next step. If you have WiFi, use an editor (or &lt;kbd&gt;echo&lt;/kbd&gt;) to create a new
-file called &lt;kbd&gt;wifi.conf&lt;/kbd&gt; to store the WiFi configuration. Make sure to
-set &lt;kbd&gt;ssid&lt;/kbd&gt; to the name of your WiFi network name, and &lt;kbd&gt;psk&lt;/kbd&gt; to the
-passphrase for your WiFi. You may also need to change the &lt;kbd&gt;key_mgmt&lt;/kbd&gt;
+<h3><a id="connecting-to-the-internet" class="anchor" href="#connecting-to-the-internet">¶</a>Connecting to the internet</h3><p>If you have ethernet, simply plug in your cable and continue to the
+next step. If you have WiFi, use an editor (or <kbd>echo</kbd>) to create a new
+file called <kbd>wifi.conf</kbd> to store the WiFi configuration. Make sure to
+set <kbd>ssid</kbd> to the name of your WiFi network name, and <kbd>psk</kbd> to the
+passphrase for your WiFi. You may also need to change the <kbd>key_mgmt</kbd>
 parameter depending on the type of authentication your wifi router
 supports.
-&lt;/p&gt;
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;&lt;span class=&quot;org-variable-name&quot;&gt;network&lt;/span&gt;={
-  &lt;span class=&quot;org-variable-name&quot;&gt;ssid&lt;/span&gt;=&lt;span class=&quot;org-string&quot;&gt;&quot;ssid-name&quot;&lt;/span&gt;
-  &lt;span class=&quot;org-variable-name&quot;&gt;key_mgmt&lt;/span&gt;=WPA-PSK
-  &lt;span class=&quot;org-variable-name&quot;&gt;psk&lt;/span&gt;=&lt;span class=&quot;org-string&quot;&gt;&quot;unencrypted passphrase&quot;&lt;/span&gt;
+<pre><code class="sh"><span class="org-variable-name">network</span>={
+  <span class="org-variable-name">ssid</span>=<span class="org-string">"ssid-name"</span>
+  <span class="org-variable-name">key_mgmt</span>=WPA-PSK
+  <span class="org-variable-name">psk</span>=<span class="org-string">"unencrypted passphrase"</span>
 }
-&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
 
-&lt;p&gt;Next, run the following commands to unblock the WiFi card, determine
+<p>Next, run the following commands to unblock the WiFi card, determine
 its device name, and connect using the device name received. In the
-example, the name is &lt;kbd&gt;wlp4s0&lt;/kbd&gt;, so &lt;kbd&gt;wpa_supplicant&lt;/kbd&gt; is passed the flag
-&lt;kbd&gt;-i wlp4s0&lt;/kbd&gt;. Change this accordingly:
-&lt;/p&gt;
+example, the name is <kbd>wlp4s0</kbd>, so <kbd>wpa_supplicant</kbd> is passed the flag
+<kbd>-i wlp4s0</kbd>. Change this accordingly:
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;rfkill unblock all
+<pre><code class="sh">rfkill unblock all
 ifconfig -a
 wpa_supplicant -c wifi.conf -i wlp4s0 -B
-&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
 
-&lt;p&gt;Finally, run &lt;kbd&gt;dhclient&lt;/kbd&gt; to turn on DNS, remembering to replace
-&lt;kbd&gt;wlp4s0&lt;/kbd&gt; with your device name returned from &lt;kbd&gt;ifconfig -a&lt;/kbd&gt;:
-&lt;/p&gt;
+<p>Finally, run <kbd>dhclient</kbd> to turn on DNS, remembering to replace
+<kbd>wlp4s0</kbd> with your device name returned from <kbd>ifconfig -a</kbd>:
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;dhclient -v wlp4s0
-&lt;/code&gt;&lt;/pre&gt;
+<pre><code class="sh">dhclient -v wlp4s0
+</code></pre>
 
-&lt;h3&gt;&lt;a id=&quot;partition-the-disks&quot; class=&quot;anchor&quot; href=&quot;#partition-the-disks&quot;&gt;¶&lt;/a&gt;Partition the disks&lt;/h3&gt;&lt;p&gt;When disks are detected by the system, they are assigned a block
-device. To list these block devices, run &lt;kbd&gt;lsblk&lt;/kbd&gt; or &lt;kbd&gt;fdisk -l&lt;/kbd&gt;.
-&lt;/p&gt;
+<h3><a id="partition-the-disks" class="anchor" href="#partition-the-disks">¶</a>Partition the disks</h3><p>When disks are detected by the system, they are assigned a block
+device. To list these block devices, run <kbd>lsblk</kbd> or <kbd>fdisk -l</kbd>.
+</p>
 
-&lt;p&gt;For example, running &lt;kbd&gt;lsblk&lt;/kbd&gt; on my laptop returns these results:
-&lt;/p&gt;
+<p>For example, running <kbd>lsblk</kbd> on my laptop returns these results:
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;$ lsblk
+<pre><code class="sh">$ lsblk
 
 NAME          MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINT
 sda             8:0    0 465.8G  0 disk
-&amp;#9500;&amp;#9472;sda1          8:1    0   549M  0 part  /boot/efi
-&amp;#9500;&amp;#9472;sda2          8:2    0 153.5G  0 part
-&amp;#9474; &amp;#9492;&amp;#9472;cryptroot 253:0    0 153.5G  0 crypt /
-&amp;#9492;&amp;#9472;sda3          8:3    0 311.7G  0 part
-  &amp;#9492;&amp;#9472;crypthome 253:1    0 311.7G  0 crypt /home
+&#9500;&#9472;sda1          8:1    0   549M  0 part  /boot/efi
+&#9500;&#9472;sda2          8:2    0 153.5G  0 part
+&#9474; &#9492;&#9472;cryptroot 253:0    0 153.5G  0 crypt /
+&#9492;&#9472;sda3          8:3    0 311.7G  0 part
+  &#9492;&#9472;crypthome 253:1    0 311.7G  0 crypt /home
 sr0            11:0    1  1024M  0 rom
-&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
 
-&lt;p&gt;I have an encrypted root and home (if you don&apos;t know what that is,
-don&apos;t worry, it just means I have to put in two passwords before I can
+<p>I have an encrypted root and home (if you don't know what that is,
+don't worry, it just means I have to put in two passwords before I can
 use my computer), so my devices might appear differently than yours,
 but the rough idea is the same. You might have no partitions (the
-numbered versions, such as &lt;kbd&gt;/dev/sda1&lt;/kbd&gt;) if you just wiped your drive,
+numbered versions, such as <kbd>/dev/sda1</kbd>) if you just wiped your drive,
 or many if you are coming from a different GNU/Linux OS or Windows.
-&lt;/p&gt;
+</p>
 
-&lt;h4&gt;&lt;a id=&quot;encrypted&quot; class=&quot;anchor&quot; href=&quot;#encrypted&quot;&gt;¶&lt;/a&gt;Encrypted&lt;/h4&gt;&lt;p&gt;If you would like to have encrypted block devices (entire partitions),
+<h4><a id="encrypted" class="anchor" href="#encrypted">¶</a>Encrypted</h4><p>If you would like to have encrypted block devices (entire partitions),
 use LUKS. If you do not want encryption, continue reading at
-&quot;Regular.&quot;
-&lt;/p&gt;
+"Regular."
+</p>
 
-&lt;p&gt;Your encrypted blocks can be all or none, however in this example only
+<p>Your encrypted blocks can be all or none, however in this example only
 the root will be encrypted and UEFI will be used. If unsure, look at
-&quot;Regular&quot; and see the potential layouts (or read the linked article
+"Regular" and see the potential layouts (or read the linked article
 for the Arch Wiki there).
-&lt;/p&gt;
+</p>
 
-&lt;table class=&quot;table table-dark&quot;&gt;&lt;thead class=&quot;thead-dark&quot;&gt;&lt;tr&gt;&lt;td&gt;Mount point&lt;/td&gt;&lt;td&gt;Partition&lt;/td&gt;&lt;td&gt;Partition type&lt;/td&gt;&lt;td&gt;Suggested size&lt;/td&gt;&lt;/tr&gt;&lt;/thead&gt;
-&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;kbd&gt;/mnt/boot/efi&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;&lt;kbd&gt;/dev/efi_system_partition&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;EFI system partition&lt;/td&gt;&lt;td&gt;At least 260 MiB&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;&lt;kbd&gt;[SWAP]&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;&lt;kbd&gt;/dev/swap_partition&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;Linux swap&lt;/td&gt;&lt;td&gt;More than 512 MiB&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;&lt;kbd&gt;/mnt&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;&lt;kbd&gt;/dev/root_partition&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;Linux x86-64 root (/)&lt;/td&gt;&lt;td&gt;Remainder of the device&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;
-&lt;/table&gt;
+<table class="table table-dark"><thead class="thead-dark"><tr><td>Mount point</td><td>Partition</td><td>Partition type</td><td>Suggested size</td></tr></thead>
+<tbody><tr><td><kbd>/mnt/boot/efi</kbd></td><td><kbd>/dev/efi_system_partition</kbd></td><td>EFI system partition</td><td>At least 260 MiB</td></tr>
+<tr><td><kbd>[SWAP]</kbd></td><td><kbd>/dev/swap_partition</kbd></td><td>Linux swap</td><td>More than 512 MiB</td></tr>
+<tr><td><kbd>/mnt</kbd></td><td><kbd>/dev/root_partition</kbd></td><td>Linux x86-64 root (/)</td><td>Remainder of the device</td></tr></tbody>
+</table>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;cfdisk /dev/root_partition
-&lt;/code&gt;&lt;/pre&gt;
+<pre><code class="sh">cfdisk /dev/root_partition
+</code></pre>
 
-&lt;p&gt;Once your partitions are created, you can enable LUKS on the root
+<p>Once your partitions are created, you can enable LUKS on the root
 partition by running the following commands. You can change
-&lt;kbd&gt;system-root&lt;/kbd&gt; to whatever you desire:
-&lt;/p&gt;
+<kbd>system-root</kbd> to whatever you desire:
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;cryptsetup luksFormat /dev/root_partition
+<pre><code class="sh">cryptsetup luksFormat /dev/root_partition
 cryptsetup open --type luks /dev/root_partition system-root
 mkfs.ext4 -L system-root /dev/mapper/system-root
-mount &lt;span class=&quot;org-variable-name&quot;&gt;LABEL&lt;/span&gt;=system-root /mnt
-&lt;/code&gt;&lt;/pre&gt;
+mount <span class="org-variable-name">LABEL</span>=system-root /mnt
+</code></pre>
 
-&lt;p&gt;Finally, ensure your EFI system partition and swap are both
+<p>Finally, ensure your EFI system partition and swap are both
 activated/mounted:
-&lt;/p&gt;
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;mkdir -p /mnt/boot/efi
+<pre><code class="sh">mkdir -p /mnt/boot/efi
 mount /dev/efi_system_partition /mnt/boot/efi
 
 swapon /dev/swap_partition
-&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
 
-&lt;p&gt;Proceed to &quot;Installation.&quot;
-&lt;/p&gt;
+<p>Proceed to "Installation."
+</p>
 
-&lt;h4&gt;&lt;a id=&quot;regular&quot; class=&quot;anchor&quot; href=&quot;#regular&quot;&gt;¶&lt;/a&gt;Regular&lt;/h4&gt;&lt;p&gt;If you would not like to have encrypted block devices (entire
+<h4><a id="regular" class="anchor" href="#regular">¶</a>Regular</h4><p>If you would not like to have encrypted block devices (entire
 partitions), you can partition your drives just as you would for any
 other GNU/Linux OS. For example, you could have the following layout
 (as suggested by the Arch Wiki) if using UEFI (most modern computers):
-&lt;/p&gt;
+</p>
 
-&lt;table class=&quot;table table-dark&quot;&gt;&lt;thead class=&quot;thead-dark&quot;&gt;&lt;tr&gt;&lt;td&gt;Mount point&lt;/td&gt;&lt;td&gt;Partition&lt;/td&gt;&lt;td&gt;Partition type&lt;/td&gt;&lt;td&gt;Suggested size&lt;/td&gt;&lt;/tr&gt;&lt;/thead&gt;
-&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;kbd&gt;/mnt/boot/efi&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;&lt;kbd&gt;/dev/efi_system_partition&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;EFI system partition&lt;/td&gt;&lt;td&gt;At least 260 MiB&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;&lt;kbd&gt;[SWAP]&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;&lt;kbd&gt;/dev/swap_partition&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;Linux swap&lt;/td&gt;&lt;td&gt;More than 512 MiB&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;&lt;kbd&gt;/mnt&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;&lt;kbd&gt;/dev/root_partition&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;Linux x86-64 root (/)&lt;/td&gt;&lt;td&gt;At least 1/3 of your device&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;&lt;kbd&gt;/mnt/home&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;&lt;kbd&gt;/dev/home_partition&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;Linux x86-64 home (/home)&lt;/td&gt;&lt;td&gt;Remainder of the device&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;
-&lt;/table&gt;
+<table class="table table-dark"><thead class="thead-dark"><tr><td>Mount point</td><td>Partition</td><td>Partition type</td><td>Suggested size</td></tr></thead>
+<tbody><tr><td><kbd>/mnt/boot/efi</kbd></td><td><kbd>/dev/efi_system_partition</kbd></td><td>EFI system partition</td><td>At least 260 MiB</td></tr>
+<tr><td><kbd>[SWAP]</kbd></td><td><kbd>/dev/swap_partition</kbd></td><td>Linux swap</td><td>More than 512 MiB</td></tr>
+<tr><td><kbd>/mnt</kbd></td><td><kbd>/dev/root_partition</kbd></td><td>Linux x86-64 root (/)</td><td>At least 1/3 of your device</td></tr>
+<tr><td><kbd>/mnt/home</kbd></td><td><kbd>/dev/home_partition</kbd></td><td>Linux x86-64 home (/home)</td><td>Remainder of the device</td></tr></tbody>
+</table>
 
-&lt;p&gt;For BIOS with MBR, the Arch Wiki suggests the following:
-&lt;/p&gt;
+<p>For BIOS with MBR, the Arch Wiki suggests the following:
+</p>
 
-&lt;table class=&quot;table table-dark&quot;&gt;&lt;thead class=&quot;thead-dark&quot;&gt;&lt;tr&gt;&lt;td&gt;Mount point&lt;/td&gt;&lt;td&gt;Partition&lt;/td&gt;&lt;td&gt;Partition type&lt;/td&gt;&lt;td&gt;Suggested size&lt;/td&gt;&lt;/tr&gt;&lt;/thead&gt;
-&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;kbd&gt;[SWAP]&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;&lt;kbd&gt;/dev/swap_partition&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;Linux swap&lt;/td&gt;&lt;td&gt;More than 512 MiB&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;&lt;kbd&gt;/mnt&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;&lt;kbd&gt;/dev/root_partition&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;Linux&lt;/td&gt;&lt;td&gt;At least 1/3 of your device&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;&lt;kbd&gt;/mnt/home&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;&lt;kbd&gt;/dev/home_partition&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;Linux&lt;/td&gt;&lt;td&gt;Remainder of the device&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;
-&lt;/table&gt;
+<table class="table table-dark"><thead class="thead-dark"><tr><td>Mount point</td><td>Partition</td><td>Partition type</td><td>Suggested size</td></tr></thead>
+<tbody><tr><td><kbd>[SWAP]</kbd></td><td><kbd>/dev/swap_partition</kbd></td><td>Linux swap</td><td>More than 512 MiB</td></tr>
+<tr><td><kbd>/mnt</kbd></td><td><kbd>/dev/root_partition</kbd></td><td>Linux</td><td>At least 1/3 of your device</td></tr>
+<tr><td><kbd>/mnt/home</kbd></td><td><kbd>/dev/home_partition</kbd></td><td>Linux</td><td>Remainder of the device</td></tr></tbody>
+</table>
 
-&lt;p&gt;Many other partitioning schemes exist: if you&apos;d like to try other ones
-or learn about your options, check out the Arch Wiki&apos;s page for
-&lt;a href=&quot;https://wiki.archlinux.org/title/Partitioning#Example_layouts&quot;&gt;partitioning&lt;/a&gt;.
-&lt;/p&gt;
+<p>Many other partitioning schemes exist: if you'd like to try other ones
+or learn about your options, check out the Arch Wiki's page for
+<a href="https://wiki.archlinux.org/title/Partitioning#Example_layouts">partitioning</a>.
+</p>
 
-&lt;p&gt;Partition your disks using either &lt;kbd&gt;cfdisk&lt;/kbd&gt; or &lt;kbd&gt;fdisk&lt;/kbd&gt;:
-&lt;/p&gt;
+<p>Partition your disks using either <kbd>cfdisk</kbd> or <kbd>fdisk</kbd>:
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;cfdisk /dev/sdX
+<pre><code class="sh">cfdisk /dev/sdX
 
 fdisk /dev/sdX
-&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
 
-&lt;p&gt;Next, you should format your partitions with the correct file
-system. To create an Ext4 file system on &lt;kbd&gt;/dev/root_partition&lt;/kbd&gt;, run:
-&lt;/p&gt;
+<p>Next, you should format your partitions with the correct file
+system. To create an Ext4 file system on <kbd>/dev/root_partition</kbd>, run:
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;mkfs.ext4 /dev/root_partition
-&lt;/code&gt;&lt;/pre&gt;
+<pre><code class="sh">mkfs.ext4 /dev/root_partition
+</code></pre>
 
-&lt;p&gt;To initialize swap, run the following command:
-&lt;/p&gt;
+<p>To initialize swap, run the following command:
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;mkswap /dev/swap_partition
-&lt;/code&gt;&lt;/pre&gt;
+<pre><code class="sh">mkswap /dev/swap_partition
+</code></pre>
 
-&lt;p&gt;Now it is time to mount your partitions. This will change depending on
+<p>Now it is time to mount your partitions. This will change depending on
 your chosen layout, but all drives are mounted as such:
-&lt;/p&gt;
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;mount /dev/partition_name /mnt
-&lt;/code&gt;&lt;/pre&gt;
+<pre><code class="sh">mount /dev/partition_name /mnt
+</code></pre>
 
-&lt;p&gt;Replace &lt;kbd&gt;partition_name&lt;/kbd&gt; with the partition&apos;s name, and &lt;kbd&gt;/mnt&lt;/kbd&gt; with
+<p>Replace <kbd>partition_name</kbd> with the partition's name, and <kbd>/mnt</kbd> with
 the necessary location. The following locations are used:
-&lt;/p&gt;
+</p>
 
-&lt;ul&gt;&lt;li&gt;Root partition: &lt;kbd&gt;/mnt&lt;/kbd&gt;&lt;/li&gt;
-&lt;li&gt;Home partition: &lt;kbd&gt;/mnt/home&lt;/kbd&gt;&lt;/li&gt;
-&lt;li&gt;EFI system partition: &lt;kbd&gt;/mnt/boot/efi&lt;/kbd&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<ul><li>Root partition: <kbd>/mnt</kbd></li>
+<li>Home partition: <kbd>/mnt/home</kbd></li>
+<li>EFI system partition: <kbd>/mnt/boot/efi</kbd></li>
+</ul>
 
-&lt;p&gt;In order to mount a partition, that directory (folder) needs to
-exist. For &lt;kbd&gt;/mnt/home&lt;/kbd&gt; and &lt;kbd&gt;/mnt/boot/efi&lt;/kbd&gt; (if created) create the
-directories as follows &lt;em&gt;after&lt;/em&gt; mounting &lt;kbd&gt;/mnt&lt;/kbd&gt;:
-&lt;/p&gt;
+<p>In order to mount a partition, that directory (folder) needs to
+exist. For <kbd>/mnt/home</kbd> and <kbd>/mnt/boot/efi</kbd> (if created) create the
+directories as follows <em>after</em> mounting <kbd>/mnt</kbd>:
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;mkdir -p /mnt/boot/efi
+<pre><code class="sh">mkdir -p /mnt/boot/efi
 
 mkdir -p /mnt/home
-&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
 
-&lt;p&gt;Swap is activated with the &lt;kbd&gt;swapon&lt;/kbd&gt; command:
-&lt;/p&gt;
+<p>Swap is activated with the <kbd>swapon</kbd> command:
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;swapon /dev/swap_partition
-&lt;/code&gt;&lt;/pre&gt;
+<pre><code class="sh">swapon /dev/swap_partition
+</code></pre>
 
-&lt;h2&gt;&lt;a id=&quot;installation&quot; class=&quot;anchor&quot; href=&quot;#installation&quot;&gt;¶&lt;/a&gt;Installation&lt;/h2&gt;&lt;h3&gt;&lt;a id=&quot;herd-store&quot; class=&quot;anchor&quot; href=&quot;#herd-store&quot;&gt;¶&lt;/a&gt;Herd store&lt;/h3&gt;&lt;p&gt;Once all partitions are mounted, you can begin the
-installation. First, set up the installation environment using &lt;kbd&gt;herd&lt;/kbd&gt;:
-&lt;/p&gt;
+<h2><a id="installation" class="anchor" href="#installation">¶</a>Installation</h2><h3><a id="herd-store" class="anchor" href="#herd-store">¶</a>Herd store</h3><p>Once all partitions are mounted, you can begin the
+installation. First, set up the installation environment using <kbd>herd</kbd>:
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;herd start cow-store /mnt
-&lt;/code&gt;&lt;/pre&gt;
+<pre><code class="sh">herd start cow-store /mnt
+</code></pre>
 
-&lt;h3&gt;&lt;a id=&quot;system-configuration&quot; class=&quot;anchor&quot; href=&quot;#system-configuration&quot;&gt;¶&lt;/a&gt;System configuration&lt;/h3&gt;&lt;p&gt;The following steps will change depending on your approach. If you&apos;ve
+<h3><a id="system-configuration" class="anchor" href="#system-configuration">¶</a>System configuration</h3><p>The following steps will change depending on your approach. If you've
 used Guix in the past and would like to use your dotfiles and system
 configuration (your custom configurations), clone your repository now.
-&lt;/p&gt;
+</p>
 
-&lt;p&gt;If you would like to make your own, you need to at least have the
-nonguix channels setup for the installation medium. If you aren&apos;t sure
+<p>If you would like to make your own, you need to at least have the
+nonguix channels setup for the installation medium. If you aren't sure
 what that means, or how to do that yourself, follow the instructions
-below for now, only copying the &lt;kbd&gt;channels.scm&lt;/kbd&gt;.
-&lt;/p&gt;
+below for now, only copying the <kbd>channels.scm</kbd>.
+</p>
 
-&lt;p&gt;If you do not have personal dotfiles yet, and would like to try David
-Wilson&apos;s, clone the following repository using &lt;kbd&gt;git&lt;/kbd&gt; into your current
-directory (i.e. not &lt;kbd&gt;/mnt&lt;/kbd&gt;):
-&lt;/p&gt;
+<p>If you do not have personal dotfiles yet, and would like to try David
+Wilson's, clone the following repository using <kbd>git</kbd> into your current
+directory (i.e. not <kbd>/mnt</kbd>):
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;git clone https://github.com/daviwil/dotfiles
-&lt;/code&gt;&lt;/pre&gt;
+<pre><code class="sh">git clone https://github.com/daviwil/dotfiles
+</code></pre>
 
-&lt;h3&gt;&lt;a id=&quot;channels&quot; class=&quot;anchor&quot; href=&quot;#channels&quot;&gt;¶&lt;/a&gt;Channels&lt;/h3&gt;&lt;p&gt;Regardless of your path, you should now add the nonguix and necessary
+<h3><a id="channels" class="anchor" href="#channels">¶</a>Channels</h3><p>Regardless of your path, you should now add the nonguix and necessary
 custom channels to the installation medium. Run the following commands
-to set up the necessary channels and run &lt;kbd&gt;guix pull&lt;/kbd&gt; (equivalent to
-&lt;kbd&gt;apt update&lt;/kbd&gt;, updates the files available without updating the ones on
+to set up the necessary channels and run <kbd>guix pull</kbd> (equivalent to
+<kbd>apt update</kbd>, updates the files available without updating the ones on
 the system):
-&lt;/p&gt;
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;mkdir -p ~/.config/guix
-&lt;span class=&quot;org-comment-delimiter&quot;&gt;# &lt;/span&gt;&lt;span class=&quot;org-comment&quot;&gt;If you cloned David Wilson&apos;s dotfiles:&lt;/span&gt;
+<pre><code class="sh">mkdir -p ~/.config/guix
+<span class="org-comment-delimiter"># </span><span class="org-comment">If you cloned David Wilson's dotfiles:</span>
 cp dotfiles/guix/channels.scm ~/.config/guix
-&lt;span class=&quot;org-comment-delimiter&quot;&gt;# &lt;/span&gt;&lt;span class=&quot;org-comment&quot;&gt;Otherwise, add the channels.scm file yourself and edit it with nonguix and your necessary channels&lt;/span&gt;
+<span class="org-comment-delimiter"># </span><span class="org-comment">Otherwise, add the channels.scm file yourself and edit it with nonguix and your necessary channels</span>
 guix pull
-&lt;span class=&quot;org-comment-delimiter&quot;&gt;# &lt;/span&gt;&lt;span class=&quot;org-comment&quot;&gt;This is necessary to ensure the updated profile path is active!&lt;/span&gt;
-&lt;span class=&quot;org-builtin&quot;&gt;hash&lt;/span&gt; guix
-&lt;/code&gt;&lt;/pre&gt;
+<span class="org-comment-delimiter"># </span><span class="org-comment">This is necessary to ensure the updated profile path is active!</span>
+<span class="org-builtin">hash</span> guix
+</code></pre>
 
-&lt;p&gt;The pull operation can take quite a while, depending upon your machine
-and the last time the nonguix installation ISO was updated. I&apos;d
+<p>The pull operation can take quite a while, depending upon your machine
+and the last time the nonguix installation ISO was updated. I'd
 recommend getting a cup of coffee (or tea, or whatever your preferred
 beverage is!)
-&lt;/p&gt;
+</p>
 
-&lt;h3&gt;&lt;a id=&quot;update-system-configuration&quot; class=&quot;anchor&quot; href=&quot;#update-system-configuration&quot;&gt;¶&lt;/a&gt;Update system configuration&lt;/h3&gt;&lt;p&gt;Once the operation is finished, you will need to update your
+<h3><a id="update-system-configuration" class="anchor" href="#update-system-configuration">¶</a>Update system configuration</h3><p>Once the operation is finished, you will need to update your
 configuration to point to your partition UUIDs and labels for the
 system that you are installing. In order to get your UUIDs, run the
 following command:
-&lt;/p&gt;
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;blkid
-&lt;/code&gt;&lt;/pre&gt;
+<pre><code class="sh">blkid
+</code></pre>
 
-&lt;p&gt;This will return a long list of IDs that you can write down, take a
-picture of, &lt;kbd&gt;cat&lt;/kbd&gt; or &lt;kbd&gt;echo&lt;/kbd&gt; into your configuration, depending on
-which is more comfortable to you (if you&apos;re not too familiar with
-GNU/Linux, I&apos;d recommend writing the IDs down. They are long, but it
+<p>This will return a long list of IDs that you can write down, take a
+picture of, <kbd>cat</kbd> or <kbd>echo</kbd> into your configuration, depending on
+which is more comfortable to you (if you're not too familiar with
+GNU/Linux, I'd recommend writing the IDs down. They are long, but it
 is faster and safer in the long run.) You can also switch to another
-TTY using &lt;kbd&gt;Ctrl-Alt-F#&lt;/kbd&gt; and press &lt;kbd&gt;Enter&lt;/kbd&gt; or &lt;kbd&gt;Return&lt;/kbd&gt; to get to
+TTY using <kbd>Ctrl-Alt-F#</kbd> and press <kbd>Enter</kbd> or <kbd>Return</kbd> to get to
 another root prompt. You can then switch back and forth between the
-previous TTY on &lt;kbd&gt;F3&lt;/kbd&gt; instead of writing down your IDs.
-&lt;/p&gt;
+previous TTY on <kbd>F3</kbd> instead of writing down your IDs.
+</p>
 
-&lt;p&gt;If you have encrypted partitions, yyou can use the following command
+<p>If you have encrypted partitions, yyou can use the following command
 to find the UUID:
-&lt;/p&gt;
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;cryptsetup luksUUID /dev/root_partition
-&lt;/code&gt;&lt;/pre&gt;
+<pre><code class="sh">cryptsetup luksUUID /dev/root_partition
+</code></pre>
 
-&lt;h3&gt;&lt;a id=&quot;initialize-system&quot; class=&quot;anchor&quot; href=&quot;#initialize-system&quot;&gt;¶&lt;/a&gt;Initialize system&lt;/h3&gt;&lt;p&gt;Finally, we can initialize the system by running the following command:
-&lt;/p&gt;
+<h3><a id="initialize-system" class="anchor" href="#initialize-system">¶</a>Initialize system</h3><p>Finally, we can initialize the system by running the following command:
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;&lt;span class=&quot;org-comment-delimiter&quot;&gt;# &lt;/span&gt;&lt;span class=&quot;org-comment&quot;&gt;Change the .dotfiles directory to your dotfiles if necessary&lt;/span&gt;
+<pre><code class="sh"><span class="org-comment-delimiter"># </span><span class="org-comment">Change the .dotfiles directory to your dotfiles if necessary</span>
 guix system -L ~/.dotfiles/.config/guix/systems init path/to/config.scm /mnt
-&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
 
-&lt;p&gt;This can take a &lt;em&gt;very&lt;/em&gt; long time depending on your internet connection
+<p>This can take a <em>very</em> long time depending on your internet connection
 and computer. If using a laptop, please ensure it is plugged in. If
 any errors occur during the installation, simply resume the
 installation as the Guix store has the previous packages saved. If the
-error continues, consider contacting someone at the System Crafters&apos;
-Discord, IRC, or Matrix &quot;Links?&quot; &amp;lt;placeholder&amp;gt;.
-&lt;/p&gt;
+error continues, consider contacting someone at the System Crafters'
+Discord, IRC, or Matrix "Links?" &lt;placeholder&gt;.
+</p>
 
-&lt;h2&gt;&lt;a id=&quot;post-installation&quot; class=&quot;anchor&quot; href=&quot;#post-installation&quot;&gt;¶&lt;/a&gt;Post-installation&lt;/h2&gt;&lt;h3&gt;&lt;a id=&quot;user-accounts&quot; class=&quot;anchor&quot; href=&quot;#user-accounts&quot;&gt;¶&lt;/a&gt;User accounts&lt;/h3&gt;&lt;p&gt;Congratulations! Your GNU Guix System installation is (almost)
+<h2><a id="post-installation" class="anchor" href="#post-installation">¶</a>Post-installation</h2><h3><a id="user-accounts" class="anchor" href="#user-accounts">¶</a>User accounts</h3><p>Congratulations! Your GNU Guix System installation is (almost)
 complete. Reboot your system, take out your installation medium, and
 login as root when you are faced with a login prompt. Your last
 crucial step is to add a password for your accounts. Once logged in,
 run the following commands:
-&lt;/p&gt;
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;&lt;span class=&quot;org-comment-delimiter&quot;&gt;# &lt;/span&gt;&lt;span class=&quot;org-comment&quot;&gt;Set the password for your root account&lt;/span&gt;
+<pre><code class="sh"><span class="org-comment-delimiter"># </span><span class="org-comment">Set the password for your root account</span>
 passwd
-&lt;span class=&quot;org-comment-delimiter&quot;&gt;# &lt;/span&gt;&lt;span class=&quot;org-comment&quot;&gt;Set the password for your user&lt;/span&gt;
-passwd &amp;lt;your username&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
+<span class="org-comment-delimiter"># </span><span class="org-comment">Set the password for your user</span>
+passwd &lt;your username&gt;
+</code></pre>
 
-&lt;p&gt;Log out, and log into your user account.
-&lt;/p&gt;
+<p>Log out, and log into your user account.
+</p>
 
-&lt;h3&gt;&lt;a id=&quot;dotfiles&quot; class=&quot;anchor&quot; href=&quot;#dotfiles&quot;&gt;¶&lt;/a&gt;Dotfiles&lt;/h3&gt;&lt;p&gt;Clone your dotfiles repository (or David Wilson&apos;s again) and ensure
-that the channels include nonguix. If using David Wilson&apos;s dotfiles,
-&lt;kbd&gt;cd&lt;/kbd&gt; into the directory and run:
-&lt;/p&gt;
+<h3><a id="dotfiles" class="anchor" href="#dotfiles">¶</a>Dotfiles</h3><p>Clone your dotfiles repository (or David Wilson's again) and ensure
+that the channels include nonguix. If using David Wilson's dotfiles,
+<kbd>cd</kbd> into the directory and run:
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;stow .
-&lt;/code&gt;&lt;/pre&gt;
+<pre><code class="sh">stow .
+</code></pre>
 
-&lt;p&gt;If using your own dotfiles, you know how to deploy them. If you don&apos;t
-have a good way to deploy your dotfiles yet, consider using &lt;kbd&gt;stow&lt;/kbd&gt;
-&quot;Link?&quot; &amp;lt;placeholder&amp;gt;.
-&lt;/p&gt;
+<p>If using your own dotfiles, you know how to deploy them. If you don't
+have a good way to deploy your dotfiles yet, consider using <kbd>stow</kbd>
+"Link?" &lt;placeholder&gt;.
+</p>
 
-&lt;h3&gt;&lt;a id=&quot;channels&quot; class=&quot;anchor&quot; href=&quot;#channels&quot;&gt;¶&lt;/a&gt;Channels&lt;/h3&gt;&lt;p&gt;Verify that your &lt;kbd&gt;channels.scm&lt;/kbd&gt; file is in the target path
-(&lt;kbd&gt;\~/.config/guix&lt;/kbd&gt;) and then run the following to update your
+<h3><a id="channels" class="anchor" href="#channels">¶</a>Channels</h3><p>Verify that your <kbd>channels.scm</kbd> file is in the target path
+(<kbd>\~/.config/guix</kbd>) and then run the following to update your
 channels:
-&lt;/p&gt;
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;guix pull
-&lt;/code&gt;&lt;/pre&gt;
+<pre><code class="sh">guix pull
+</code></pre>
 
-&lt;h3&gt;&lt;a id=&quot;general-recommendations&quot; class=&quot;anchor&quot; href=&quot;#general-recommendations&quot;&gt;¶&lt;/a&gt;General recommendations&lt;/h3&gt;&lt;p&gt;You can now install whatever packages or manifests you need and
-have. If you are new to GNU Guix, continue reading at the &quot;Basics of
-GNU GUIX&quot; page &amp;lt;placeholder&amp;gt;. If interested in basic system setups and
-advice, continue reading at &lt;a href=&quot;/guix/general-recommendations&quot;&gt;general recommendations&lt;/a&gt;. Otherwise, once
+<h3><a id="general-recommendations" class="anchor" href="#general-recommendations">¶</a>General recommendations</h3><p>You can now install whatever packages or manifests you need and
+have. If you are new to GNU Guix, continue reading at the "Basics of
+GNU GUIX" page &lt;placeholder&gt;. If interested in basic system setups and
+advice, continue reading at <a href="/guix/general-recommendations">general recommendations</a>. Otherwise, once
 again, congratulations!  You have officially installed a
 nonfree/nonguix Guix System!
-&lt;/p&gt;
+</p>
 
-&lt;h2&gt;&lt;a id=&quot;further-reading&quot; class=&quot;anchor&quot; href=&quot;#further-reading&quot;&gt;¶&lt;/a&gt;Further Reading&lt;/h2&gt;&lt;p&gt;For more information, and to read the official installation guide,
+<h2><a id="further-reading" class="anchor" href="#further-reading">¶</a>Further Reading</h2><p>For more information, and to read the official installation guide,
 look at the following links:
-&lt;/p&gt;
-&lt;ul&gt;&lt;li&gt;&lt;a href=&quot;https://guix.gnu.org/manual/devel/en/html_node/System-Installation.html#System-Installation&quot;&gt;Installation in the Guix manual&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://gitlab.com/nonguix/nonguix/&quot;&gt;Nonguix GitLab repository&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;</div></div></div></div>&lt;footer class=&quot;blog-footer&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;row&quot;&gt;&lt;div class=&quot;col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right&quot;&gt;&lt;p&gt;Made with Emacs 27.2 (Org mode 9.4.4)&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://systemcrafters.net/privacy-policy/&quot;&gt;Privacy Policy&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/footer&gt;&lt;script src=&quot;/js/bootstrap.bundle.min.js&quot;/&gt;</body></html>
+</p>
+<ul><li><a href="https://guix.gnu.org/manual/devel/en/html_node/System-Installation.html#System-Installation">Installation in the Guix manual</a></li>
+<li><a href="https://gitlab.com/nonguix/nonguix/">Nonguix GitLab repository</a></li>
+</ul>
+</div></div></div></div></div><footer class="blog-footer"><div class="container"><div class="row"><div class="col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right"><p>Made with Emacs 27.2 (Org mode 9.4.4)</p><p><a href="https://systemcrafters.net/privacy-policy/">Privacy Policy</a></p></div></div></div></footer><script src="/js/bootstrap.bundle.min.js"/></body></html>

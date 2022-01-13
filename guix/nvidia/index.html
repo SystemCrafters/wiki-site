@@ -1,193 +1,194 @@
-<!DOCTYPE html><html lang="en"><head>&lt;!--  --&gt;<meta charset="utf-8"/><meta author="David Wilson"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/fonts/iosevka-aile/iosevka-aile.css"/><link rel="stylesheet" href="/fonts/jetbrains-mono/jetbrains-mono.css"/><link rel="stylesheet" href="/css/code.css"/><link rel="stylesheet" href="/css/site.css"/><script defer="defer" data-domain="wiki.systemcrafters.net" src="https://plausible.io/js/plausible.js"></script><title>Proprietary NVIDIA Drivers - System Crafters</title></head><body>&lt;div&gt;&lt;div class=&quot;blog-header&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;row align-items-center justify-content-between&quot;&gt;&lt;div class=&quot;col-sm-12 col-md-8&quot;&gt;&lt;div class=&quot;blog-title&quot;&gt;System Crafters&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;col-sm col-md&quot;&gt;&lt;div class=&quot;blog-description text-sm-left text-md-right text-lg-right text-xl-right&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;blog-masthead&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;row align-items-center justify-content-between&quot;&gt;&lt;div class=&quot;col-sm-12 col-md-12&quot;&gt;&lt;nav class=&quot;nav&quot;&gt;&lt;a class=&quot;nav-link&quot; href=&quot;/&quot;&gt;Main Page&lt;/a&gt; &lt;a class=&quot;nav-link&quot; href=&quot;/emacs&quot;&gt;GNU Emacs&lt;/a&gt; &lt;a class=&quot;nav-link&quot; href=&quot;/guix&quot;&gt;GNU Guix&lt;/a&gt;&lt;a class=&quot;nav-link&quot; href=&quot;https://systemcrafters.net&quot;&gt;System Crafters Home&lt;/a&gt;&lt;form class=&quot;navbar-form navbar-right&quot; role=&quot;search&quot; action=&quot;https://duckduckgo.com/&quot;&gt;&lt;div class=&quot;form-group&quot;&gt;&lt;input type=&quot;text&quot; name=&quot;q&quot; class=&quot;form-control&quot; placeholder=&quot;Search Wiki&quot; style=&quot;overflow: hidden;margin-top: 3%;margin-bottom: 2%;&quot;/&gt;&lt;input type=&quot;hidden&quot; name=&quot;sites&quot; value=&quot;wiki.systemcrafters.net&quot;/&gt;&lt;/div&gt;&lt;/form&gt; &lt;/nav&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;<div class="container"><div class="row"><div class="col-sm-12 blog-main"><div class="blog-post"><h1 class="blog-post-title">Proprietary NVIDIA Drivers</h1><p class="blog-post-meta"></p>&lt;div&gt;&lt;p&gt;GNU Guix makes installing and using the proprietary NVIDIA drivers more difficult than one may be used to coming from other distributions. However, it is possible and explained here.
-&lt;/p&gt;
+<!--  -->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta author="David Wilson"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/fonts/iosevka-aile/iosevka-aile.css"/><link rel="stylesheet" href="/fonts/jetbrains-mono/jetbrains-mono.css"/><link rel="stylesheet" href="/css/code.css"/><link rel="stylesheet" href="/css/site.css"/><script defer="defer" data-domain="wiki.systemcrafters.net" src="https://plausible.io/js/plausible.js"></script><title>Proprietary NVIDIA Drivers - System Crafters</title></head><body><div class="blog-header"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-8"><div class="blog-title">System Crafters</div></div><div class="col-sm col-md"><div class="blog-description text-sm-left text-md-right text-lg-right text-xl-right"></div></div></div></div></div><div class="blog-masthead"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-12"><nav class="nav"><a class="nav-link" href="/">Main Page</a> <a class="nav-link" href="/emacs">GNU Emacs</a> <a class="nav-link" href="/guix">GNU Guix</a><a class="nav-link" href="https://systemcrafters.net">System Crafters Home</a><form class="navbar-form navbar-right" role="search" action="https://duckduckgo.com/"><div class="form-group"><input type="text" name="q" class="form-control" placeholder="Search Wiki" style="overflow: hidden;margin-top: 3%;margin-bottom: 2%;"/><input type="hidden" name="sites" value="wiki.systemcrafters.net"/></div></form> </nav></div></div></div></div><div class="container"><div class="row"><div class="col-sm-12 blog-main"><div class="blog-post"><h1 class="blog-post-title">Proprietary NVIDIA Drivers</h1><p class="blog-post-meta"></p><div><p>GNU Guix makes installing and using the proprietary NVIDIA drivers more difficult than one may be used to coming from other distributions. However, it is possible and explained here.
+</p>
 
-&lt;h2&gt;&lt;a id=&quot;installation&quot; class=&quot;anchor&quot; href=&quot;#installation&quot;&gt;¶&lt;/a&gt;Installation&lt;/h2&gt;&lt;h3&gt;&lt;a id=&quot;using-the-channel&quot; class=&quot;anchor&quot; href=&quot;#using-the-channel&quot;&gt;¶&lt;/a&gt;Using the channel&lt;/h3&gt;&lt;p&gt;If using the &lt;kbd&gt;nonguix&lt;/kbd&gt; channel, the &lt;kbd&gt;nvidia-driver&lt;/kbd&gt; package contains the proprietary drivers for GNU Guix. If you followed the &lt;a href=&quot;/guix/nonguix-installation-guide&quot;&gt;nonguix installation guide&lt;/a&gt;, this should already be set up by default. From now on it will be assumed that the nonguix channel is available on your system.
-&lt;/p&gt;
+<h2><a id="installation" class="anchor" href="#installation">¶</a>Installation</h2><h3><a id="using-the-channel" class="anchor" href="#using-the-channel">¶</a>Using the channel</h3><p>If using the <kbd>nonguix</kbd> channel, the <kbd>nvidia-driver</kbd> package contains the proprietary drivers for GNU Guix. If you followed the <a href="/guix/nonguix-installation-guide">nonguix installation guide</a>, this should already be set up by default. From now on it will be assumed that the nonguix channel is available on your system.
+</p>
 
-&lt;h3&gt;&lt;a id=&quot;the-system-configuration&quot; class=&quot;anchor&quot; href=&quot;#the-system-configuration&quot;&gt;¶&lt;/a&gt;The system configuration&lt;/h3&gt;&lt;p&gt;Your system configuration is usually located at &lt;kbd&gt;/etc/config.scm&lt;/kbd&gt;. We need to add several lines of code to make your system load the drivers properly. Open the file to edit it, and make sure you have write permissions.
-&lt;/p&gt;
+<h3><a id="the-system-configuration" class="anchor" href="#the-system-configuration">¶</a>The system configuration</h3><p>Your system configuration is usually located at <kbd>/etc/config.scm</kbd>. We need to add several lines of code to make your system load the drivers properly. Open the file to edit it, and make sure you have write permissions.
+</p>
 
-&lt;h4&gt;&lt;a id=&quot;package-definition&quot; class=&quot;anchor&quot; href=&quot;#package-definition&quot;&gt;¶&lt;/a&gt;Package definition&lt;/h4&gt;&lt;p&gt;You need to add the nvidia package definition to your &lt;kbd&gt;define-module&lt;/kbd&gt; function so Guix knows where to load it from:
-&lt;/p&gt;
+<h4><a id="package-definition" class="anchor" href="#package-definition">¶</a>Package definition</h4><p>You need to add the nvidia package definition to your <kbd>define-module</kbd> function so Guix knows where to load it from:
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;scheme&quot;&gt;(&lt;span class=&quot;org-keyword&quot;&gt;define-module&lt;/span&gt; (&lt;span class=&quot;org-type&quot;&gt;your-module&lt;/span&gt;)
-  &lt;span class=&quot;org-comment-delimiter&quot;&gt;;; &lt;/span&gt;&lt;span class=&quot;org-comment&quot;&gt;...&lt;/span&gt;
-  &lt;span class=&quot;org-comment-delimiter&quot;&gt;;; &lt;/span&gt;&lt;span class=&quot;org-comment&quot;&gt;some stuff here&lt;/span&gt;
-  &lt;span class=&quot;org-comment-delimiter&quot;&gt;;; &lt;/span&gt;&lt;span class=&quot;org-comment&quot;&gt;...&lt;/span&gt;
-  &lt;span class=&quot;org-builtin&quot;&gt;#:use-module&lt;/span&gt; (nongnu packages nvidia))
-&lt;/code&gt;&lt;/pre&gt;
+<pre><code class="scheme">(<span class="org-keyword">define-module</span> (<span class="org-type">your-module</span>)
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">...</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">some stuff here</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">...</span>
+  <span class="org-builtin">#:use-module</span> (nongnu packages nvidia))
+</code></pre>
 
-&lt;h4&gt;&lt;a id=&quot;renaming-for-grafting&quot; class=&quot;anchor&quot; href=&quot;#renaming-for-grafting&quot;&gt;¶&lt;/a&gt;Renaming for grafting&lt;/h4&gt;&lt;p&gt;In order to have &lt;kbd&gt;libglx&lt;/kbd&gt; working, the &lt;kbd&gt;nvidia-driver&lt;/kbd&gt; package needs to be grafted instead of &lt;kbd&gt;mesa&lt;/kbd&gt;. It needs to be renamed to have the same number of characters as &lt;kbd&gt;mesa&lt;/kbd&gt;. More information can be found &lt;a href=&quot;https://gitlab.com/nonguix/nonguix/-/issues/31#note_481501721&quot;&gt;here&lt;/a&gt;. Add the following function:
-&lt;/p&gt;
+<h4><a id="renaming-for-grafting" class="anchor" href="#renaming-for-grafting">¶</a>Renaming for grafting</h4><p>In order to have <kbd>libglx</kbd> working, the <kbd>nvidia-driver</kbd> package needs to be grafted instead of <kbd>mesa</kbd>. It needs to be renamed to have the same number of characters as <kbd>mesa</kbd>. More information can be found <a href="https://gitlab.com/nonguix/nonguix/-/issues/31#note_481501721">here</a>. Add the following function:
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;scheme&quot;&gt;(&lt;span class=&quot;org-keyword&quot;&gt;define&lt;/span&gt; &lt;span class=&quot;org-function-name&quot;&gt;transform&lt;/span&gt;
-  (options-&amp;gt;transformation
-   &apos;((with-graft . &lt;span class=&quot;org-string&quot;&gt;&quot;mesa=nvda&quot;&lt;/span&gt;))))
-&lt;/code&gt;&lt;/pre&gt;
+<pre><code class="scheme">(<span class="org-keyword">define</span> <span class="org-function-name">transform</span>
+  (options-&gt;transformation
+   '((with-graft . <span class="org-string">"mesa=nvda"</span>))))
+</code></pre>
 
-&lt;h4&gt;&lt;a id=&quot;os-configuration&quot; class=&quot;anchor&quot; href=&quot;#os-configuration&quot;&gt;¶&lt;/a&gt;OS configuration&lt;/h4&gt;&lt;p&gt;From here on, everything mentioned should be placed in your &lt;kbd&gt;operating-system&lt;/kbd&gt; block:
-&lt;/p&gt;
+<h4><a id="os-configuration" class="anchor" href="#os-configuration">¶</a>OS configuration</h4><p>From here on, everything mentioned should be placed in your <kbd>operating-system</kbd> block:
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;scheme&quot;&gt;(&lt;span class=&quot;org-keyword&quot;&gt;define-public&lt;/span&gt; &lt;span class=&quot;org-function-name&quot;&gt;base-operating-system&lt;/span&gt;
-  &lt;span class=&quot;org-comment-delimiter&quot;&gt;;; &lt;/span&gt;&lt;span class=&quot;org-comment&quot;&gt;...&lt;/span&gt;
+<pre><code class="scheme">(<span class="org-keyword">define-public</span> <span class="org-function-name">base-operating-system</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">...</span>
   (operating-system
-   &lt;span class=&quot;org-comment-delimiter&quot;&gt;;; &lt;/span&gt;&lt;span class=&quot;org-comment&quot;&gt;here!&lt;/span&gt;
+   <span class="org-comment-delimiter">;; </span><span class="org-comment">here!</span>
    ...))
-&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
 
-&lt;ul&gt;&lt;li&gt;Kernel modules&lt;p&gt;You should blacklist the &lt;kbd&gt;nouveau&lt;/kbd&gt; kernel module to avoid conflicts.
-&lt;/p&gt;
+<ul><li>Kernel modules<p>You should blacklist the <kbd>nouveau</kbd> kernel module to avoid conflicts.
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;scheme&quot;&gt;(kernel-arguments (append 
-                      &apos;(&lt;span class=&quot;org-string&quot;&gt;&quot;modprobe.blacklist=nouveau&quot;&lt;/span&gt;)
+<pre><code class="scheme">(kernel-arguments (append 
+                      '(<span class="org-string">"modprobe.blacklist=nouveau"</span>)
                       %default-kernel-arguments))
-&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
 
-&lt;p&gt;In addition, you should also add &lt;kbd&gt;nvidia-driver&lt;/kbd&gt; to the loadable kernel modules:
-&lt;/p&gt;
+<p>In addition, you should also add <kbd>nvidia-driver</kbd> to the loadable kernel modules:
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;scheme&quot;&gt;(kernel-loadable-modules (list nvidia-driver))
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/li&gt;
+<pre><code class="scheme">(kernel-loadable-modules (list nvidia-driver))
+</code></pre>
+</li>
 
-&lt;li&gt;Services&lt;p&gt;Now add two services. One for a custom udev rule and one to make sure the modules get loaded:
-&lt;/p&gt;
+<li>Services<p>Now add two services. One for a custom udev rule and one to make sure the modules get loaded:
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;scheme&quot;&gt;(services (cons* (simple-service 
-                     &apos;custom-udev-rules udev-service-type 
+<pre><code class="scheme">(services (cons* (simple-service 
+                     'custom-udev-rules udev-service-type 
                      (list nvidia-driver))
                     (service kernel-module-loader-service-type
-                             &apos;(&lt;span class=&quot;org-string&quot;&gt;&quot;ipmi_devintf&quot;&lt;/span&gt;
-                               &lt;span class=&quot;org-string&quot;&gt;&quot;nvidia&quot;&lt;/span&gt;
-                               &lt;span class=&quot;org-string&quot;&gt;&quot;nvidia_modeset&quot;&lt;/span&gt;
-                               &lt;span class=&quot;org-string&quot;&gt;&quot;nvidia_uvm&quot;&lt;/span&gt;))
+                             '(<span class="org-string">"ipmi_devintf"</span>
+                               <span class="org-string">"nvidia"</span>
+                               <span class="org-string">"nvidia_modeset"</span>
+                               <span class="org-string">"nvidia_uvm"</span>))
                     ...))
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/li&gt;&lt;/ul&gt;
+</code></pre>
+</li></ul>
 
-&lt;h3&gt;&lt;a id=&quot;login-manager&quot; class=&quot;anchor&quot; href=&quot;#login-manager&quot;&gt;¶&lt;/a&gt;Login manager&lt;/h3&gt;&lt;p&gt;The system configuration is now complete. However, you probably want to setup a login manager. No matter what login manager you use, you need to list the &lt;kbd&gt;nvidia-driver&lt;/kbd&gt; in the &lt;kbd&gt;xorg-configuration&lt;/kbd&gt; block. Here is a minimal example using &lt;kbd&gt;slim&lt;/kbd&gt;:
-&lt;/p&gt;
+<h3><a id="login-manager" class="anchor" href="#login-manager">¶</a>Login manager</h3><p>The system configuration is now complete. However, you probably want to setup a login manager. No matter what login manager you use, you need to list the <kbd>nvidia-driver</kbd> in the <kbd>xorg-configuration</kbd> block. Here is a minimal example using <kbd>slim</kbd>:
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;scheme&quot;&gt;(service slim-service-type
+<pre><code class="scheme">(service slim-service-type
          (slim-configuration
           (xorg-configuration (xorg-configuration
                                (modules (cons* nvidia-driver %default-xorg-modules))
                                (server (transform xorg-server))
-                               (drivers &apos;(&lt;span class=&quot;org-string&quot;&gt;&quot;nvidia&quot;&lt;/span&gt;))))))
-&lt;/code&gt;&lt;/pre&gt;
+                               (drivers '(<span class="org-string">"nvidia"</span>))))))
+</code></pre>
 
-&lt;p&gt;Please consult the manual for all possible &lt;kbd&gt;xorg-configuration&lt;/kbd&gt; options.
-&lt;/p&gt;
+<p>Please consult the manual for all possible <kbd>xorg-configuration</kbd> options.
+</p>
 
-&lt;h3&gt;&lt;a id=&quot;additional-xorg-configuration&quot; class=&quot;anchor&quot; href=&quot;#additional-xorg-configuration&quot;&gt;¶&lt;/a&gt;Additional Xorg configuration&lt;/h3&gt;&lt;p&gt;If you used to use special xorg configuration files (like &lt;kbd&gt;/etc/X11/xorg.conf.d/10-nvidia.conf&lt;/kbd&gt;) you can also add them in Guix. Add the following to your &lt;kbd&gt;xorg-configuration&lt;/kbd&gt; function: &lt;kbd&gt;(extra-config (list %xorg-config))&lt;/kbd&gt;. You can rename &lt;kbd&gt;%xorg-config&lt;/kbd&gt;
+<h3><a id="additional-xorg-configuration" class="anchor" href="#additional-xorg-configuration">¶</a>Additional Xorg configuration</h3><p>If you used to use special xorg configuration files (like <kbd>/etc/X11/xorg.conf.d/10-nvidia.conf</kbd>) you can also add them in Guix. Add the following to your <kbd>xorg-configuration</kbd> function: <kbd>(extra-config (list %xorg-config))</kbd>. You can rename <kbd>%xorg-config</kbd>
 to whatever you want. Just define the variable and add your configuration:
-&lt;/p&gt;
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;scheme&quot;&gt;(&lt;span class=&quot;org-keyword&quot;&gt;define&lt;/span&gt; &lt;span class=&quot;org-function-name&quot;&gt;%xorg-config&lt;/span&gt;
-  &lt;span class=&quot;org-string&quot;&gt;&quot;Section \&quot;Device\&quot;&lt;/span&gt;
-&lt;span class=&quot;org-string&quot;&gt;      Identifier     \&quot;Device0\&quot;&lt;/span&gt;
-&lt;span class=&quot;org-string&quot;&gt;      Driver         \&quot;nvidia\&quot;&lt;/span&gt;
-&lt;span class=&quot;org-string&quot;&gt;      VendorName     \&quot;NVIDIA Corporation\&quot;&lt;/span&gt;
-&lt;span class=&quot;org-string&quot;&gt;      BoardName      \&quot;GeForce GTX 1050 Ti\&quot;&lt;/span&gt;
-&lt;span class=&quot;org-string&quot;&gt;  EndSection&quot;&lt;/span&gt;)        
-&lt;/code&gt;&lt;/pre&gt;
+<pre><code class="scheme">(<span class="org-keyword">define</span> <span class="org-function-name">%xorg-config</span>
+  <span class="org-string">"Section \"Device\"</span>
+<span class="org-string">      Identifier     \"Device0\"</span>
+<span class="org-string">      Driver         \"nvidia\"</span>
+<span class="org-string">      VendorName     \"NVIDIA Corporation\"</span>
+<span class="org-string">      BoardName      \"GeForce GTX 1050 Ti\"</span>
+<span class="org-string">  EndSection"</span>)        
+</code></pre>
 
-&lt;p&gt;You can find examples for additional configurations in &lt;a href=&quot;https://github.com/daviwil/dotfiles/blob/master/Systems.org&quot;&gt;David&apos;s&lt;/a&gt; and &lt;a href=&quot;https://github.com/minikN/guix/blob/main/base-system.scm#L37-L103&quot;&gt;minikN&apos;s&lt;/a&gt; config.
-&lt;/p&gt;
+<p>You can find examples for additional configurations in <a href="https://github.com/daviwil/dotfiles/blob/master/Systems.org">David's</a> and <a href="https://github.com/minikN/guix/blob/main/base-system.scm#L37-L103">minikN's</a> config.
+</p>
 
-&lt;h2&gt;&lt;a id=&quot;reconfiguring-the-system&quot; class=&quot;anchor&quot; href=&quot;#reconfiguring-the-system&quot;&gt;¶&lt;/a&gt;Reconfiguring the system&lt;/h2&gt;&lt;p&gt;That&apos;s about it. The last thing you need to do is to reconfigure the system so your changes get applied. You need &lt;kbd&gt;sudo&lt;/kbd&gt; in order to do that. You can use the following command:
-&lt;/p&gt;
+<h2><a id="reconfiguring-the-system" class="anchor" href="#reconfiguring-the-system">¶</a>Reconfiguring the system</h2><p>That's about it. The last thing you need to do is to reconfigure the system so your changes get applied. You need <kbd>sudo</kbd> in order to do that. You can use the following command:
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;sudo -E guix system --cores=$(nproc) -L /path/to/your/config.scm reconfigure
-&lt;/code&gt;&lt;/pre&gt;
+<pre><code class="sh">sudo -E guix system --cores=$(nproc) -L /path/to/your/config.scm reconfigure
+</code></pre>
 
-&lt;h2&gt;&lt;a id=&quot;screen-tearing&quot; class=&quot;anchor&quot; href=&quot;#screen-tearing&quot;&gt;¶&lt;/a&gt;Screen tearing&lt;/h2&gt;&lt;p&gt;After doing this, One may notice screen tearing when watching YouTube videos. To remedy this issue one has two options.
-&lt;/p&gt;
+<h2><a id="screen-tearing" class="anchor" href="#screen-tearing">¶</a>Screen tearing</h2><p>After doing this, One may notice screen tearing when watching YouTube videos. To remedy this issue one has two options.
+</p>
 
-&lt;h3&gt;&lt;a id=&quot;force-full-composition-pipeline&quot; class=&quot;anchor&quot; href=&quot;#force-full-composition-pipeline&quot;&gt;¶&lt;/a&gt;Force full composition pipeline&lt;/h3&gt;&lt;p&gt;Forcing a full composition pipeline can help to avoid screen tearing. You can consult the &lt;a href=&quot;https://wiki.archlinux.org/title/NVIDIA/Troubleshooting#Avoid_screen_tearing&quot;&gt;Arch Wiki&lt;/a&gt; if you want to know about it. To put it simple, you need to add the &lt;kbd&gt;MetaModes&lt;/kbd&gt; option to your screen &lt;kbd&gt;Section&lt;/kbd&gt; block of your xorg configuration.
+<h3><a id="force-full-composition-pipeline" class="anchor" href="#force-full-composition-pipeline">¶</a>Force full composition pipeline</h3><p>Forcing a full composition pipeline can help to avoid screen tearing. You can consult the <a href="https://wiki.archlinux.org/title/NVIDIA/Troubleshooting#Avoid_screen_tearing">Arch Wiki</a> if you want to know about it. To put it simple, you need to add the <kbd>MetaModes</kbd> option to your screen <kbd>Section</kbd> block of your xorg configuration.
 Like this:
-&lt;/p&gt;
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;conf&quot;&gt;Section &lt;span class=&quot;org-string&quot;&gt;&quot;Device&quot;&lt;/span&gt;
-        Identifier &lt;span class=&quot;org-string&quot;&gt;&quot;Nvidia Card&quot;&lt;/span&gt;
-        Driver     &lt;span class=&quot;org-string&quot;&gt;&quot;nvidia&quot;&lt;/span&gt;
-        VendorName &lt;span class=&quot;org-string&quot;&gt;&quot;NVIDIA Corporation&quot;&lt;/span&gt;
-        BoardName  &lt;span class=&quot;org-string&quot;&gt;&quot;GeForce GTX 1050 Ti&quot;&lt;/span&gt;
+<pre><code class="conf">Section <span class="org-string">"Device"</span>
+        Identifier <span class="org-string">"Nvidia Card"</span>
+        Driver     <span class="org-string">"nvidia"</span>
+        VendorName <span class="org-string">"NVIDIA Corporation"</span>
+        BoardName  <span class="org-string">"GeForce GTX 1050 Ti"</span>
 EndSection
 
-Section &lt;span class=&quot;org-string&quot;&gt;&quot;Screen&quot;&lt;/span&gt;
-    Identifier     &lt;span class=&quot;org-string&quot;&gt;&quot;Screen0&quot;&lt;/span&gt;
-    Device         &lt;span class=&quot;org-string&quot;&gt;&quot;Device0&quot;&lt;/span&gt;
-    Monitor        &lt;span class=&quot;org-string&quot;&gt;&quot;Monitor0&quot;&lt;/span&gt;
-    Option         &lt;span class=&quot;org-string&quot;&gt;&quot;MetaModes&quot;&lt;/span&gt; &lt;span class=&quot;org-string&quot;&gt;&quot;nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}&quot;&lt;/span&gt;
-    Option         &lt;span class=&quot;org-string&quot;&gt;&quot;AllowIndirectGLXProtocol&quot;&lt;/span&gt; &lt;span class=&quot;org-string&quot;&gt;&quot;off&quot;&lt;/span&gt;
-    Option         &lt;span class=&quot;org-string&quot;&gt;&quot;TripleBuffer&quot;&lt;/span&gt; &lt;span class=&quot;org-string&quot;&gt;&quot;on&quot;&lt;/span&gt;
+Section <span class="org-string">"Screen"</span>
+    Identifier     <span class="org-string">"Screen0"</span>
+    Device         <span class="org-string">"Device0"</span>
+    Monitor        <span class="org-string">"Monitor0"</span>
+    Option         <span class="org-string">"MetaModes"</span> <span class="org-string">"nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"</span>
+    Option         <span class="org-string">"AllowIndirectGLXProtocol"</span> <span class="org-string">"off"</span>
+    Option         <span class="org-string">"TripleBuffer"</span> <span class="org-string">"on"</span>
 EndSection
-&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
 
-&lt;p&gt;However, the actual value of the option is dependent on your monitor setup. This was explained on the &lt;a href=&quot;https://github.com/ch11ng/exwm/wiki#issues-with-screen-tearing&quot;&gt;EXWM Wiki&lt;/a&gt; in greater detail.
-&lt;/p&gt;
+<p>However, the actual value of the option is dependent on your monitor setup. This was explained on the <a href="https://github.com/ch11ng/exwm/wiki#issues-with-screen-tearing">EXWM Wiki</a> in greater detail.
+</p>
 
-&lt;h3&gt;&lt;a id=&quot;using-a-compositor&quot; class=&quot;anchor&quot; href=&quot;#using-a-compositor&quot;&gt;¶&lt;/a&gt;Using a compositor&lt;/h3&gt;&lt;p&gt;Generally, enabling the full composition pipeline works to get rid of screen tearing. However on GNU Guix it didn&apos;t for some reason. Maybe it&apos;ll work for you? In any case, another way is to use a compositor like &lt;a href=&quot;https://github.com/yshui/picom&quot;&gt;picom&lt;/a&gt; (formely known as compton). There are multiple ways to set up a compositor.
-&lt;/p&gt;
+<h3><a id="using-a-compositor" class="anchor" href="#using-a-compositor">¶</a>Using a compositor</h3><p>Generally, enabling the full composition pipeline works to get rid of screen tearing. However on GNU Guix it didn't for some reason. Maybe it'll work for you? In any case, another way is to use a compositor like <a href="https://github.com/yshui/picom">picom</a> (formely known as compton). There are multiple ways to set up a compositor.
+</p>
 
-&lt;h4&gt;&lt;a id=&quot;using-exwm&quot; class=&quot;anchor&quot; href=&quot;#using-exwm&quot;&gt;¶&lt;/a&gt;Using EXWM&lt;/h4&gt;&lt;p&gt;This example shows how to use &lt;kbd&gt;picom&lt;/kbd&gt; with EXWM as a window manager. There is an &lt;a href=&quot;https://guix.gnu.org/en/packages/emacs-exwm-0.24/&quot;&gt;emacs-exwm&lt;/a&gt;
-   package. Unfortunately, one can not easily configure it to load &lt;kbd&gt;picom&lt;/kbd&gt; as well. In addition, it still runs on Emacs 27.2, it could be benefitial to change to version 28 featuring native compilation. This package definition inheriting from emacs-exwm automatically starts picom and uses the native-compilation branch. Feel free to use it. It requires you to have set up &lt;a href=&quot;https://github.com/flatwhatson/guix-channel&quot;&gt;flatwhatson&lt;/a&gt;&apos;s guix channel: 
-&lt;/p&gt;
+<h4><a id="using-exwm" class="anchor" href="#using-exwm">¶</a>Using EXWM</h4><p>This example shows how to use <kbd>picom</kbd> with EXWM as a window manager. There is an <a href="https://guix.gnu.org/en/packages/emacs-exwm-0.24/">emacs-exwm</a>
+   package. Unfortunately, one can not easily configure it to load <kbd>picom</kbd> as well. In addition, it still runs on Emacs 27.2, it could be benefitial to change to version 28 featuring native compilation. This package definition inheriting from emacs-exwm automatically starts picom and uses the native-compilation branch. Feel free to use it. It requires you to have set up <a href="https://github.com/flatwhatson/guix-channel">flatwhatson</a>'s guix channel: 
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;scheme&quot;&gt;&lt;span class=&quot;org-comment-delimiter&quot;&gt;;; &lt;/span&gt;&lt;span class=&quot;org-comment&quot;&gt;Override emacs-exwm package definition&lt;/span&gt;
-&lt;span class=&quot;org-comment-delimiter&quot;&gt;;; &lt;/span&gt;&lt;span class=&quot;org-comment&quot;&gt;To include emacs-native-comp and picom.&lt;/span&gt;
-(&lt;span class=&quot;org-keyword&quot;&gt;define-public&lt;/span&gt; &lt;span class=&quot;org-function-name&quot;&gt;emacs-native-comp-exwm&lt;/span&gt;
+<pre><code class="scheme"><span class="org-comment-delimiter">;; </span><span class="org-comment">Override emacs-exwm package definition</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">To include emacs-native-comp and picom.</span>
+(<span class="org-keyword">define-public</span> <span class="org-function-name">emacs-native-comp-exwm</span>
   (package
    (inherit emacs-exwm)
-   (name &lt;span class=&quot;org-string&quot;&gt;&quot;emacs-native-comp-exwm&quot;&lt;/span&gt;)
-   (synopsis &lt;span class=&quot;org-string&quot;&gt;&quot;Emacs 28 with native compilation and picom as a compositor.&quot;&lt;/span&gt;)
+   (name <span class="org-string">"emacs-native-comp-exwm"</span>)
+   (synopsis <span class="org-string">"Emacs 28 with native compilation and picom as a compositor."</span>)
    (inputs
-    `((&lt;span class=&quot;org-string&quot;&gt;&quot;picom&quot;&lt;/span&gt; ,picom)
+    `((<span class="org-string">"picom"</span> ,picom)
       ,@(package-inputs emacs-exwm)))
    (arguments
     `(,@(package-arguments emacs-exwm)
-      &lt;span class=&quot;org-builtin&quot;&gt;#:emacs&lt;/span&gt; ,emacs-native-comp
-      &lt;span class=&quot;org-builtin&quot;&gt;#:phases&lt;/span&gt; (modify-phases %standard-phases
-                              (add-after &apos;build &apos;install-xsession
-                                         (lambda* (&lt;span class=&quot;org-builtin&quot;&gt;#:key&lt;/span&gt; inputs outputs &lt;span class=&quot;org-builtin&quot;&gt;#:allow-other-keys&lt;/span&gt;)
-                                                  (&lt;span class=&quot;org-keyword&quot;&gt;let*&lt;/span&gt; ((out (assoc-ref outputs &lt;span class=&quot;org-string&quot;&gt;&quot;out&quot;&lt;/span&gt;))
-                                                         (xsessions (string-append out &lt;span class=&quot;org-string&quot;&gt;&quot;/share/xsessions&quot;&lt;/span&gt;))
-                                                         (bin (string-append out &lt;span class=&quot;org-string&quot;&gt;&quot;/bin&quot;&lt;/span&gt;))
-                                                         (exwm-executable (string-append bin &lt;span class=&quot;org-string&quot;&gt;&quot;/exwm&quot;&lt;/span&gt;)))
+      <span class="org-builtin">#:emacs</span> ,emacs-native-comp
+      <span class="org-builtin">#:phases</span> (modify-phases %standard-phases
+                              (add-after 'build 'install-xsession
+                                         (lambda* (<span class="org-builtin">#:key</span> inputs outputs <span class="org-builtin">#:allow-other-keys</span>)
+                                                  (<span class="org-keyword">let*</span> ((out (assoc-ref outputs <span class="org-string">"out"</span>))
+                                                         (xsessions (string-append out <span class="org-string">"/share/xsessions"</span>))
+                                                         (bin (string-append out <span class="org-string">"/bin"</span>))
+                                                         (exwm-executable (string-append bin <span class="org-string">"/exwm"</span>)))
 
-                                                    &lt;span class=&quot;org-comment-delimiter&quot;&gt;;; &lt;/span&gt;&lt;span class=&quot;org-comment&quot;&gt;Add a .desktop file to xsessions&lt;/span&gt;
+                                                    <span class="org-comment-delimiter">;; </span><span class="org-comment">Add a .desktop file to xsessions</span>
                                                     (mkdir-p xsessions)
                                                     (mkdir-p bin)
                                                     (make-desktop-entry-file
-                                                     (string-append xsessions &lt;span class=&quot;org-string&quot;&gt;&quot;/exwm.desktop&quot;&lt;/span&gt;)
-                                                     &lt;span class=&quot;org-builtin&quot;&gt;#:name&lt;/span&gt; ,name
-                                                     &lt;span class=&quot;org-builtin&quot;&gt;#:comment&lt;/span&gt; ,synopsis
-                                                     &lt;span class=&quot;org-builtin&quot;&gt;#:exec&lt;/span&gt; exwm-executable
-                                                     &lt;span class=&quot;org-builtin&quot;&gt;#:try-exec&lt;/span&gt; exwm-executable)
+                                                     (string-append xsessions <span class="org-string">"/exwm.desktop"</span>)
+                                                     <span class="org-builtin">#:name</span> ,name
+                                                     <span class="org-builtin">#:comment</span> ,synopsis
+                                                     <span class="org-builtin">#:exec</span> exwm-executable
+                                                     <span class="org-builtin">#:try-exec</span> exwm-executable)
 
-                                                    &lt;span class=&quot;org-comment-delimiter&quot;&gt;;; &lt;/span&gt;&lt;span class=&quot;org-comment&quot;&gt;Add a shell wrapper to bin&lt;/span&gt;
+                                                    <span class="org-comment-delimiter">;; </span><span class="org-comment">Add a shell wrapper to bin</span>
                                                     (with-output-to-file exwm-executable
-                                                      (&lt;span class=&quot;org-keyword&quot;&gt;lambda&lt;/span&gt; _
-                                                        (format #t &lt;span class=&quot;org-string&quot;&gt;&quot;#!~a ~@&lt;/span&gt;
-&lt;span class=&quot;org-string&quot;&gt;                                                                                       ~a +SI:localuser:$USER ~@&lt;/span&gt;
-&lt;span class=&quot;org-string&quot;&gt;                                                                                       ~a &amp;amp;&lt;/span&gt;
-&lt;span class=&quot;org-string&quot;&gt;                                                                                       exec ~a --exit-with-session ~a \&quot;$@\&quot; --eval &apos;~s&apos; ~%&quot;&lt;/span&gt;
-                                                                (string-append (assoc-ref inputs &lt;span class=&quot;org-string&quot;&gt;&quot;bash&quot;&lt;/span&gt;) &lt;span class=&quot;org-string&quot;&gt;&quot;/bin/sh&quot;&lt;/span&gt;)
-                                                                (string-append (assoc-ref inputs &lt;span class=&quot;org-string&quot;&gt;&quot;xhost&quot;&lt;/span&gt;) &lt;span class=&quot;org-string&quot;&gt;&quot;/bin/xhost&quot;&lt;/span&gt;)
-                                                                (string-append (assoc-ref inputs &lt;span class=&quot;org-string&quot;&gt;&quot;picom&quot;&lt;/span&gt;) &lt;span class=&quot;org-string&quot;&gt;&quot;/bin/picom&quot;&lt;/span&gt;)
-                                                                (string-append (assoc-ref inputs &lt;span class=&quot;org-string&quot;&gt;&quot;dbus&quot;&lt;/span&gt;) &lt;span class=&quot;org-string&quot;&gt;&quot;/bin/dbus-launch&quot;&lt;/span&gt;)
-                                                                (string-append (assoc-ref inputs &lt;span class=&quot;org-string&quot;&gt;&quot;emacs&quot;&lt;/span&gt;) &lt;span class=&quot;org-string&quot;&gt;&quot;/bin/emacs&quot;&lt;/span&gt;)
-                                                                &apos;(&lt;span class=&quot;org-keyword&quot;&gt;cond&lt;/span&gt;
-                                                                  ((file-exists-p &lt;span class=&quot;org-string&quot;&gt;&quot;~/.exwm&quot;&lt;/span&gt;)
-                                                                   (load-file &lt;span class=&quot;org-string&quot;&gt;&quot;~/.exwm&quot;&lt;/span&gt;))
-                                                                  ((not (featurep &apos;exwm))
-                                                                   (require &apos;exwm)
-                                                                   (require &apos;exwm-config)
+                                                      (<span class="org-keyword">lambda</span> _
+                                                        (format #t <span class="org-string">"#!~a ~@</span>
+<span class="org-string">                                                                                       ~a +SI:localuser:$USER ~@</span>
+<span class="org-string">                                                                                       ~a &amp;</span>
+<span class="org-string">                                                                                       exec ~a --exit-with-session ~a \"$@\" --eval '~s' ~%"</span>
+                                                                (string-append (assoc-ref inputs <span class="org-string">"bash"</span>) <span class="org-string">"/bin/sh"</span>)
+                                                                (string-append (assoc-ref inputs <span class="org-string">"xhost"</span>) <span class="org-string">"/bin/xhost"</span>)
+                                                                (string-append (assoc-ref inputs <span class="org-string">"picom"</span>) <span class="org-string">"/bin/picom"</span>)
+                                                                (string-append (assoc-ref inputs <span class="org-string">"dbus"</span>) <span class="org-string">"/bin/dbus-launch"</span>)
+                                                                (string-append (assoc-ref inputs <span class="org-string">"emacs"</span>) <span class="org-string">"/bin/emacs"</span>)
+                                                                '(<span class="org-keyword">cond</span>
+                                                                  ((file-exists-p <span class="org-string">"~/.exwm"</span>)
+                                                                   (load-file <span class="org-string">"~/.exwm"</span>))
+                                                                  ((not (featurep 'exwm))
+                                                                   (require 'exwm)
+                                                                   (require 'exwm-config)
                                                                    (exwm-config-default)
-                                                                   (message (concat &lt;span class=&quot;org-string&quot;&gt;&quot;exwm configuration not found. &quot;&lt;/span&gt;
-                                                                                    &lt;span class=&quot;org-string&quot;&gt;&quot;Falling back to default configuration...&quot;&lt;/span&gt;)))))))
+                                                                   (message (concat <span class="org-string">"exwm configuration not found. "</span>
+                                                                                    <span class="org-string">"Falling back to default configuration..."</span>)))))))
                                                     (chmod exwm-executable #o555)
                                                     #t))))))))
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;</div></div></div></div>&lt;footer class=&quot;blog-footer&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;row&quot;&gt;&lt;div class=&quot;col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right&quot;&gt;&lt;p&gt;Made with Emacs 27.2 (Org mode 9.4.4)&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://systemcrafters.net/privacy-policy/&quot;&gt;Privacy Policy&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/footer&gt;&lt;script src=&quot;/js/bootstrap.bundle.min.js&quot;/&gt;</body></html>
+</code></pre>
+</div></div></div></div></div><footer class="blog-footer"><div class="container"><div class="row"><div class="col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right"><p>Made with Emacs 27.2 (Org mode 9.4.4)</p><p><a href="https://systemcrafters.net/privacy-policy/">Privacy Policy</a></p></div></div></div></footer><script src="/js/bootstrap.bundle.min.js"/></body></html>

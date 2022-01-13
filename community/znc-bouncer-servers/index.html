@@ -1,86 +1,87 @@
-<!DOCTYPE html><html lang="en"><head>&lt;!--  --&gt;<meta charset="utf-8"/><meta author="David Wilson"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/fonts/iosevka-aile/iosevka-aile.css"/><link rel="stylesheet" href="/fonts/jetbrains-mono/jetbrains-mono.css"/><link rel="stylesheet" href="/css/code.css"/><link rel="stylesheet" href="/css/site.css"/><script defer="defer" data-domain="wiki.systemcrafters.net" src="https://plausible.io/js/plausible.js"></script><title>ZNC Bouncer Server Setup - System Crafters</title></head><body>&lt;div&gt;&lt;div class=&quot;blog-header&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;row align-items-center justify-content-between&quot;&gt;&lt;div class=&quot;col-sm-12 col-md-8&quot;&gt;&lt;div class=&quot;blog-title&quot;&gt;System Crafters&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;col-sm col-md&quot;&gt;&lt;div class=&quot;blog-description text-sm-left text-md-right text-lg-right text-xl-right&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;blog-masthead&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;row align-items-center justify-content-between&quot;&gt;&lt;div class=&quot;col-sm-12 col-md-12&quot;&gt;&lt;nav class=&quot;nav&quot;&gt;&lt;a class=&quot;nav-link&quot; href=&quot;/&quot;&gt;Main Page&lt;/a&gt; &lt;a class=&quot;nav-link&quot; href=&quot;/emacs&quot;&gt;GNU Emacs&lt;/a&gt; &lt;a class=&quot;nav-link&quot; href=&quot;/guix&quot;&gt;GNU Guix&lt;/a&gt;&lt;a class=&quot;nav-link&quot; href=&quot;https://systemcrafters.net&quot;&gt;System Crafters Home&lt;/a&gt;&lt;form class=&quot;navbar-form navbar-right&quot; role=&quot;search&quot; action=&quot;https://duckduckgo.com/&quot;&gt;&lt;div class=&quot;form-group&quot;&gt;&lt;input type=&quot;text&quot; name=&quot;q&quot; class=&quot;form-control&quot; placeholder=&quot;Search Wiki&quot; style=&quot;overflow: hidden;margin-top: 3%;margin-bottom: 2%;&quot;/&gt;&lt;input type=&quot;hidden&quot; name=&quot;sites&quot; value=&quot;wiki.systemcrafters.net&quot;/&gt;&lt;/div&gt;&lt;/form&gt; &lt;/nav&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;<div class="container"><div class="row"><div class="col-sm-12 blog-main"><div class="blog-post"><h1 class="blog-post-title">ZNC Bouncer Server Setup</h1><p class="blog-post-meta"></p>&lt;div&gt;&lt;p&gt;An IRC bouncer server stays connected to IRC at all times on your behalf so that when you connect to it you can read all the messages that were sent to your channels while you were offline. This allows you to disconnect your client from the IRC server without losing context for the conversation or missing potentially relevant messages. When you reconnect, the ZNC bouncer server provides a replay of the conversation you missed while you were gone.
-&lt;/p&gt;
+<!--  -->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta author="David Wilson"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/fonts/iosevka-aile/iosevka-aile.css"/><link rel="stylesheet" href="/fonts/jetbrains-mono/jetbrains-mono.css"/><link rel="stylesheet" href="/css/code.css"/><link rel="stylesheet" href="/css/site.css"/><script defer="defer" data-domain="wiki.systemcrafters.net" src="https://plausible.io/js/plausible.js"></script><title>ZNC Bouncer Server Setup - System Crafters</title></head><body><div class="blog-header"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-8"><div class="blog-title">System Crafters</div></div><div class="col-sm col-md"><div class="blog-description text-sm-left text-md-right text-lg-right text-xl-right"></div></div></div></div></div><div class="blog-masthead"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-12"><nav class="nav"><a class="nav-link" href="/">Main Page</a> <a class="nav-link" href="/emacs">GNU Emacs</a> <a class="nav-link" href="/guix">GNU Guix</a><a class="nav-link" href="https://systemcrafters.net">System Crafters Home</a><form class="navbar-form navbar-right" role="search" action="https://duckduckgo.com/"><div class="form-group"><input type="text" name="q" class="form-control" placeholder="Search Wiki" style="overflow: hidden;margin-top: 3%;margin-bottom: 2%;"/><input type="hidden" name="sites" value="wiki.systemcrafters.net"/></div></form> </nav></div></div></div></div><div class="container"><div class="row"><div class="col-sm-12 blog-main"><div class="blog-post"><h1 class="blog-post-title">ZNC Bouncer Server Setup</h1><p class="blog-post-meta"></p><div><p>An IRC bouncer server stays connected to IRC at all times on your behalf so that when you connect to it you can read all the messages that were sent to your channels while you were offline. This allows you to disconnect your client from the IRC server without losing context for the conversation or missing potentially relevant messages. When you reconnect, the ZNC bouncer server provides a replay of the conversation you missed while you were gone.
+</p>
 
-&lt;p&gt;Several members of the System Crafters community are running their own ZNC servers. Below is a tutorial for setting up a TLS/SSL enabled bouncer server using ZNC, Let&apos;s Encrypt, and CentOS. There has been some discussion about providing a multi-user server that members of the System Crafters community can use. Please contact &lt;kbd&gt;#systemcrafters&lt;/kbd&gt; IRC users daviwil or nackjicholson if you would be interested in using a community bouncer server. The features of ZNC enable clearer and more fluid communication. We enjoy using IRC and want to know if a community ZNC bouncer server would be well utilized and beneficial for our communication.
-&lt;/p&gt;
+<p>Several members of the System Crafters community are running their own ZNC servers. Below is a tutorial for setting up a TLS/SSL enabled bouncer server using ZNC, Let's Encrypt, and CentOS. There has been some discussion about providing a multi-user server that members of the System Crafters community can use. Please contact <kbd>#systemcrafters</kbd> IRC users daviwil or nackjicholson if you would be interested in using a community bouncer server. The features of ZNC enable clearer and more fluid communication. We enjoy using IRC and want to know if a community ZNC bouncer server would be well utilized and beneficial for our communication.
+</p>
 
-&lt;h2&gt;&lt;a id=&quot;external-resources&quot; class=&quot;anchor&quot; href=&quot;#external-resources&quot;&gt;¶&lt;/a&gt;External Resources&lt;/h2&gt;&lt;ul&gt;&lt;li&gt;&lt;a href=&quot;https://wiki.znc.in/ZNC&quot;&gt;ZNC Wiki&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://wiki.znc.in/Signed_SSL_certificate#LetsEncrypt&quot;&gt;ZNC Wiki - Signed SSL Certificate with Let&apos;s Encrypt&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://sgfault.com/2018/07/28/irc-bouncer-setup.html&quot;&gt;Blog: Setting Up an IRC Bouncer&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://www.vultr.com/docs/installing-and-configuring-znc-on-centos-7&quot;&gt;Blog: Vultr - Installing and Configuring ZNC on CentOS 7&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://chromium.googlesource.com/chromium/src.git/+/refs/heads/master/net/base/port_util.cc&quot;&gt;Google Chrome - List of blocked ports&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<h2><a id="external-resources" class="anchor" href="#external-resources">¶</a>External Resources</h2><ul><li><a href="https://wiki.znc.in/ZNC">ZNC Wiki</a></li>
+<li><a href="https://wiki.znc.in/Signed_SSL_certificate#LetsEncrypt">ZNC Wiki - Signed SSL Certificate with Let's Encrypt</a></li>
+<li><a href="https://sgfault.com/2018/07/28/irc-bouncer-setup.html">Blog: Setting Up an IRC Bouncer</a></li>
+<li><a href="https://www.vultr.com/docs/installing-and-configuring-znc-on-centos-7">Blog: Vultr - Installing and Configuring ZNC on CentOS 7</a></li>
+<li><a href="https://chromium.googlesource.com/chromium/src.git/+/refs/heads/master/net/base/port_util.cc">Google Chrome - List of blocked ports</a></li>
+</ul>
 
-&lt;h2&gt;&lt;a id=&quot;tutorial-znc-with-ssltls-on-centos&quot; class=&quot;anchor&quot; href=&quot;#tutorial-znc-with-ssltls-on-centos&quot;&gt;¶&lt;/a&gt;Tutorial: ZNC with SSL/TLS on CentOS&lt;/h2&gt;&lt;p&gt;The following commands and configuration instructions will set up a secure ZNC server for personal use. You will need a CentOS 7 server or virtual machine, as well as a registered domain name. In the tutorial znc.example.org will be used as the target domain name, and the ZNC server will be configured to run on port 6697.
-&lt;/p&gt;
+<h2><a id="tutorial-znc-with-ssltls-on-centos" class="anchor" href="#tutorial-znc-with-ssltls-on-centos">¶</a>Tutorial: ZNC with SSL/TLS on CentOS</h2><p>The following commands and configuration instructions will set up a secure ZNC server for personal use. You will need a CentOS 7 server or virtual machine, as well as a registered domain name. In the tutorial znc.example.org will be used as the target domain name, and the ZNC server will be configured to run on port 6697.
+</p>
 
-&lt;h3&gt;&lt;a id=&quot;install&quot; class=&quot;anchor&quot; href=&quot;#install&quot;&gt;¶&lt;/a&gt;Install&lt;/h3&gt;&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;$ sudo yum update
+<h3><a id="install" class="anchor" href="#install">¶</a>Install</h3><pre><code class="sh">$ sudo yum update
 $ sudo yum install certbot znc
-&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
 
-&lt;h3&gt;&lt;a id=&quot;firewall&quot; class=&quot;anchor&quot; href=&quot;#firewall&quot;&gt;¶&lt;/a&gt;Firewall&lt;/h3&gt;&lt;p&gt;Opening necessary ports for certbot and ZNC.
-&lt;/p&gt;
+<h3><a id="firewall" class="anchor" href="#firewall">¶</a>Firewall</h3><p>Opening necessary ports for certbot and ZNC.
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;$ sudo firewall-cmd --zone=public --permanent --add-service=http
+<pre><code class="sh">$ sudo firewall-cmd --zone=public --permanent --add-service=http
 $ sudo firewall-cmd --zone=public --permanent --add-service=https
 $ sudo firewall-cmd --add-port=6697/tcp
 $ sudo firewall-cmd --runtime-to-permanent
-&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
 
-&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; Some browsers, like Google Chrome block port &lt;kbd&gt;6697&lt;/kbd&gt; (amongst others) by default because it&apos;s commonly used for IRC networks (and thus not HTTP). One can remedy that by either switching to another port (both in the firewall settings and the ZNC configuration) or by forcing Chrome to explicitly allow it:
-&lt;/p&gt;
+<p><strong>Note:</strong> Some browsers, like Google Chrome block port <kbd>6697</kbd> (amongst others) by default because it's commonly used for IRC networks (and thus not HTTP). One can remedy that by either switching to another port (both in the firewall settings and the ZNC configuration) or by forcing Chrome to explicitly allow it:
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;chromium --explicitly-allowed-ports=6697
-&lt;/code&gt;&lt;/pre&gt;
+<pre><code class="sh">chromium --explicitly-allowed-ports=6697
+</code></pre>
 
-&lt;h3&gt;&lt;a id=&quot;use-a-lets-encrypt-certificate-with-znc&quot; class=&quot;anchor&quot; href=&quot;#use-a-lets-encrypt-certificate-with-znc&quot;&gt;¶&lt;/a&gt;Use a Let&apos;s Encrypt Certificate with ZNC&lt;/h3&gt;&lt;p&gt;Let&apos;s Encrypt is a service that enables people to use SSL encryption more easily on the internet. Signed and verified certificates can be acquired using a simple CLI tool called &lt;kbd&gt;certbot&lt;/kbd&gt;. The certificates expire rather quickly, and this is why auto-renewal steps are also shown below.
-&lt;/p&gt;
+<h3><a id="use-a-lets-encrypt-certificate-with-znc" class="anchor" href="#use-a-lets-encrypt-certificate-with-znc">¶</a>Use a Let's Encrypt Certificate with ZNC</h3><p>Let's Encrypt is a service that enables people to use SSL encryption more easily on the internet. Signed and verified certificates can be acquired using a simple CLI tool called <kbd>certbot</kbd>. The certificates expire rather quickly, and this is why auto-renewal steps are also shown below.
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;$ sudo certbot certonly --standalone --preferred-challenges http --http-01-port 80 -d znc.example.org
-&lt;/code&gt;&lt;/pre&gt;
+<pre><code class="sh">$ sudo certbot certonly --standalone --preferred-challenges http --http-01-port 80 -d znc.example.org
+</code></pre>
 
-&lt;p&gt;In order to work over SSL, ZNC expects a combined cert file &lt;kbd&gt;znc.pem&lt;/kbd&gt; to be accessible to it in the znc home path &lt;kbd&gt;/var/lib/znc/.znc&lt;/kbd&gt;.
-&lt;/p&gt;
+<p>In order to work over SSL, ZNC expects a combined cert file <kbd>znc.pem</kbd> to be accessible to it in the znc home path <kbd>/var/lib/znc/.znc</kbd>.
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;$ sudo cat /etc/letsencrypt/live/znc.example.org/{privkey,fullchain}.pem &amp;gt; znc.pem
+<pre><code class="sh">$ sudo cat /etc/letsencrypt/live/znc.example.org/{privkey,fullchain}.pem &gt; znc.pem
 $ sudo mv znc.pem /var/lib/znc/.znc/
 $ sudo chown znc:znc /var/lib/znc/.znc/znc.pem
-&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
 
-&lt;p&gt;Make a crontab and renewal script to automatically check Let&apos;s Encrypt for certificate updates, and trigger a change to &lt;kbd&gt;znc.pem&lt;/kbd&gt; when certificates are renewed.
-&lt;/p&gt;
+<p>Make a crontab and renewal script to automatically check Let's Encrypt for certificate updates, and trigger a change to <kbd>znc.pem</kbd> when certificates are renewed.
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;$ sudo touch /etc/letsencrypt/renewal-hooks/deploy/update-znc.pem
+<pre><code class="sh">$ sudo touch /etc/letsencrypt/renewal-hooks/deploy/update-znc.pem
 $ sudo chmod +x /etc/letsencrypt/renewal-hooks/deploy/update-znc.pem
-&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
 
-&lt;p&gt;Copy the following into the &lt;kbd&gt;update-znc.pem&lt;/kbd&gt; file using a text editor i.e. &lt;kbd&gt;sudo vi /etc/letsencrypt/renewal-hooks/deploy/update-znc.pem&lt;/kbd&gt;.
-&lt;/p&gt;
+<p>Copy the following into the <kbd>update-znc.pem</kbd> file using a text editor i.e. <kbd>sudo vi /etc/letsencrypt/renewal-hooks/deploy/update-znc.pem</kbd>.
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;&lt;span class=&quot;org-comment-delimiter&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;org-comment&quot;&gt;!/bin/&lt;/span&gt;&lt;span class=&quot;org-keyword&quot;&gt;bash&lt;/span&gt;
-&lt;span class=&quot;org-variable-name&quot;&gt;YOURDOMAIN&lt;/span&gt;=&lt;span class=&quot;org-string&quot;&gt;&quot;znc.example.org&quot;&lt;/span&gt;
+<pre><code class="bash"><span class="org-comment-delimiter">#</span><span class="org-comment">!/bin/</span><span class="org-keyword">bash</span>
+<span class="org-variable-name">YOURDOMAIN</span>=<span class="org-string">"znc.example.org"</span>
 
-[[ $&lt;span class=&quot;org-variable-name&quot;&gt;RENEWED_LINEAGE&lt;/span&gt; != &lt;span class=&quot;org-string&quot;&gt;&quot;/etc/letsencrypt/live/$YOURDOMAIN&quot;&lt;/span&gt; ]] &amp;amp;&amp;amp; &lt;span class=&quot;org-keyword&quot;&gt;exit&lt;/span&gt; 0
-&lt;span class=&quot;org-builtin&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;org-string&quot;&gt;&quot;Updating certs&quot;&lt;/span&gt;
-cat /etc/letsencrypt/live/$&lt;span class=&quot;org-variable-name&quot;&gt;YOURDOMAIN&lt;/span&gt;/{privkey,fullchain}.pem &amp;gt; /var/lib/znc/.znc/znc.pem
-&lt;/code&gt;&lt;/pre&gt;
+[[ $<span class="org-variable-name">RENEWED_LINEAGE</span> != <span class="org-string">"/etc/letsencrypt/live/$YOURDOMAIN"</span> ]] &amp;&amp; <span class="org-keyword">exit</span> 0
+<span class="org-builtin">echo</span> <span class="org-string">"Updating certs"</span>
+cat /etc/letsencrypt/live/$<span class="org-variable-name">YOURDOMAIN</span>/{privkey,fullchain}.pem &gt; /var/lib/znc/.znc/znc.pem
+</code></pre>
 
-&lt;p&gt;Add this to cron by running &lt;kbd&gt;crontab -e&lt;/kbd&gt;. This will attempt renewal everyday at 3:15 a.m. you can change this time to any time you like.
-&lt;/p&gt;
+<p>Add this to cron by running <kbd>crontab -e</kbd>. This will attempt renewal everyday at 3:15 a.m. you can change this time to any time you like.
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;nil&quot;&gt;15 3 * * * /usr/bin/certbot renew --quiet
-&lt;/code&gt;&lt;/pre&gt;
+<pre><code class="nil">15 3 * * * /usr/bin/certbot renew --quiet
+</code></pre>
 
-&lt;p&gt;Running ZNC.
-&lt;/p&gt;
+<p>Running ZNC.
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;$ sudo -u znc znc --makeconf
-&lt;/code&gt;&lt;/pre&gt;
+<pre><code class="sh">$ sudo -u znc znc --makeconf
+</code></pre>
 
-&lt;p&gt;Fill in the subsequent prompts with details that make sense for yourself.
-&lt;/p&gt;
+<p>Fill in the subsequent prompts with details that make sense for yourself.
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;nil&quot;&gt;[ ?? ] Username (alphanumeric): willvaughn
+<pre><code class="nil">[ ?? ] Username (alphanumeric): willvaughn
 [ ?? ] Enter password:
 [ ?? ] Confirm password:
 [ ?? ] Nick [willvaughn]: nackjicholson
@@ -100,23 +101,23 @@ cat /etc/letsencrypt/live/$&lt;span class=&quot;org-variable-name&quot;&gt;YOURD
 [ ?? ] Server port (1 to 65535) [6697]: 6697
 [ ?? ] Server password (probably empty):
 [ ?? ] Initial channels:
-&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
 
-&lt;p&gt;Run the ZNC systemd service.
-&lt;/p&gt;
+<p>Run the ZNC systemd service.
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;sh&quot;&gt;$ sudo systemctl start znc
+<pre><code class="sh">$ sudo systemctl start znc
 $ sudo systemctl enable znc
-&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
 
-&lt;p&gt;You should now be able to visit znc.example.com:6697 to use the ZNC web frontend. You can also connect to ZNC using &lt;kbd&gt;erc-tls&lt;/kbd&gt;. If your browser blocks the 6697 port, read up on configuring settings to work around that on the znc wiki &lt;a href=&quot;https://wiki.znc.in/FAQ#How_can_I_access_webadmin_with_my_browser.3F&quot;&gt;here&lt;/a&gt;.
-&lt;/p&gt;
+<p>You should now be able to visit znc.example.com:6697 to use the ZNC web frontend. You can also connect to ZNC using <kbd>erc-tls</kbd>. If your browser blocks the 6697 port, read up on configuring settings to work around that on the znc wiki <a href="https://wiki.znc.in/FAQ#How_can_I_access_webadmin_with_my_browser.3F">here</a>.
+</p>
 
-&lt;pre&gt;&lt;code class=&quot;emacs-lisp&quot;&gt;(erc-tls &lt;span class=&quot;org-builtin&quot;&gt;:server&lt;/span&gt; &lt;span class=&quot;org-string&quot;&gt;&quot;znc.example.org&quot;&lt;/span&gt; &lt;span class=&quot;org-builtin&quot;&gt;:port&lt;/span&gt; 6697 &lt;span class=&quot;org-builtin&quot;&gt;:nick&lt;/span&gt; &lt;span class=&quot;org-string&quot;&gt;&quot;nackjicholson&quot;&lt;/span&gt; &lt;span class=&quot;org-builtin&quot;&gt;:password&lt;/span&gt; &lt;span class=&quot;org-string&quot;&gt;&quot;willvaughn/libera:&amp;lt;my-znc-user-password&amp;gt;&quot;&lt;/span&gt;)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2&gt;&lt;a id=&quot;tips-tricks-and-troubleshooting&quot; class=&quot;anchor&quot; href=&quot;#tips-tricks-and-troubleshooting&quot;&gt;¶&lt;/a&gt;Tips, Tricks, and Troubleshooting&lt;/h2&gt;&lt;p&gt;Please add your own timps and tricks by editing the wiki.
-&lt;/p&gt;
+<pre><code class="emacs-lisp">(erc-tls <span class="org-builtin">:server</span> <span class="org-string">"znc.example.org"</span> <span class="org-builtin">:port</span> 6697 <span class="org-builtin">:nick</span> <span class="org-string">"nackjicholson"</span> <span class="org-builtin">:password</span> <span class="org-string">"willvaughn/libera:&lt;my-znc-user-password&gt;"</span>)
+</code></pre>
+<h2><a id="tips-tricks-and-troubleshooting" class="anchor" href="#tips-tricks-and-troubleshooting">¶</a>Tips, Tricks, and Troubleshooting</h2><p>Please add your own timps and tricks by editing the wiki.
+</p>
 
-&lt;h3&gt;&lt;a id=&quot;fixing-your-nick&quot; class=&quot;anchor&quot; href=&quot;#fixing-your-nick&quot;&gt;¶&lt;/a&gt;Fixing your nick&lt;/h3&gt;&lt;p&gt;Occasionally, the ZNC server may log you in as your alternate name. Usually that will mean that your name will have a trailing &lt;kbd&gt;_&lt;/kbd&gt; on it. If you get stuck like that and it&apos;s not because your main nick is also logged in on another client, there is a trick to switching back to the main nick. By typing &lt;kbd&gt;/nick &amp;lt;your-desired-name&amp;gt;&lt;/kbd&gt; in your client you can trigger the ZNC server to configure a different nickname for this session. Then quitting and reconnecting should use the changed nickname that is configured.
-&lt;/p&gt;
-&lt;/div&gt;</div></div></div></div>&lt;footer class=&quot;blog-footer&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;row&quot;&gt;&lt;div class=&quot;col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right&quot;&gt;&lt;p&gt;Made with Emacs 27.2 (Org mode 9.4.4)&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://systemcrafters.net/privacy-policy/&quot;&gt;Privacy Policy&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/footer&gt;&lt;script src=&quot;/js/bootstrap.bundle.min.js&quot;/&gt;</body></html>
+<h3><a id="fixing-your-nick" class="anchor" href="#fixing-your-nick">¶</a>Fixing your nick</h3><p>Occasionally, the ZNC server may log you in as your alternate name. Usually that will mean that your name will have a trailing <kbd>_</kbd> on it. If you get stuck like that and it's not because your main nick is also logged in on another client, there is a trick to switching back to the main nick. By typing <kbd>/nick &lt;your-desired-name&gt;</kbd> in your client you can trigger the ZNC server to configure a different nickname for this session. Then quitting and reconnecting should use the changed nickname that is configured.
+</p>
+</div></div></div></div></div><footer class="blog-footer"><div class="container"><div class="row"><div class="col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right"><p>Made with Emacs 27.2 (Org mode 9.4.4)</p><p><a href="https://systemcrafters.net/privacy-policy/">Privacy Policy</a></p></div></div></div></footer><script src="/js/bootstrap.bundle.min.js"/></body></html>

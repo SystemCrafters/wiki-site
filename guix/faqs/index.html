@@ -1,80 +1,81 @@
-<!DOCTYPE html><html lang="en"><head>&lt;!--  --&gt;<meta charset="utf-8"/><meta author="David Wilson"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/fonts/iosevka-aile/iosevka-aile.css"/><link rel="stylesheet" href="/fonts/jetbrains-mono/jetbrains-mono.css"/><link rel="stylesheet" href="/css/code.css"/><link rel="stylesheet" href="/css/site.css"/><script defer="defer" data-domain="wiki.systemcrafters.net" src="https://plausible.io/js/plausible.js"></script><title>FAQs - System Crafters</title></head><body>&lt;div&gt;&lt;div class=&quot;blog-header&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;row align-items-center justify-content-between&quot;&gt;&lt;div class=&quot;col-sm-12 col-md-8&quot;&gt;&lt;div class=&quot;blog-title&quot;&gt;System Crafters&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;col-sm col-md&quot;&gt;&lt;div class=&quot;blog-description text-sm-left text-md-right text-lg-right text-xl-right&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;blog-masthead&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;row align-items-center justify-content-between&quot;&gt;&lt;div class=&quot;col-sm-12 col-md-12&quot;&gt;&lt;nav class=&quot;nav&quot;&gt;&lt;a class=&quot;nav-link&quot; href=&quot;/&quot;&gt;Main Page&lt;/a&gt; &lt;a class=&quot;nav-link&quot; href=&quot;/emacs&quot;&gt;GNU Emacs&lt;/a&gt; &lt;a class=&quot;nav-link&quot; href=&quot;/guix&quot;&gt;GNU Guix&lt;/a&gt;&lt;a class=&quot;nav-link&quot; href=&quot;https://systemcrafters.net&quot;&gt;System Crafters Home&lt;/a&gt;&lt;form class=&quot;navbar-form navbar-right&quot; role=&quot;search&quot; action=&quot;https://duckduckgo.com/&quot;&gt;&lt;div class=&quot;form-group&quot;&gt;&lt;input type=&quot;text&quot; name=&quot;q&quot; class=&quot;form-control&quot; placeholder=&quot;Search Wiki&quot; style=&quot;overflow: hidden;margin-top: 3%;margin-bottom: 2%;&quot;/&gt;&lt;input type=&quot;hidden&quot; name=&quot;sites&quot; value=&quot;wiki.systemcrafters.net&quot;/&gt;&lt;/div&gt;&lt;/form&gt; &lt;/nav&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;<div class="container"><div class="row"><div class="col-sm-12 blog-main"><div class="blog-post"><h1 class="blog-post-title">FAQs</h1><p class="blog-post-meta"></p>&lt;div&gt;&lt;p&gt;Questions regarding Guix as an OS, Guix as a package manager, and the wiki itself.
-&lt;/p&gt;
+<!--  -->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta author="David Wilson"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/fonts/iosevka-aile/iosevka-aile.css"/><link rel="stylesheet" href="/fonts/jetbrains-mono/jetbrains-mono.css"/><link rel="stylesheet" href="/css/code.css"/><link rel="stylesheet" href="/css/site.css"/><script defer="defer" data-domain="wiki.systemcrafters.net" src="https://plausible.io/js/plausible.js"></script><title>FAQs - System Crafters</title></head><body><div class="blog-header"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-8"><div class="blog-title">System Crafters</div></div><div class="col-sm col-md"><div class="blog-description text-sm-left text-md-right text-lg-right text-xl-right"></div></div></div></div></div><div class="blog-masthead"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-12"><nav class="nav"><a class="nav-link" href="/">Main Page</a> <a class="nav-link" href="/emacs">GNU Emacs</a> <a class="nav-link" href="/guix">GNU Guix</a><a class="nav-link" href="https://systemcrafters.net">System Crafters Home</a><form class="navbar-form navbar-right" role="search" action="https://duckduckgo.com/"><div class="form-group"><input type="text" name="q" class="form-control" placeholder="Search Wiki" style="overflow: hidden;margin-top: 3%;margin-bottom: 2%;"/><input type="hidden" name="sites" value="wiki.systemcrafters.net"/></div></form> </nav></div></div></div></div><div class="container"><div class="row"><div class="col-sm-12 blog-main"><div class="blog-post"><h1 class="blog-post-title">FAQs</h1><p class="blog-post-meta"></p><div><p>Questions regarding Guix as an OS, Guix as a package manager, and the wiki itself.
+</p>
 
-&lt;h2&gt;&lt;a id=&quot;table-of-contents&quot; class=&quot;anchor&quot; href=&quot;#table-of-contents&quot;&gt;¶&lt;/a&gt;Table of Contents&lt;/h2&gt;&lt;ul&gt;&lt;li&gt;&lt;a href=&quot;#what-is-gnu-guix&quot;&gt;What is GNU Guix?&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;#should-i-use-the-package-manager-or-the-os&quot;&gt;Should I use the package manager or the OS?&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;#how-do-i-install-guix&quot;&gt;How do I install Guix?&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;#but-how-do-i-work-with-only-free-software&quot;&gt;But how do I work with only free software?&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;#what-is-a-declarative-configuration&quot;&gt;What is a declarative configuration?&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;#what-are-the-differences-between-guix-and-nix&quot;&gt;What are the differences between Guix and Nix?&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;#im-stuck-where-do-i-ask-for-help&quot;&gt;I&apos;m stuck! Where do I ask for help?&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<h2><a id="table-of-contents" class="anchor" href="#table-of-contents">¶</a>Table of Contents</h2><ul><li><a href="#what-is-gnu-guix">What is GNU Guix?</a></li>
+<li><a href="#should-i-use-the-package-manager-or-the-os">Should I use the package manager or the OS?</a></li>
+<li><a href="#how-do-i-install-guix">How do I install Guix?</a></li>
+<li><a href="#but-how-do-i-work-with-only-free-software">But how do I work with only free software?</a></li>
+<li><a href="#what-is-a-declarative-configuration">What is a declarative configuration?</a></li>
+<li><a href="#what-are-the-differences-between-guix-and-nix">What are the differences between Guix and Nix?</a></li>
+<li><a href="#im-stuck-where-do-i-ask-for-help">I'm stuck! Where do I ask for help?</a></li>
+</ul>
 
-&lt;h2&gt;&lt;a id=&quot;what-is-gnu-guix&quot; class=&quot;anchor&quot; href=&quot;#what-is-gnu-guix&quot;&gt;¶&lt;/a&gt;What is GNU Guix?&lt;/h2&gt;&lt;p&gt;GNU Guix (or simply Guix) is a liberating, dependable, and hackable
+<h2><a id="what-is-gnu-guix" class="anchor" href="#what-is-gnu-guix">¶</a>What is GNU Guix?</h2><p>GNU Guix (or simply Guix) is a liberating, dependable, and hackable
 GNU/Linux distro configured using Guile Scheme. It is liberating
 because by default it uses only free software, and the Linux libre
 kernel. It is dependable because it is reproducable, supports
-rollbacks through &quot;generations,&quot; and has transactional upgrades (as
+rollbacks through "generations," and has transactional upgrades (as
 well as much more), and is hackable because it has Guile Scheme APIs
 for the entire system and packages.
-&lt;/p&gt;
+</p>
 
-&lt;p&gt;More practically, this means that Guix is configurable in your
+<p>More practically, this means that Guix is configurable in your
 dotfiles (your GNU/Linux preferences, nicknamed dotfiles because they
 often start with a period) and are reproducable on all your
 machines. Your configuration can be copied across them all, and kept
 in version control (such as git).
-&lt;/p&gt;
+</p>
 
-&lt;h2&gt;&lt;a id=&quot;should-i-use-the-package-manager-or-the-os&quot; class=&quot;anchor&quot; href=&quot;#should-i-use-the-package-manager-or-the-os&quot;&gt;¶&lt;/a&gt;Should I use the package manager or the OS?&lt;/h2&gt;&lt;p&gt;You can install Guix either as an OS or as a package manager in a
+<h2><a id="should-i-use-the-package-manager-or-the-os" class="anchor" href="#should-i-use-the-package-manager-or-the-os">¶</a>Should I use the package manager or the OS?</h2><p>You can install Guix either as an OS or as a package manager in a
 foreign distribution of GNU/Linux. There are benefits to both, however
 if you truly want to reap all the benefits of Guix, you should use it
 as an OS. The choice is up to you.
-&lt;/p&gt;
+</p>
 
-&lt;h2&gt;&lt;a id=&quot;how-do-i-install-guix&quot; class=&quot;anchor&quot; href=&quot;#how-do-i-install-guix&quot;&gt;¶&lt;/a&gt;How do I install Guix?&lt;/h2&gt;&lt;p&gt;If installing as a package manager, Guix can be downloaded as a binary
-from the official website at &lt;a href=&quot;https://guix.gnu.org/download&quot;&gt;guix.gnu.org&lt;/a&gt;, from your distro&apos;s package
-repositories, or using the &lt;a href=&quot;https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh&quot;&gt;shell installer script&lt;/a&gt;.
-&lt;/p&gt;
+<h2><a id="how-do-i-install-guix" class="anchor" href="#how-do-i-install-guix">¶</a>How do I install Guix?</h2><p>If installing as a package manager, Guix can be downloaded as a binary
+from the official website at <a href="https://guix.gnu.org/download">guix.gnu.org</a>, from your distro's package
+repositories, or using the <a href="https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh">shell installer script</a>.
+</p>
 
-&lt;p&gt;If installing as an OS, you can go back to the System Crafters main
+<p>If installing as an OS, you can go back to the System Crafters main
 wiki page for GNU Guix to see the options between nonguix and normal
 installation.
-&lt;/p&gt;
+</p>
 
-&lt;h2&gt;&lt;a id=&quot;but-how-do-i-work-with-only-free-software&quot; class=&quot;anchor&quot; href=&quot;#but-how-do-i-work-with-only-free-software&quot;&gt;¶&lt;/a&gt;But how do I work with only free software?&lt;/h2&gt;&lt;p&gt;Well, you find alternatives! The FSF has a great article about this
+<h2><a id="but-how-do-i-work-with-only-free-software" class="anchor" href="#but-how-do-i-work-with-only-free-software">¶</a>But how do I work with only free software?</h2><p>Well, you find alternatives! The FSF has a great article about this
 (written specifically for the COVID-19 pandemic, but always
-applicable): &lt;a href=&quot;https://www.fsf.org/blogs/community/better-than-zoom-try-these-free-software-tools-for-staying-in-touch&quot;&gt;free software alternatives&lt;/a&gt;. For other general things,
+applicable): <a href="https://www.fsf.org/blogs/community/better-than-zoom-try-these-free-software-tools-for-staying-in-touch">free software alternatives</a>. For other general things,
 consider LibreOffice for Microsoft Office, Gimp for Photoshop,
 Inkscape for Illustrator, and there are many other good alternatives
 to look for that respect your freedom.
-&lt;/p&gt;
+</p>
 
-&lt;p&gt;That said, we all have programs that we need for work that aren&apos;t free
-(and if you don&apos;t, consider yourself lucky.) Guix System, the name for
+<p>That said, we all have programs that we need for work that aren't free
+(and if you don't, consider yourself lucky.) Guix System, the name for
 the OS version, has options for nonfree software, such as nonguix,
 Nix, and Flatpak.
-&lt;/p&gt;
+</p>
 
-&lt;h2&gt;&lt;a id=&quot;what-is-a-declarative-configuration&quot; class=&quot;anchor&quot; href=&quot;#what-is-a-declarative-configuration&quot;&gt;¶&lt;/a&gt;What is a declarative configuration?&lt;/h2&gt;&lt;p&gt;A declarative configuration is, put simply, when you write out your
+<h2><a id="what-is-a-declarative-configuration" class="anchor" href="#what-is-a-declarative-configuration">¶</a>What is a declarative configuration?</h2><p>A declarative configuration is, put simply, when you write out your
 settings and packages instead of running a command. This allows for
 reproducibility, and easier management of installed packages. Think of
 it as declaring what you are going to do before doing it, as opposed
 to doing it without writing it down or alerting people.
-&lt;/p&gt;
+</p>
 
-&lt;h2&gt;&lt;a id=&quot;what-are-the-differences-between-guix-and-nix&quot; class=&quot;anchor&quot; href=&quot;#what-are-the-differences-between-guix-and-nix&quot;&gt;¶&lt;/a&gt;What are the differences between Guix and Nix?&lt;/h2&gt;&lt;p&gt;First and foremost, Guix is configured in Guile Scheme, a Scheme
+<h2><a id="what-are-the-differences-between-guix-and-nix" class="anchor" href="#what-are-the-differences-between-guix-and-nix">¶</a>What are the differences between Guix and Nix?</h2><p>First and foremost, Guix is configured in Guile Scheme, a Scheme
 (which in itself is a Lisp), while Nix is configured in... Nix. A bit
 confusing :smile:. Guile Scheme is a full fledged Scheme programming
 language, which means you can do some powerful things in it. Packages
 as well as system configurations are written in Guile in Guix. Guile
 also has more unified commands, while Nix has many for different
 purposes.
-&lt;/p&gt;
+</p>
 
-&lt;h2&gt;&lt;a id=&quot;im-stuck-where-do-i-ask-for-help&quot; class=&quot;anchor&quot; href=&quot;#im-stuck-where-do-i-ask-for-help&quot;&gt;¶&lt;/a&gt;I&apos;m stuck! Where do I ask for help?&lt;/h2&gt;&lt;p&gt;Check out one of the System Crafters channels on Discord, IRC, and
+<h2><a id="im-stuck-where-do-i-ask-for-help" class="anchor" href="#im-stuck-where-do-i-ask-for-help">¶</a>I'm stuck! Where do I ask for help?</h2><p>Check out one of the System Crafters channels on Discord, IRC, and
 Matrix. You can also watch some of the System Crafters videos, read
-this wiki, or ask in &lt;kbd&gt;#guix&lt;/kbd&gt; for free and &lt;kbd&gt;#nonguix&lt;/kbd&gt; for nonfree on &lt;a href=&quot;https://libera.chat&quot;&gt;Libera.Chat&lt;/a&gt;
+this wiki, or ask in <kbd>#guix</kbd> for free and <kbd>#nonguix</kbd> for nonfree on <a href="https://libera.chat">Libera.Chat</a>
 IRC.
-&lt;/p&gt;
-&lt;/div&gt;</div></div></div></div>&lt;footer class=&quot;blog-footer&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;row&quot;&gt;&lt;div class=&quot;col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right&quot;&gt;&lt;p&gt;Made with Emacs 27.2 (Org mode 9.4.4)&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://systemcrafters.net/privacy-policy/&quot;&gt;Privacy Policy&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/footer&gt;&lt;script src=&quot;/js/bootstrap.bundle.min.js&quot;/&gt;</body></html>
+</p>
+</div></div></div></div></div><footer class="blog-footer"><div class="container"><div class="row"><div class="col-sm col-md text-sm-left text-md-right text-lg-right text-xl-right"><p>Made with Emacs 27.2 (Org mode 9.4.4)</p><p><a href="https://systemcrafters.net/privacy-policy/">Privacy Policy</a></p></div></div></div></footer><script src="/js/bootstrap.bundle.min.js"/></body></html>
