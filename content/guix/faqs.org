@@ -71,7 +71,7 @@ to doing it without writing it down or alerting people.
 
 First and foremost, Guix is configured in Guile Scheme, a Scheme
 (which in itself is a Lisp), while Nix is configured in... Nix. A bit
-confusing :smile:. Guile Scheme is a full fledged Scheme programming
+confusing 😄. Guile Scheme is a full fledged Scheme programming
 language, which means you can do some powerful things in it. Packages
 as well as system configurations are written in Guile in Guix. Guile
 also has more unified commands, while Nix has many for different
