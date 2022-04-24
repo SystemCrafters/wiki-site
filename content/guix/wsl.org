@@ -141,6 +141,7 @@ Guix needs a manifest file as a blueprint to build the system. This minimal sche
   (operating-system
    (host-name "guix")
    (keyboard-layout (keyboard-layout "us" "altgr-intl"))
+   (timezone "Europe/Paris")
 
    ;; User account
    (users (cons (user-account
