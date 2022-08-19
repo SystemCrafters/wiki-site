@@ -324,7 +324,7 @@ TTY using ~Ctrl-Alt-F#~ and press ~Enter~ or ~Return~ to get to
 another root prompt. You can then switch back and forth between the
 previous TTY on ~F3~ instead of writing down your IDs.
 
-If you have encrypted partitions, yyou can use the following command
+If you have encrypted partitions, you can use the following command
 to find the UUID:
 
 #+BEGIN_SRC sh
