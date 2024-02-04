@@ -31,13 +31,9 @@ need a [[https://www.twitch.tv/][Twitch.tv account]].
 5. You should be able to join chatrooms using the regular IRC commands from
    there!  For Systemcrafters, run ~/join #systemcrafters~.
 
-* Discord
-This is currently where the bulk of the community is hanging out. There are several emacs and guix focused topic channels as well as general topic channels like gaming, music, and showcases of what the community is up to. Here is the invite [[https://discord.gg/yVD8Gx6][link to Discord]].
-
-* IRC / Matrix bridge
-** Internet Relay Chat (IRC)
+* IRC
 [[ircs://irc.libera.chat/systemcrafters][#systemcrafters]] channel is on the [[https://libera.chat][libera.chat]] irc server along with a lot of other FOSS software channels like [[ircs://irc.libera.chat/emacs][#emacs]], [[ircs://irc.libera.chat/guix][#guix]], etc.
-*** Join via ERC
+** Join via ERC
 You can join the [[ircs://irc.libera.chat/systemcrafters][#systemcrafters]] channel from within Emacs. For a quick introduction, have a look at [[https://www.youtube.com/watch?v=qWHTZIYTA4s][Chat Like the 90's in Emacs with ERC]], but for the impatient, you can use the following sexp:
 
 #+begin_src emacs-lisp
@@ -52,24 +48,3 @@ After your initial connection, use =/join #systemcrafters= to join the systemcra
 It's also a good idea to cloak your user (so your IP address is hidden from a ~whois~ query). You can do that by ~/join #libera-cloak~ and then sending the message ~!cloakme~. You only need to do it once for your NickServ account and it will cloak all your nicks anytime you connect.
 
 IRC chatting is simple, stable, hackable, and craftable, but because it's an old protocol with roots all the way back to the beginnings of the world wide web it comes with some limitations. One such limitation is that you have to be online to read messages. To learn more about configuring and using a ZNC bouncer server to stay connected and up to date with messages, see [[../znc-bouncer-servers/][ZNC Bouncer Server Setup]].
-
-** Matrix bridge
-Some may prefer to access the IRC channel using the [[https://en.wikipedia.org/wiki/Matrix_(protocol)][[matrix] protocol]] clients like [[https://element.io/][Element]]. Matrix bridges allow other protocols to be bridged with matrix. Matrix clients have an UX more similar to Discord and have some benefits like: it serves as a built-in bounce server (so you can see messages when you weren't online), it _supports_ /inline/ *markup* +or+ and ~code~ snippets, and the mobile app support is better.
-There are a few different ways to achieve this:
-
-*** Join as a Matrix user
-You can join a room directly by adding ~#systemcrafters:libera.chat~ to join with your Matrix identity. You don't have to register with IRC at all if you just want to keep using your Matrix identity since both Matrix and IRC users are treated as first class citizens.
-
-*** Join as an IRC user
-In order to use Matrix you have to have a Matrix account but if once logged into the client (Element) you can invite @NickServ:libera.chat to a PM to register/identify your IRC nick. Then invite @appservice:libera.chat to a PM and ~!join #systemscrafters~. In order to save your username by issuing the ~!username~ command followed by the ~!storepass YourP@assw0rd~.
-
-It's also a good idea to cloak your user (so your IP address is hidden from a ~whois~ query). You can do that by sending ~!join #libera-cloak~ to @appservice:libera.chat and then sending the message ~!cloakme~. You only need to do it once for your NickServ account and it will cloak all your nicks anytime you connect.
-
-
-Follow libera.chat guidance on grouping your nicks under a single NickServ account if you plan on signing into IRC from Matrix and an IRC client simultaneously (https://libera.chat/guides/registration#registering).
-=NOTE= If you join as more than one sure please append an underscore to your secondary nick which should be the same as your primary nick. This will help everyone understand it's the same person in two different clients. Example: =daviwil= and =daviwil_=.
-
-=NOTE=: libera.chat IRC server does not support ~COMMAND setname~ which is what allows you to set your "real name" after connecting. And the Element client does not pass a ~realname~ as part of the connection string. So unfortunately your real name will show as your Matrix username.
-
-*** Join as all the things
-You could join from an IRC client and through Matrix and authenticate as an IRC user and you can join from Matrix as a Matrix user, just join.
